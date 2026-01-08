@@ -26,13 +26,13 @@ const About = () => {
   ];
 
   return (
-    <section id="about" className="py-20 bg-gradient-to-b from-slate-800 to-slate-900">
+    <section id="about" className="py-20 bg-gradient-to-b from-gray-900 to-gray-950">
       <div className="max-w-[1920px] mx-auto px-8 sm:px-12 lg:px-16 xl:px-24">
         <div className="text-center mb-20 animate-fade-in-up">
           <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
             About <span className="gradient-text">Me</span>
           </h2>
-          <div className="w-20 h-1 bg-gradient-to-r from-teal-400 to-blue-500 mx-auto"></div>
+          <div className="w-20 h-1 bg-gradient-to-r from-teal-400 to-gray-700 mx-auto"></div>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -59,7 +59,7 @@ const About = () => {
               return (
                 <div
                   key={index}
-                  className="glass p-8 rounded-xl card-hover animate-scale-in group border border-slate-700/50 hover:border-teal-400/50"
+                  className="glass p-8 rounded-xl card-hover animate-scale-in group border border-gray-800/50 hover:border-teal-400/50"
                   style={{ animationDelay: `${0.3 + index * 0.1}s` }}
                 >
                   <div className="text-teal-400 mb-4 animate-float transition-transform group-hover:scale-110" style={{ animationDelay: `${index * 0.5}s` }}>

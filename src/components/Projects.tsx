@@ -37,7 +37,7 @@ const Projects = () => {
       image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1767892981/89ce4c8c-6ca9-43b5-8860-c797f3969f4b.png',
       technologies: [],
       demo: 'https://ai-workflow-hcko.onrender.com/',
-      github: '#',
+      github: 'https://github.com/Roshan0612/ai-workflow',
       featured: false
     },
     {
@@ -46,7 +46,7 @@ const Projects = () => {
       image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1767893537/8ff7fb06-5a5f-4f1b-9d7b-4c56f83ef2a0.png',
       technologies: [],
       demo: 'https://collaborative-task-manager-1-r7i4.onrender.com/',
-      github: '#',
+      github: 'https://github.com/Roshan0612/Collaborative-Task-Manager',
       featured: false
     },
     {
@@ -55,7 +55,7 @@ const Projects = () => {
       image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1767893796/35d47676-dfa3-47aa-8e6f-ff0522166623.png',
       technologies: [],
       demo: 'https://ownpresences.onrender.com/',
-      github: '#',
+      github: 'https://github.com/Roshan0612/ownpresence',
       featured: false
     }
     
@@ -65,13 +65,13 @@ const Projects = () => {
   const otherProjects = projects.filter(project => !project.featured);
 
   return (
-    <section id="projects" className="py-20 bg-gradient-to-b from-slate-800 to-slate-900">
+    <section id="projects" className="py-20 bg-gradient-to-b from-gray-900 to-black">
       <div className="max-w-[1920px] mx-auto px-8 sm:px-12 lg:px-16 xl:px-24">
         <div className="text-center mb-20 animate-fade-in-up">
           <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
             Featured <span className="gradient-text">Projects</span>
           </h2>
-          <div className="w-20 h-1 bg-gradient-to-r from-teal-400 to-blue-500 mx-auto mb-8"></div>
+          <div className="w-20 h-1 bg-gradient-to-r from-teal-400 to-gray-700 mx-auto mb-8"></div>
           <p className="text-gray-400 max-w-2xl mx-auto text-lg">
             A showcase of my recent work, demonstrating technical skills and creative problem-solving
           </p>
@@ -86,13 +86,13 @@ const Projects = () => {
               style={{ animationDelay: `${index * 0.2}s` }}
             >
               <div className={index % 2 === 1 ? 'lg:col-start-2' : ''}>
-                <div className="relative group overflow-hidden rounded-2xl shadow-2xl border border-slate-700/50">
+                <div className="relative group overflow-hidden rounded-2xl shadow-2xl border border-gray-800/50">
                   <img
                     src={project.image}
                     alt={project.title}
                     className="w-full h-96 object-cover transition-transform duration-700 group-hover:scale-110 group-hover:brightness-125"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-gray-950/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 gap-4">
                     <a
                       href={project.demo}
@@ -102,7 +102,7 @@ const Projects = () => {
                     </a>
                     <a
                       href={project.github}
-                      className="bg-slate-800/90 hover:bg-slate-700 text-white p-4 rounded-full transition-all duration-300 hover:scale-125 hover:shadow-lg hover:shadow-slate-400/20 backdrop-blur-sm border border-slate-600/50"
+                      className="bg-gray-900/90 hover:bg-gray-800 text-white p-4 rounded-full transition-all duration-300 hover:scale-125 hover:shadow-lg hover:shadow-gray-400/20 backdrop-blur-sm border border-gray-700/50"
                     >
                       <Github size={24} />
                     </a>
@@ -116,7 +116,7 @@ const Projects = () => {
                   {project.technologies.map((tech, techIndex) => (
                     <span
                       key={techIndex}
-                      className="glass px-4 py-2 rounded-full text-sm text-gray-300 hover:text-teal-300 border border-slate-700/50 hover:border-teal-400/50 transition-all duration-300 hover:scale-105 animate-scale-in group/tech"
+                      className="glass px-4 py-2 rounded-full text-sm text-gray-300 hover:text-teal-300 border border-gray-800/50 hover:border-teal-400/50 transition-all duration-300 hover:scale-105 animate-scale-in group/tech"
                       style={{ animationDelay: `${index * 0.2 + 0.3 + techIndex * 0.05}s` }}
                     >
                       {tech}
@@ -148,14 +148,14 @@ const Projects = () => {
         <div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {otherProjects.map((project, index) => (
-              <div key={index} className="glass rounded-2xl overflow-hidden card-hover group border border-slate-700/50 hover:border-teal-400/50 transition-all duration-300 animate-scale-in" style={{ animationDelay: `${index * 0.1}s` }}>
+              <div key={index} className="glass rounded-2xl overflow-hidden card-hover group border border-gray-800/50 hover:border-teal-400/50 transition-all duration-300 animate-scale-in" style={{ animationDelay: `${index * 0.1}s` }}>
                 <div className="relative h-56 overflow-hidden">
                   <img
                     src={project.image}
                     alt={project.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-gray-950/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <div className="absolute top-4 right-4 flex space-x-2 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-y-0 translate-y-2">
                     <a
                       href={project.demo}
@@ -165,7 +165,7 @@ const Projects = () => {
                     </a>
                     <a
                       href={project.github}
-                      className="bg-slate-800/80 hover:bg-slate-700 text-white p-2.5 rounded-full transition-all duration-300 hover:scale-110 backdrop-blur-sm border border-slate-600/50"
+                      className="bg-gray-900/80 hover:bg-gray-800 text-white p-2.5 rounded-full transition-all duration-300 hover:scale-110 backdrop-blur-sm border border-gray-700/50"
                     >
                       <Github size={18} />
                     </a>
@@ -178,7 +178,7 @@ const Projects = () => {
                     {project.technologies.slice(0, 3).map((tech, techIndex) => (
                       <span
                         key={techIndex}
-                        className="bg-slate-800/60 text-gray-300 px-3 py-1 rounded-lg text-xs font-medium border border-slate-700/50 hover:border-teal-400/50 transition-colors"
+                        className="bg-gray-900/60 text-gray-300 px-3 py-1 rounded-lg text-xs font-medium border border-gray-800/50 hover:border-teal-400/50 transition-colors"
                       >
                         {tech}
                       </span>

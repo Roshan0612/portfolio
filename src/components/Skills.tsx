@@ -4,7 +4,7 @@ const Skills = () => {
   const skillCategories = [
     {
       title: 'Languages & Frameworks',
-      color: 'from-blue-500 to-purple-600',
+      color: 'from-gray-400 to-gray-600',
       skills: [
         { name: 'JavaScript', icon: '⚡' },
         { name: 'TypeScript', icon: '🟦' },
@@ -45,7 +45,7 @@ const Skills = () => {
     },
     {
       title: 'Additional Skills',
-      color: 'from-purple-500 to-pink-600',
+      color: 'from-gray-500 to-gray-700',
       skills: [
         { name: 'RESTful APIs', icon: '🔌' },
         { name: 'JWT Authentication', icon: '🔐' },
@@ -60,13 +60,13 @@ const Skills = () => {
   ];
 
   return (
-    <section id="skills" className="py-20 bg-gradient-to-b from-slate-900 to-slate-800">
+    <section id="skills" className="py-20 bg-gradient-to-b from-gray-950 to-gray-900">
       <div className="max-w-[1920px] mx-auto px-8 sm:px-12 lg:px-16 xl:px-24">
         <div className="text-center mb-20 animate-fade-in-up">
           <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
             Technical <span className="gradient-text">Skills</span>
           </h2>
-          <div className="w-20 h-1 bg-gradient-to-r from-teal-400 to-blue-500 mx-auto mb-8"></div>
+          <div className="w-20 h-1 bg-gradient-to-r from-teal-400 to-gray-700 mx-auto mb-8"></div>
           <p className="text-gray-400 max-w-3xl mx-auto text-lg">
             These are the technologies I've worked with during my learning journey and projects
             — each helping me grow as a developer.
@@ -77,11 +77,11 @@ const Skills = () => {
           {skillCategories.map((category, categoryIndex) => (
             <div 
               key={categoryIndex} 
-              className="glass rounded-2xl p-10 card-hover border border-slate-700/50 hover:border-teal-400/50 animate-scale-in group overflow-hidden relative"
+              className="glass rounded-2xl p-10 card-hover border border-gray-800/50 hover:border-teal-400/50 animate-scale-in group overflow-hidden relative"
               style={{ animationDelay: `${categoryIndex * 0.15}s` }}
             >
               {/* Background glow effect */}
-              <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-gray-800/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               
               <h3 className={`text-2xl font-bold mb-10 text-center text-transparent bg-clip-text bg-gradient-to-r ${category.color}`}>
                 {category.title}
@@ -90,7 +90,7 @@ const Skills = () => {
                 {category.skills.map((skill, skillIndex) => (
                   <div 
                     key={skillIndex}
-                    className="bg-slate-900/60 backdrop-blur-sm rounded-xl p-4 card-hover border border-slate-700/60 hover:border-teal-400/60 transition-all duration-300 group/skill animate-scale-in"
+                    className="bg-gray-950/60 backdrop-blur-sm rounded-xl p-4 card-hover border border-gray-800/60 hover:border-teal-400/60 transition-all duration-300 group/skill animate-scale-in"
                     style={{ animationDelay: `${categoryIndex * 0.15 + skillIndex * 0.05}s` }}
                   >
                     <div className="text-center">

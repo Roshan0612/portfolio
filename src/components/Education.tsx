@@ -32,21 +32,21 @@ const Education = () => {
   ];
 
   return (
-    <section id="education" className="py-20 bg-gradient-to-b from-slate-800 to-slate-900">
+    <section id="education" className="py-20 bg-gradient-to-b from-gray-900 to-gray-950">
       <div className="max-w-[1920px] mx-auto px-8 sm:px-12 lg:px-16 xl:px-24">
         <div className="text-center mb-20 animate-fade-in-up">
           <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
             Education
             <span className="gradient-text"> & Qualifications</span>
           </h2>
-          <div className="w-20 h-1 bg-gradient-to-r from-teal-400 to-blue-500 mx-auto mb-8"></div>
+          <div className="w-20 h-1 bg-gradient-to-r from-teal-400 to-gray-700 mx-auto mb-8"></div>
           <p className="text-gray-400 max-w-2xl mx-auto text-lg">
             My academic background and achievements in technology and computer science
           </p>
         </div>
         <div className="relative">
           {/* Timeline line */}
-          <div className="absolute left-4 md:left-1/2 transform md:-translate-x-px top-0 bottom-0 w-0.5 bg-gradient-to-b from-teal-400 via-blue-500 to-orange-500 animate-shimmer"></div>
+          <div className="absolute left-4 md:left-1/2 transform md:-translate-x-px top-0 bottom-0 w-0.5 bg-gradient-to-b from-teal-400 via-gray-600 to-orange-500 animate-shimmer"></div>
           <div className="space-y-12">
             {educationList.map((edu, index) => (
               <div 
@@ -55,15 +55,15 @@ const Education = () => {
                 style={{ animationDelay: `${index * 0.2}s` }}
               >
                 {/* Timeline dot */}
-                <div className="absolute left-4 md:left-1/2 transform md:-translate-x-1/2 w-5 h-5 bg-teal-400 rounded-full border-4 border-slate-900 z-10 animate-glow shadow-lg shadow-teal-400/50"></div>
+                <div className="absolute left-4 md:left-1/2 transform md:-translate-x-1/2 w-5 h-5 bg-teal-400 rounded-full border-4 border-gray-950 z-10 animate-glow shadow-lg shadow-teal-400/50"></div>
                 <div className={`w-full md:w-1/2 ${index % 2 === 0 ? 'md:pr-8' : 'md:pl-8'} ml-12 md:ml-0`}>
-                  <div className="glass rounded-2xl p-8 card-hover shadow-xl border border-slate-700/50 hover:border-teal-400/50 transition-all group">
+                  <div className="glass rounded-2xl p-8 card-hover shadow-xl border border-gray-800/50 hover:border-teal-400/50 transition-all group">
                     <div className="flex flex-wrap items-center justify-between mb-6">
                       <div>
                         <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-teal-300 transition-colors">{edu.degree}</h3>
                         <h4 className="text-teal-400 font-semibold text-lg">{edu.institution}</h4>
                       </div>
-                      <span className="bg-blue-500/20 text-blue-300 px-4 py-2 rounded-full text-sm font-semibold border border-blue-500/40 hover:border-blue-500/60 transition-all">
+                      <span className="bg-gray-700/20 text-gray-300 px-4 py-2 rounded-full text-sm font-semibold border border-gray-600/40 hover:border-gray-600/60 transition-all">
                         {edu.period}
                       </span>
                     </div>
