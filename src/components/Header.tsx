@@ -45,7 +45,7 @@ const Header = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-xl border-b border-gray-800/50 shadow-lg">
-      <div className="max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-16 xl:px-24">
+      <div className="max-w-[1920px] mx-auto px-3 sm:px-8 lg:px-16 xl:px-24">
         <div className="flex justify-between items-center py-4">
           <div className="text-xl font-bold text-white transition-all duration-300 hover:scale-105">
             Roshan<span className="text-teal-400">Dev</span>

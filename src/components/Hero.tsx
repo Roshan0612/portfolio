@@ -52,7 +52,7 @@ const Hero = () => {
   };
 
   return (
-    <section id="hero" className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-gray-900 to-black pt-20 relative overflow-hidden">
+    <section id="hero" className="w-full min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-gray-900 to-black pt-20 relative overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-teal-500/20 to-teal-500/5 rounded-full blur-3xl animate-float"></div>
@@ -60,7 +60,7 @@ const Hero = () => {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-gray-700/10 to-gray-800/5 rounded-full blur-3xl opacity-50"></div>
       </div>
 
-      <div className="max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-16 xl:px-24 relative z-10">
+      <div className="max-w-[1920px] mx-auto px-3 sm:px-8 lg:px-16 xl:px-24 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Text content */}
           <div className="text-center lg:text-left">

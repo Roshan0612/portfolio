@@ -60,8 +60,8 @@ const Skills = () => {
   ];
 
   return (
-    <section id="skills" className="py-20 bg-gradient-to-b from-gray-950 to-gray-900">
-      <div className="max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-16 xl:px-24">
+    <section id="skills" className="w-full py-20 bg-gradient-to-b from-gray-950 to-gray-900">
+      <div className="max-w-[1920px] mx-auto px-3 sm:px-8 lg:px-16 xl:px-24">
         <div className="text-center mb-20 animate-fade-in-up">
           <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
             Technical <span className="gradient-text">Skills</span>
