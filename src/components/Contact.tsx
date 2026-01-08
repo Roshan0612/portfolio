@@ -87,7 +87,7 @@ const Contact = () => {
 
   return (
     <section id="contact" className="py-20 bg-gradient-to-b from-gray-950 to-black">
-      <div className="max-w-[1920px] mx-auto px-8 sm:px-12 lg:px-16 xl:px-24">
+      <div className="max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-16 xl:px-24">
         <div className="text-center mb-20 animate-fade-in-up">
           <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
             Get In <span className="gradient-text">Touch</span>
@@ -98,13 +98,13 @@ const Contact = () => {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-16">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16">
           {/* Contact Form */}
           <div className="animate-fade-in-left stagger-2">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="grid sm:grid-cols-2 gap-4">
                 <div className="group">
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-3">
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
                     Name *
                   </label>
                   <input
@@ -114,12 +114,12 @@ const Contact = () => {
                     required
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-gray-900/50 border border-gray-800/50 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-400/30 transition-all duration-300 group-hover:border-gray-700"
+                    className="w-full px-3 py-2 sm:px-4 sm:py-3 bg-gray-900/50 border border-gray-800/50 rounded-lg text-sm sm:text-base text-white placeholder-gray-500 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-400/30 transition-all duration-300 group-hover:border-gray-700\"
                     placeholder="Your Name"
                   />
                 </div>
                 <div className="group">
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-3">
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
                     Email *
                   </label>
                   <input

@@ -60,7 +60,7 @@ const Hero = () => {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-gray-700/10 to-gray-800/5 rounded-full blur-3xl opacity-50"></div>
       </div>
 
-      <div className="max-w-[1920px] mx-auto px-8 sm:px-12 lg:px-16 xl:px-24 relative z-10">
+      <div className="max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-16 xl:px-24 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Text content */}
           <div className="text-center lg:text-left">
