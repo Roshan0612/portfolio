@@ -92,25 +92,25 @@ const Contact = () => {
   ];
 
   return (
-    <section id="contact" className="py-20 bg-slate-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-            Get In <span className="text-teal-400">Touch</span>
+    <section id="contact" className="py-20 bg-gradient-to-b from-slate-900 to-slate-800">
+      <div className="max-w-[1920px] mx-auto px-8 sm:px-12 lg:px-16 xl:px-24">
+        <div className="text-center mb-20 animate-fade-in-up">
+          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
+            Get In <span className="gradient-text">Touch</span>
           </h2>
           <div className="w-20 h-1 bg-gradient-to-r from-teal-400 to-blue-500 mx-auto mb-8"></div>
-          <p className="text-gray-400 max-w-2xl mx-auto">
+          <p className="text-gray-400 max-w-2xl mx-auto text-lg">
             Ready to start your next project? Let's discuss how we can work together to bring your ideas to life.
           </p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-16">
           {/* Contact Form */}
-          <div>
+          <div className="animate-fade-in-left stagger-2">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
+                <div className="group">
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-3">
                     Name *
                   </label>
                   <input
@@ -120,12 +120,12 @@ const Contact = () => {
                     required
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition-colors duration-300"
+                    className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-400/30 transition-all duration-300 group-hover:border-slate-600"
                     placeholder="Your Name"
                   />
                 </div>
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+                <div className="group">
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-3">
                     Email *
                   </label>
                   <input
@@ -135,13 +135,13 @@ const Contact = () => {
                     required
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition-colors duration-300"
+                    className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-400/30 transition-all duration-300 group-hover:border-slate-600"
                     placeholder="your@email.com"
                   />
                 </div>
               </div>
-              <div>
-                <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-2">
+              <div className="group">
+                <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-3">
                   Subject *
                 </label>
                 <input
@@ -151,12 +151,12 @@ const Contact = () => {
                   required
                   value={formData.subject}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition-colors duration-300"
+                  className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-400/30 transition-all duration-300 group-hover:border-slate-600"
                   placeholder="Project Discussion"
                 />
               </div>
-              <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
+              <div className="group">
+                <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-3">
                   Message *
                 </label>
                 <textarea
@@ -166,48 +166,48 @@ const Contact = () => {
                   rows={6}
                   value={formData.message}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition-colors duration-300 resize-none"
+                  className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-400/30 transition-all duration-300 resize-none group-hover:border-slate-600"
                   placeholder="Tell me about your project..."
                 ></textarea>
               </div>
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-2"
+                className="w-full bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl btn-hover"
               >
                 <span>Send Message</span>
-                <Send size={18} />
+                <Send size={20} className="transition-transform group-hover:translate-x-1" />
               </button>
             </form>
           </div>
 
           {/* Contact Information */}
-          <div>
-            <div className="bg-slate-900 rounded-xl p-8 h-full">
-              <h3 className="text-2xl font-bold text-white mb-8">Let's Connect</h3>
+          <div className="animate-fade-in-right stagger-2">
+            <div className="glass rounded-2xl p-10 h-full border border-slate-700/50 hover:border-teal-400/50 transition-all">
+              <h3 className="text-2xl font-bold text-white mb-10">Let's Connect</h3>
               
-              <div className="space-y-6 mb-8">
+              <div className="space-y-5 mb-10">
                 {contactInfo.map((info, index) => {
                   const Icon = info.icon;
                   return (
                     <a
                       key={index}
                       href={info.href}
-                      className="flex items-center space-x-4 p-4 rounded-lg hover:bg-slate-800 transition-colors duration-300 group"
+                      className="flex items-center space-x-4 p-4 rounded-xl hover:bg-slate-800/60 transition-all duration-300 group border border-slate-700/30 hover:border-teal-400/30"
                     >
-                      <div className="text-teal-400 group-hover:text-teal-300 transition-colors duration-300">
+                      <div className="text-teal-400 group-hover:text-teal-300 transition-colors duration-300 p-2 bg-teal-400/10 rounded-lg group-hover:bg-teal-400/20">
                         <Icon size={24} />
                       </div>
-                      <div>
-                        <p className="text-sm text-gray-400">{info.label}</p>
-                        <p className="text-white font-medium">{info.value}</p>
+                      <div className="flex-1">
+                        <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">{info.label}</p>
+                        <p className="text-white font-semibold group-hover:text-teal-300 transition-colors">{info.value}</p>
                       </div>
                     </a>
                   );
                 })}
               </div>
 
-              <div className="border-t border-slate-700 pt-8">
-                <h4 className="text-lg font-semibold text-white mb-4">Follow Me</h4>
+              <div className="border-t border-slate-700/50 pt-10">
+                <h4 className="text-lg font-bold text-white mb-6">Follow Me</h4>
                 <div className="flex space-x-4">
                   {socialLinks.map((social, index) => {
                     const Icon = social.icon;
@@ -215,17 +215,17 @@ const Contact = () => {
                       <a
                         key={index}
                         href={social.href}
-                        className={`text-gray-400 ${social.color} transition-colors duration-300 transform hover:scale-110`}
+                        className={`p-3 rounded-lg bg-slate-800/50 border border-slate-700/50 text-gray-400 ${social.color} transition-all duration-300 hover:bg-teal-400/10 hover:border-teal-400/50 transform hover:scale-110 hover:-translate-y-1`}
                         aria-label={social.label}
                       >
-                        <Icon size={24} />
+                        <Icon size={20} />
                       </a>
                     );
                   })}
                 </div>
               </div>
 
-              <div className="mt-8 p-4 bg-slate-800 rounded-lg">
+              <div className="mt-10 p-6 bg-gradient-to-br from-teal-500/10 to-blue-500/10 rounded-xl border border-teal-400/20 hover:border-teal-400/40 transition-all">
                 <p className="text-gray-300 text-sm leading-relaxed">
                   I'm always interested in hearing about new opportunities and exciting projects. 
                   Whether you're a company looking to hire, or you're a fellow developer wanting to collaborate, 

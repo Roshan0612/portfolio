@@ -3,64 +3,68 @@ import React from 'react';
 const Skills = () => {
   const skillCategories = [
     {
-      title: 'Frontend',
+      title: 'Languages & Frameworks',
       color: 'from-blue-500 to-purple-600',
       skills: [
-        { name: 'HTML', icon: '🌐' },
-        { name: 'CSS', icon: '🎨' },
         { name: 'JavaScript', icon: '⚡' },
         { name: 'TypeScript', icon: '🟦' },
-        { name: 'Next.js', icon: '⬢' },
-        { name: 'React JS', icon: '⚛️' },
-        { name: 'Redux', icon: '🔄' },
-        { name: 'Tailwind CSS', icon: '💨' },
+        { name: 'C', icon: '©️' },
+        { name: 'Java', icon: '☕' },
+        { name: 'HTML', icon: '🌐' },
+        { name: 'CSS', icon: '🎨' },
         { name: 'Bootstrap', icon: '🅱️' },
+        { name: 'React.js', icon: '⚛️' },
+        { name: 'Next.js', icon: '⬢' },
+        { name: 'Node.js', icon: '🟢' },
+        { name: 'Express.js', icon: '🚀' },
+        { name: 'Tailwind CSS', icon: '💨' }
+      ]
+    },
+    {
+      title: 'Databases',
+      color: 'from-teal-500 to-green-600',
+      skills: [
+        { name: 'MySQL', icon: '🐬' },
+        { name: 'MongoDB', icon: '🍃' },
+        { name: 'PostgreSQL', icon: '🐘' }
+      ]
+    },
+    {
+      title: 'Development Tools & Platforms',
+      color: 'from-orange-500 to-red-600',
+      skills: [
+        { name: 'Docker', icon: '🐳' },
+        { name: 'VS Code', icon: '💻' },
+        { name: 'Render', icon: '☁️' },
+        { name: 'Git & GitHub', icon: '🐙' },
+        { name: 'Postman', icon: '📮' },
+        { name: 'IntelliJ IDEA', icon: '🧠' },
+        { name: 'Cursor', icon: '📝' },
         { name: 'GSAP', icon: '🎬' }
       ]
     },
     {
-      title: 'Backend',
-      color: 'from-teal-500 to-green-600',
-      skills: [
-        { name: 'Node JS', icon: '🟢' },
-        { name: 'Express JS', icon: '🚀' },
-        { name: 'MySQL', icon: '🐬' },
-        { name: 'MongoDB', icon: '🍃' }
-      ]
-    },
-    {
-      title: 'Languages',
-      color: 'from-orange-500 to-red-600',
-      skills: [
-        { name: 'C', icon: '©️' },
-        { name: 'C++', icon: '➕' },
-        { name: 'Java', icon: '☕' },
-        { name: 'JavaScript', icon: '⚡' },
-        { name: 'TypeScript', icon: '🟦' }
-      ]
-    },
-    {
-      title: 'Tools',
+      title: 'Additional Skills',
       color: 'from-purple-500 to-pink-600',
       skills: [
-        { name: 'Git', icon: '📝' },
-        { name: 'GitHub', icon: '🐙' },
-        { name: 'VS Code', icon: '💻' },
-        { name: 'IntelliJ IDEA', icon: '🧠' },
-        { name: 'Postman', icon: '📮' },
-        { name: 'Compass', icon: '🧭' },
-        { name: 'Vercel', icon: '▲' },
-        { name: 'Docker', icon: '🐳' } // added Docker
+        { name: 'RESTful APIs', icon: '🔌' },
+        { name: 'JWT Authentication', icon: '🔐' },
+        { name: 'Version Control', icon: '📝' },
+        { name: 'Redux', icon: '🔄' },
+        { name: 'Context API', icon: '🌐' },
+        { name: 'Responsive Design', icon: '📱' },
+        { name: 'CI/CD Basics', icon: '🔄' },
+        { name: 'DSA (150Q)', icon: '🧩' }
       ]
     }
   ];
 
   return (
-    <section id="skills" className="py-20 bg-slate-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-            Technical <span className="text-teal-400">Skills</span>
+    <section id="skills" className="py-20 bg-gradient-to-b from-slate-900 to-slate-800">
+      <div className="max-w-[1920px] mx-auto px-8 sm:px-12 lg:px-16 xl:px-24">
+        <div className="text-center mb-20 animate-fade-in-up">
+          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
+            Technical <span className="gradient-text">Skills</span>
           </h2>
           <div className="w-20 h-1 bg-gradient-to-r from-teal-400 to-blue-500 mx-auto mb-8"></div>
           <p className="text-gray-400 max-w-3xl mx-auto text-lg">
@@ -69,21 +73,29 @@ const Skills = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-10">
           {skillCategories.map((category, categoryIndex) => (
-            <div key={categoryIndex} className="bg-slate-800 rounded-xl p-8 hover:bg-slate-700 transition-all duration-300 border border-slate-700">
-              <h3 className={`text-2xl font-bold mb-8 text-center text-transparent bg-clip-text bg-gradient-to-r ${category.color}`}>
+            <div 
+              key={categoryIndex} 
+              className="glass rounded-2xl p-10 card-hover border border-slate-700/50 hover:border-teal-400/50 animate-scale-in group overflow-hidden relative"
+              style={{ animationDelay: `${categoryIndex * 0.15}s` }}
+            >
+              {/* Background glow effect */}
+              <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              
+              <h3 className={`text-2xl font-bold mb-10 text-center text-transparent bg-clip-text bg-gradient-to-r ${category.color}`}>
                 {category.title}
               </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-5 relative z-10">
                 {category.skills.map((skill, skillIndex) => (
                   <div 
                     key={skillIndex}
-                    className="bg-slate-900 rounded-lg p-4 hover:bg-slate-600 transition-all duration-300 transform hover:scale-105 border border-slate-600 hover:border-teal-400/50"
+                    className="bg-slate-900/60 backdrop-blur-sm rounded-xl p-4 card-hover border border-slate-700/60 hover:border-teal-400/60 transition-all duration-300 group/skill animate-scale-in"
+                    style={{ animationDelay: `${categoryIndex * 0.15 + skillIndex * 0.05}s` }}
                   >
                     <div className="text-center">
-                      <div className="text-2xl mb-2">{skill.icon}</div>
-                      <span className="text-gray-300 font-medium text-sm">{skill.name}</span>
+                      <div className="text-3xl mb-3 animate-float inline-block transition-transform group-hover/skill:scale-125" style={{ animationDelay: `${skillIndex * 0.2}s` }}>{skill.icon}</div>
+                      <span className="text-gray-300 font-medium text-sm block group-hover/skill:text-teal-300 transition-colors duration-300">{skill.name}</span>
                     </div>
                   </div>
                 ))}

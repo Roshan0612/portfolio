@@ -44,29 +44,32 @@ const Header = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-xl border-b border-slate-800/50 shadow-lg">
+      <div className="max-w-[1920px] mx-auto px-8 sm:px-12 lg:px-16 xl:px-24">
         <div className="flex justify-between items-center py-4">
-          <div className="text-xl font-bold text-white">
-            Alex<span className="text-teal-400">Dev</span>
+          <div className="text-xl font-bold text-white transition-all duration-300 hover:scale-105">
+            Roshan<span className="text-teal-400">Dev</span>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-8">
+          <nav className="hidden md:flex space-x-1">
             {navItems.map((item) => {
               const Icon = item.icon;
               return (
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-300 ${
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-300 group relative ${
                     activeSection === item.id
-                      ? 'text-teal-400 bg-teal-400/10'
-                      : 'text-gray-300 hover:text-white hover:bg-slate-800'
+                      ? 'text-teal-400 bg-teal-400/10 border border-teal-400/30'
+                      : 'text-gray-300 hover:text-white border border-transparent hover:bg-slate-700/50'
                   }`}
                 >
-                  <Icon size={16} />
+                  <Icon size={16} className="transition-transform group-hover:scale-110" />
                   <span>{item.label}</span>
+                  {activeSection === item.id && (
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-teal-400 to-blue-500 rounded-full"></div>
+                  )}
                 </button>
               );
             })}
@@ -74,7 +77,7 @@ const Header = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden text-white"
+            className="md:hidden text-white transition-all duration-300 hover:scale-110 active:scale-95"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
