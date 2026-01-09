@@ -23,6 +23,17 @@ const Projects = () => {
     },
     
     {
+      title: 'Autozynq',
+      image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1767939812/dfd123e6-3706-49d1-99cf-22ad81c1e896.png',
+      description: '• Built a Make.com-inspired workflow automation platform with a React Flow visual builder for intuitive workflow design.• Implemented backend-validated workflow schemas with webhook-driven execution engine supporting conditional branching, idempotency, cancellation, and detailed step-level logs.• Designed a pluggable node system for third-party integrations (Google Forms, Gmail, AI APIs), enabling scalable automation without engine rewrites.• Developed comprehensive debug dashboards for workflows, triggers, and executions to inspect payloads, execution paths, and failures in real-time.• Tech Stack: React Flow, TypeScript, Node.js, Express.js, MongoDB, Webhooks, Google APIs, Postman',
+      technologies: ['React Flow', 'TypeScript', 'Node.js', 'Express.js', 'MongoDB', 'Webhooks', 'Google APIs', 'Rest APIs'],
+      github: 'https://github.com/Roshan0612/Autozynq',
+      demo: '#',
+      featured: true,
+      status: 'Currently Working'
+    },
+    
+    {
       title: 'makeup studio website',
       description: '',
       image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1762324496/WhatsApp_Image_2025-11-05_at_12.03.50_358abeba_b4rirx.jpg',
@@ -94,12 +105,14 @@ const Projects = () => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-gray-950/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 gap-4">
-                    <a
-                      href={project.demo}
-                      className="bg-teal-500/90 hover:bg-teal-600 text-white p-4 rounded-full transition-all duration-300 hover:scale-125 hover:shadow-lg hover:shadow-teal-500/50 backdrop-blur-sm border border-teal-400/50"
-                    >
-                      <Eye size={24} />
-                    </a>
+                    {project.demo !== '#' && (
+                      <a
+                        href={project.demo}
+                        className="bg-teal-500/90 hover:bg-teal-600 text-white p-4 rounded-full transition-all duration-300 hover:scale-125 hover:shadow-lg hover:shadow-teal-500/50 backdrop-blur-sm border border-teal-400/50"
+                      >
+                        <Eye size={24} />
+                      </a>
+                    )}
                     <a
                       href={project.github}
                       className="bg-gray-900/90 hover:bg-gray-800 text-white p-4 rounded-full transition-all duration-300 hover:scale-125 hover:shadow-lg hover:shadow-gray-400/20 backdrop-blur-sm border border-gray-700/50"
@@ -110,7 +123,14 @@ const Projects = () => {
                 </div>
               </div>
               <div className={index % 2 === 1 ? 'lg:col-start-1' : ''}>
-                <h3 className="text-3xl font-bold text-white mb-6 animate-fade-in-up leading-tight" style={{ animationDelay: `${index * 0.2 + 0.1}s` }}>{project.title}</h3>
+                <div className="flex items-center gap-4 mb-4">
+                  <h3 className="text-3xl font-bold text-white animate-fade-in-up leading-tight" style={{ animationDelay: `${index * 0.2 + 0.1}s` }}>{project.title}</h3>
+                  {project.status && (
+                    <span className="px-3 py-1 bg-teal-400/20 border border-teal-400/50 text-teal-300 text-xs font-semibold rounded-full animate-fade-in-up" style={{ animationDelay: `${index * 0.2 + 0.1}s` }}>
+                      {project.status}
+                    </span>
+                  )}
+                </div>
                 <p className="text-gray-300 mb-8 leading-relaxed text-lg animate-fade-in-up" style={{ animationDelay: `${index * 0.2 + 0.2}s` }}>{project.description}</p>
                 <div className="flex flex-wrap gap-3 mb-8">
                   {project.technologies.map((tech, techIndex) => (
