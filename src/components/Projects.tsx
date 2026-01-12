@@ -68,6 +68,15 @@ const Projects = () => {
       demo: 'https://ownpresences.onrender.com/',
       github: 'https://github.com/Roshan0612/ownpresence',
       featured: false
+    },
+    {
+      title: 'GigFlow',
+      description: '',
+      image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1768227951/709c761e-7522-42fc-84d6-9f54353e710a.png',
+      technologies: [],
+      demo: 'https://gigflow-client.onrender.com',
+      github: 'https://github.com/Roshan0612/gigflow',
+      featured: false
     }
     
   ];

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Send, Phone, Mail, MapPin, Github, Linkedin } from 'lucide-react';
- import emailjs from "emailjs-com";
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -16,37 +15,29 @@ const Contact = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-   
 
+    try {
+      const response = await fetch('https://formspree.io/f/xgooeayn', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
 
-
-  e.preventDefault();
-
-  emailjs
-    .send(
-      "service_0yuwqjj",
-      "your_template_id",
-      formData,
-      "RsI9y3CKW8VtLy3OC"
-    )
-    .then(
-      () => {
-        alert("✅ Message sent successfully!");
-        setFormData({ name: "", email: "", subject: "", message: "" });
-      },
-      (error) => {
-        alert("❌ Failed to send. Try again.");
-        console.error(error);
+      if (!response.ok) {
+        throw new Error('Form submission failed');
       }
-    );
 
-
-    // Handle form submission here
-    alert('Thank you for your message! I\'ll get back to you soon.');
-    setFormData({ name: '', email: '', subject: '', message: '' });
+      alert("✅ Message sent successfully!");
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    } catch (error) {
+      console.error('Formspree error:', error);
+      alert('❌ Failed to send. Please try again.');
+    }
   };
 
   const contactInfo = [
@@ -114,7 +105,7 @@ const Contact = () => {
                     required
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 sm:px-4 sm:py-3 bg-gray-900/50 border border-gray-800/50 rounded-lg text-sm sm:text-base text-white placeholder-gray-500 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-400/30 transition-all duration-300 group-hover:border-gray-700\"
+                    className="w-full px-3 py-2 sm:px-4 sm:py-3 bg-gray-900/50 border border-gray-800/50 rounded-lg text-sm sm:text-base text-white placeholder-gray-500 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-400/30 transition-all duration-300 group-hover:border-gray-700"
                     placeholder="Your Name"
                   />
                 </div>
