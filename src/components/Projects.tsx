@@ -82,7 +82,7 @@ const Projects = () => {
       title: 'Marvedge Screen Recorder',
       description: 'Lightweight screen recording web app for quick captures and sharing.',
       image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1768761937/b1d3140e-06e5-498a-adc0-7b172a827e51.png',
-      technologies: ['React.js', 'Node.js', 'Express.js'],
+      technologies: ['Nextjs.js', 'Typescript', 'Aws', 'Tailwind CSS', 'FFMPEG','MediaRecorder API'],
       github: 'https://github.com/Roshan0612/marvedge-screen-recorder',
       demo: 'https://marvedge-screen-recorder.onrender.com/',
       featured: false
