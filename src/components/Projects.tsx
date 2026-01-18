@@ -14,9 +14,9 @@ const Projects = () => {
     },
     {
       title: 'Tribal E-Commerce',
-       image :"https://res.cloudinary.com/dswa5docr/image/upload/v1762324261/WhatsApp_Image_2025-04-02_at_10.20.41_f9ee9fd7_fu6ycs.jpg",
+      image :"https://res.cloudinary.com/dswa5docr/image/upload/v1762324261/WhatsApp_Image_2025-04-02_at_10.20.41_f9ee9fd7_fu6ycs.jpg",
       description: 'E-Commerce Platform. Developed a full-stack e-commerce application for tribal communities using the MERN stack. Integrated Razorpay to enable secure and seamless online transactions. Implemented JWT-based authentication with role-based access control. Designed product categorization and shopping cart functionality. Enabled middleman support to manage multiple tribal profiles and product listings.',
-      technologies: ['React.js', 'Tailwind', 'CSS',, 'Node.js', 'Express.js', 'MongoDB', 'Razorpay', 'JWT'],
+      technologies: ['React.js', 'Tailwind', 'CSS', 'Node.js', 'Express.js', 'MongoDB', 'Razorpay', 'JWT'],
       github: 'https://github.com/Roshan0612/tribesHub-E_marketplace',
       demo: '#',
       featured: true
@@ -76,6 +76,15 @@ const Projects = () => {
       technologies: [],
       demo: 'https://gigflow-client.onrender.com',
       github: 'https://github.com/Roshan0612/gigflow',
+      featured: false
+    },
+    {
+      title: 'Marvedge Screen Recorder',
+      description: 'Lightweight screen recording web app for quick captures and sharing.',
+      image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1768761937/b1d3140e-06e5-498a-adc0-7b172a827e51.png',
+      technologies: ['React.js', 'Node.js', 'Express.js'],
+      github: 'https://github.com/Roshan0612/marvedge-screen-recorder',
+      demo: 'https://marvedge-screen-recorder.onrender.com/',
       featured: false
     }
     
