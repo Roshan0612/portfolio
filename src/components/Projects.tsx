@@ -4,6 +4,16 @@ import { ExternalLink, Github, Eye } from 'lucide-react';
 const Projects = () => {
   const projects = [
     {
+      title: 'Autozynq',
+      image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1767939812/dfd123e6-3706-49d1-99cf-22ad81c1e896.png',
+      description: 'Built a production-ready Zapier/Make-style automation platform with a visual node-based builder and real-time workflow execution. Supports webhooks, Google Forms/Sheets triggers, retries, and error handling. Includes 15+ integration nodes (Gmail, Drive, Slack, AI email generation), execution monitoring, idempotency, and secure OAuth via NextAuth.',
+      technologies: ['Next.js 15', 'TypeScript', 'React Flow', 'Prisma ORM', 'PostgreSQL', 'NextAuth', 'TailwindCSS', 'Shadcn UI', 'Google APIs', 'OpenAI/Grok AI', 'Zod', 'Node.js'],
+      github: 'https://github.com/Roshan0612/Autozynq',
+      demo: 'https://autozynq.onrender.com/',
+      featured: true,
+      status: 'Currently Working'
+    },
+    {
       title: 'FitTrack',
       image :"https://res.cloudinary.com/dswa5docr/image/upload/v1762323535/WhatsApp_Image_2025-11-05_at_11.48.43_6b3fe802_lxbfdq.jpg",
       description: '• Developed a full-stack responsive web application for gym management with separate admin and user portals.• Admin portal: Create and manage exercises, diet plans, coupons, and subscriptions; assign exercises and diet plans to individual users; track subscription status and user activity.• User portal: View assigned diet and exercise plans, track daily calories, and monitor personal progress based on input data.• Implemented JWT authentication for secure role-based access control and Framer Motion animations for a smooth,responsive UI.• Designed MongoDB schemas to handle user profiles, plans, subscriptions, and activity efficiently.• Tech Stack: MERN, React.js, Node.js, Express.js, MongoDB, JWT, Framer Motion, Tailwind CSS',
@@ -21,24 +31,13 @@ const Projects = () => {
       demo: '#',
       featured: true
     },
-    
     {
-      title: 'Autozynq',
-      image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1767939812/dfd123e6-3706-49d1-99cf-22ad81c1e896.png',
-      description: '• Built a Make.com-inspired workflow automation platform with a React Flow visual builder for intuitive workflow design.• Implemented backend-validated workflow schemas with webhook-driven execution engine supporting conditional branching, idempotency, cancellation, and detailed step-level logs.• Designed a pluggable node system for third-party integrations (Google Forms, Gmail, AI APIs), enabling scalable automation without engine rewrites.• Developed comprehensive debug dashboards for workflows, triggers, and executions to inspect payloads, execution paths, and failures in real-time.• Tech Stack: React Flow, TypeScript, Node.js, Express.js, MongoDB, Webhooks, Google APIs, Postman',
-      technologies: ['React Flow', 'TypeScript', 'Node.js', 'Express.js', 'MongoDB', 'Webhooks', 'Google APIs', 'Rest APIs'],
-      github: 'https://github.com/Roshan0612/Autozynq',
-      demo: '#',
-      featured: true,
-      status: 'Currently Working'
-    },
-    
-    {
-      title: 'makeup studio website',
-      description: '',
-      image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1762324496/WhatsApp_Image_2025-11-05_at_12.03.50_358abeba_b4rirx.jpg',
-      technologies: ['React', 'TypeScript', 'vite','tailwind css'],
-      demo: 'https://www.ratikamakeup.studio/',
+      title: 'Marvedge Screen Recorder',
+      description: 'Lightweight screen recording web app for quick captures and sharing.',
+      image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1768761937/b1d3140e-06e5-498a-adc0-7b172a827e51.png',
+      technologies: ['Nextjs.js', 'Typescript', 'Aws', 'Tailwind CSS', 'FFMPEG','MediaRecorder API'],
+      github: 'https://github.com/Roshan0612/marvedge-screen-recorder',
+      demo: 'https://marvedge-screen-recorder.onrender.com/',
       featured: true
     },
     // Additional projects appended to bottom (non-featured)
@@ -79,12 +78,12 @@ const Projects = () => {
       featured: false
     },
     {
-      title: 'Marvedge Screen Recorder',
-      description: 'Lightweight screen recording web app for quick captures and sharing.',
-      image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1768761937/b1d3140e-06e5-498a-adc0-7b172a827e51.png',
-      technologies: ['Nextjs.js', 'Typescript', 'Aws', 'Tailwind CSS', 'FFMPEG','MediaRecorder API'],
-      github: 'https://github.com/Roshan0612/marvedge-screen-recorder',
-      demo: 'https://marvedge-screen-recorder.onrender.com/',
+      title: 'makeup studio website',
+      description: '',
+      image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1762324496/WhatsApp_Image_2025-11-05_at_12.03.50_358abeba_b4rirx.jpg',
+      technologies: ['React', 'TypeScript', 'vite','tailwind css'],
+      demo: 'https://www.ratikamakeup.studio/',
+      github: '#',
       featured: false
     }
     
@@ -115,7 +114,10 @@ const Projects = () => {
               style={{ animationDelay: `${index * 0.2}s` }}
             >
               <div className={index % 2 === 1 ? 'lg:col-start-2' : ''}>
-                <div className="relative group overflow-hidden rounded-2xl shadow-2xl border border-gray-800/50">
+                <div
+                  className={`relative group overflow-hidden rounded-2xl border shadow-2xl ${index < 4 ? 'border-4 border-transparent bg-clip-padding bg-gradient-to-br from-teal-400 via-purple-500 to-pink-400 shadow-[0_8px_32px_0_rgba(58,0,128,0.25),0_1.5px_8px_0_rgba(13,255,255,0.15)]' : 'border-gray-800/50'}`}
+                  style={index < 4 ? { boxShadow: '0 0 0 4px #18181b, 0 8px 32px 0 rgba(58,0,128,0.25), 0 1.5px 8px 0 rgba(13,255,255,0.15)' } : {}}
+                >
                   <img
                     src={project.image}
                     alt={project.title}

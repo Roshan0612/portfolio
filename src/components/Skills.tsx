@@ -33,6 +33,7 @@ const Skills = () => {
       title: 'Development Tools & Platforms',
       color: 'from-orange-500 to-red-600',
       skills: [
+        { name: 'AWS', icon: '☁️' },
         { name: 'Docker', icon: '🐳' },
         { name: 'VS Code', icon: '💻' },
         { name: 'Render', icon: '☁️' },
