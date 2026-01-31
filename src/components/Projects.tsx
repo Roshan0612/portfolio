@@ -97,7 +97,7 @@ const Projects = () => {
       <div className="max-w-[1920px] mx-auto px-3 sm:px-8 lg:px-16 xl:px-24">
         <div className="text-center mb-20 animate-fade-in-up">
           <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
-            Featured <span className="gradient-text">Projects</span>
+            <span className="gradient-text">Projects</span>
           </h2>
           <div className="w-20 h-1 bg-gradient-to-r from-teal-400 to-gray-700 mx-auto mb-8"></div>
           <p className="text-gray-400 max-w-2xl mx-auto text-lg">
@@ -114,21 +114,19 @@ const Projects = () => {
               style={{ animationDelay: `${index * 0.2}s` }}
             >
               <div className={index % 2 === 1 ? 'lg:col-start-2' : ''}>
-                <div
-                  className={`relative group overflow-hidden rounded-2xl border shadow-2xl ${index < 4 ? 'border-4 border-transparent bg-clip-padding bg-gradient-to-br from-teal-400 via-purple-500 to-pink-400 shadow-[0_8px_32px_0_rgba(58,0,128,0.25),0_1.5px_8px_0_rgba(13,255,255,0.15)]' : 'border-gray-800/50'}`}
-                  style={index < 4 ? { boxShadow: '0 0 0 4px #18181b, 0 8px 32px 0 rgba(58,0,128,0.25), 0 1.5px 8px 0 rgba(13,255,255,0.15)' } : {}}
-                >
+                <div className="relative group overflow-hidden rounded-3xl shadow-2xl border border-gray-800/50 bg-gradient-to-br from-gray-900/80 to-gray-800/80 backdrop-blur-xl">
                   <img
                     src={project.image}
                     alt={project.title}
-                    className="w-full h-96 object-cover transition-transform duration-700 group-hover:scale-110 group-hover:brightness-125"
+                    className="w-full h-96 object-cover transition-transform duration-700 group-hover:scale-110 group-hover:brightness-110 rounded-2xl"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-gray-950/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-teal-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 gap-4">
                     {project.demo !== '#' && (
                       <a
                         href={project.demo}
                         className="bg-teal-500/90 hover:bg-teal-600 text-white p-4 rounded-full transition-all duration-300 hover:scale-125 hover:shadow-lg hover:shadow-teal-500/50 backdrop-blur-sm border border-teal-400/50"
+                        target="_blank" rel="noopener noreferrer"
                       >
                         <Eye size={24} />
                       </a>
@@ -136,6 +134,7 @@ const Projects = () => {
                     <a
                       href={project.github}
                       className="bg-gray-900/90 hover:bg-gray-800 text-white p-4 rounded-full transition-all duration-300 hover:scale-125 hover:shadow-lg hover:shadow-gray-400/20 backdrop-blur-sm border border-gray-700/50"
+                      target="_blank" rel="noopener noreferrer"
                     >
                       <Github size={24} />
                     </a>
@@ -146,7 +145,7 @@ const Projects = () => {
                 <div className="flex items-center gap-4 mb-4">
                   <h3 className="text-3xl font-bold text-white animate-fade-in-up leading-tight" style={{ animationDelay: `${index * 0.2 + 0.1}s` }}>{project.title}</h3>
                   {project.status && (
-                    <span className="px-3 py-1 bg-teal-400/20 border border-teal-400/50 text-teal-300 text-xs font-semibold rounded-full animate-fade-in-up" style={{ animationDelay: `${index * 0.2 + 0.1}s` }}>
+                    <span className="px-3 py-1 bg-gradient-to-r from-teal-400/30 to-gray-700/30 border border-teal-400/50 text-teal-300 text-xs font-semibold rounded-full animate-fade-in-up" style={{ animationDelay: `${index * 0.2 + 0.1}s` }}>
                       {project.status}
                     </span>
                   )}
@@ -156,9 +155,10 @@ const Projects = () => {
                   {project.technologies.map((tech, techIndex) => (
                     <span
                       key={techIndex}
-                      className="glass px-4 py-2 rounded-full text-sm text-gray-300 hover:text-teal-300 border border-gray-800/50 hover:border-teal-400/50 transition-all duration-300 hover:scale-105 animate-scale-in group/tech"
+                      className="glass px-4 py-2 rounded-full text-sm text-gray-300 hover:text-teal-300 border border-gray-800/50 hover:border-teal-400/50 transition-all duration-300 hover:scale-105 animate-scale-in group/tech shadow-md"
                       style={{ animationDelay: `${index * 0.2 + 0.3 + techIndex * 0.05}s` }}
                     >
+                      {/* Add tech icon if available in future */}
                       {tech}
                     </span>
                   ))}
@@ -167,6 +167,7 @@ const Projects = () => {
                   <a
                     href={project.demo}
                     className="flex items-center space-x-2 text-teal-400 hover:text-teal-300 transition-all duration-300 font-medium link-hover group/link"
+                    target="_blank" rel="noopener noreferrer"
                   >
                     <ExternalLink size={20} className="group-hover/link:translate-x-1 transition-transform" />
                     <span>Live Demo</span>
@@ -174,6 +175,7 @@ const Projects = () => {
                   <a
                     href={project.github}
                     className="flex items-center space-x-2 text-gray-400 hover:text-white transition-all duration-300 font-medium link-hover group/link"
+                    target="_blank" rel="noopener noreferrer"
                   >
                     <Github size={20} className="group-hover/link:translate-x-1 transition-transform" />
                     <span>Source Code</span>
@@ -188,24 +190,26 @@ const Projects = () => {
         <div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {otherProjects.map((project, index) => (
-              <div key={index} className="glass rounded-2xl overflow-hidden card-hover group border border-gray-800/50 hover:border-teal-400/50 transition-all duration-300 animate-scale-in" style={{ animationDelay: `${index * 0.1}s` }}>
+              <div key={index} className="glass rounded-3xl overflow-hidden card-hover group border border-gray-800/50 hover:border-teal-400/50 transition-all duration-300 animate-scale-in shadow-lg" style={{ animationDelay: `${index * 0.1}s` }}>
                 <div className="relative h-56 overflow-hidden">
                   <img
                     src={project.image}
                     alt={project.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 rounded-2xl"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-gray-950/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-teal-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <div className="absolute top-4 right-4 flex space-x-2 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-y-0 translate-y-2">
                     <a
                       href={project.demo}
                       className="bg-teal-500/80 hover:bg-teal-600 text-white p-2.5 rounded-full transition-all duration-300 hover:scale-110 backdrop-blur-sm border border-teal-400/50"
+                      target="_blank" rel="noopener noreferrer"
                     >
                       <Eye size={18} />
                     </a>
                     <a
                       href={project.github}
                       className="bg-gray-900/80 hover:bg-gray-800 text-white p-2.5 rounded-full transition-all duration-300 hover:scale-110 backdrop-blur-sm border border-gray-700/50"
+                      target="_blank" rel="noopener noreferrer"
                     >
                       <Github size={18} />
                     </a>
@@ -218,7 +222,7 @@ const Projects = () => {
                     {project.technologies.slice(0, 3).map((tech, techIndex) => (
                       <span
                         key={techIndex}
-                        className="bg-gray-900/60 text-gray-300 px-3 py-1 rounded-lg text-xs font-medium border border-gray-800/50 hover:border-teal-400/50 transition-colors"
+                        className="bg-gray-900/60 text-gray-300 px-3 py-1 rounded-lg text-xs font-medium border border-gray-800/50 hover:border-teal-400/50 transition-colors shadow"
                       >
                         {tech}
                       </span>
