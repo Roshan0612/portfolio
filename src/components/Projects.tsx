@@ -85,6 +85,15 @@ const Projects = () => {
       demo: 'https://www.ratikamakeup.studio/',
       github: '#',
       featured: false
+    },
+    {
+      title: 'New Project',
+      description: '',
+      image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1770229124/e0f59266-ddff-43bd-b1cc-f2b3e2a4a22d.png',
+      technologies: [],
+      demo: 'https://webtruvo.onrender.com/',
+      github: 'https://github.com/Roshan0612/webtruvo',
+      featured: false
     }
     
   ];
