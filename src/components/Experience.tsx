@@ -3,21 +3,59 @@ import { Calendar, MapPin, ExternalLink } from 'lucide-react';
 
 const Experience = () => {
   const experiences = [
-    {
-      title: 'Freelance Web Developer',
-      company: 'Self-Employed',
-      location: 'Remote',
-      period: 'July 2025 – Present',
-      type: 'Freelance',
-      description: 'Designed and developed fully responsive, modern websites for 5 clients using React.js, JavaScript, Tailwind CSS, Vite, HTML, and CSS, enhancing online visibility and engagement.',
-      achievements: [
-        'Built 10+ dynamic and reusable UI components with strong type safety, improving user experience and maintainability by 25%.',
-        'Collaborated closely with clients to gather requirements, incorporate feedback, and deliver customized, high-performance solutions on schedule.'
-      ],
-      technologies: ['React.js', 'JavaScript', 'TypeScript', 'Tailwind CSS', 'Vite', 'HTML', 'CSS', 'Node.js', 'Express.js', 'MongoDB'],
-      website: '#'
-    }
-  ];
+  {
+    title: 'Full Stack Developer Intern',
+    company: 'Vivirelle Lifestyle & Fragrances',
+    location: 'Remote',
+    period: 'Jan 2026 – Apr 2026',
+    type: 'Internship',
+    description:
+      'Developed and deployed an internal product inventory management dashboard using React.js and Node.js/Express, reducing stock-tracking discrepancies and improving operational efficiency.',
+    achievements: [
+      'Designed and integrated RESTful APIs to support product catalog filtering, enabling sorting of lifestyle items by fragrance notes, price, and availability.',
+      'Optimized MongoDB queries, improving page load performance for high-resolution product imagery by 25%.',
+      'Collaborated with the founding team in an Agile workflow to translate business requirements into scalable technical features and production-ready solutions.'
+    ],
+    technologies: [
+      'React.js',
+      'Node.js',
+      'Express.js',
+      'MongoDB',
+      'REST APIs',
+      'JavaScript',
+      'HTML',
+      'CSS'
+    ],
+    website: 'edpcurators.com'
+  },
+
+  {
+    title: 'Freelance Web Developer',
+    company: 'Self-Employed',
+    location: 'Hybrid',
+    period: 'July 2025 – Present',
+    type: 'Freelance',
+    description:
+      'Designed and developed fully responsive, modern websites for 5 clients using React.js, JavaScript, Tailwind CSS, Vite, HTML, and CSS, enhancing online visibility and engagement.',
+    achievements: [
+      'Built 10+ dynamic and reusable UI components with strong type safety, improving user experience and maintainability by 25%.',
+      'Collaborated closely with clients to gather requirements, incorporate feedback, and deliver customized, high-performance solutions on schedule.'
+    ],
+    technologies: [
+      'React.js',
+      'JavaScript',
+      'TypeScript',
+      'Tailwind CSS',
+      'Vite',
+      'HTML',
+      'CSS',
+      'Node.js',
+      'Express.js',
+      'MongoDB'
+    ],
+    website: 'https://www.ratikamakeup.studio'
+  }
+];
 
   const handleDownload = () => {
     const link = document.createElement("a");
