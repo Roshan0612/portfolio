@@ -2,7 +2,7 @@ import React from 'react';
 import { ChevronDown, Github, Linkedin, Mail } from 'lucide-react';
 
 const AnimatedText = () => {
-  const roles = ['Computer Engineer', 'Full-Stack Developer', 'Web Developer'];
+  const roles = ['Software Engineer','Computer Engineer', 'Full-Stack Developer', 'Web Developer'];
   const [currentRole, setCurrentRole] = React.useState(0);
   const [displayedText, setDisplayedText] = React.useState('');
   const [typing, setTyping] = React.useState(true);
@@ -74,7 +74,9 @@ const Hero = () => {
               </span>
             </div>
             <p className="text-lg text-gray-300 mb-12 max-w-2xl mx-auto lg:mx-0 leading-relaxed animate-fade-in-up stagger-2">
-              Final-year Computer Engineering student with a strong foundation in full-stack web development. Skilled in building responsive, scalable, and user-friendly applications using the MERN stack. Experienced freelancer with a proven track record of delivering tailored, high-quality client projects.
+                Computer Science Engineering graduate with hands-on experience in full-stack web development using React.js,
+                Node.js, Express.js, MongoDB, PostgreSQL, and MySQL. Built scalable web applications through internships,
+                freelance work, and personal projects, and solved 200+ DSA problems on LeetCode and GeeksforGeeks.            
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center mb-12 animate-fade-in-up stagger-3">

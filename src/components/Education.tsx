@@ -8,7 +8,7 @@ const Education = () => {
       location: 'Kankavli Sindhudurg, India',
       period: '06/2018 - 03/2019',
       details: [
-        '84.83%'
+        '84.80%'
       ]
     },
     {
@@ -26,7 +26,7 @@ const Education = () => {
       location: 'Mumbai, India',
       period: '09/2022 - 06/2026',
       details: [
-        '7.9 CGPA'
+        '8.166 CGPA'
       ]
     }
   ];
