@@ -7,17 +7,17 @@ const Experience = () => {
     title: 'Full Stack Developer Intern',
     company: 'Vivirelle Lifestyle & Fragrances',
     location: 'Remote',
-    period: 'Jan 2026 – Apr 2026',
-    type: 'Internship',
+    period: 'Jan 2026 – present',
+    
     description:
       'Developed and deployed an internal product inventory management dashboard using React.js and Node.js/Express, reducing stock-tracking discrepancies and improving operational efficiency.',
     achievements: [
       'Designed and integrated RESTful APIs to support product catalog filtering, enabling sorting of lifestyle items by fragrance notes, price, and availability.',
-      'Optimized MongoDB queries, improving page load performance for high-resolution product imagery by 25%.',
+      'Optimized postgresSQL queries, improving page load performance for high-resolution product imagery by 25%.',
       'Collaborated with the founding team in an Agile workflow to translate business requirements into scalable technical features and production-ready solutions.'
     ],
     technologies: [
-      'React.js',
+      'Next.js',
       'Node.js',
       'Express.js',
       'MongoDB',
