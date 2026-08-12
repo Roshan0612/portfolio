@@ -8,7 +8,7 @@ const AnimatedText = () => {
   const [typing, setTyping] = React.useState(true);
 
   React.useEffect(() => {
-    let timeout: NodeJS.Timeout;
+    let timeout: ReturnType<typeof setTimeout>;
     if (typing) {
       if (displayedText.length < roles[currentRole].length) {
         timeout = setTimeout(() => {

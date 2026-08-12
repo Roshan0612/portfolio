@@ -9,7 +9,7 @@ const Projects = () => {
       description: 'Built a production-ready Zapier/Make-style automation platform with a visual node-based builder and real-time workflow execution. Supports webhooks, Google Forms/Sheets triggers, retries, and error handling. Includes 15+ integration nodes (Gmail, Drive, Slack, AI email generation), execution monitoring, idempotency, and secure OAuth via NextAuth.',
       technologies: ['Next.js 15', 'TypeScript', 'React Flow', 'Prisma ORM', 'PostgreSQL', 'NextAuth', 'TailwindCSS', 'Shadcn UI', 'Google APIs', 'OpenAI/Grok AI', 'Zod', 'Node.js'],
       github: 'https://github.com/Roshan0612/Autozynq',
-      demo: 'https://autozynq.onrender.com/',
+      demo: 'https://autozynq-9bs2.vercel.app/',
       featured: true,
       status: 'Currently Working'
     },
