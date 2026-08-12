@@ -5,11 +5,11 @@ const Projects = () => {
   const projects = [
     {
       title: 'Autozynq',
-      image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1767939812/dfd123e6-3706-49d1-99cf-22ad81c1e896.png',
+      image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1786435986/e566bba0-e7c0-49f3-b11d-c252cc55845f.png',
       description: 'Built a production-ready Zapier/Make-style automation platform with a visual node-based builder and real-time workflow execution. Supports webhooks, Google Forms/Sheets triggers, retries, and error handling. Includes 15+ integration nodes (Gmail, Drive, Slack, AI email generation), execution monitoring, idempotency, and secure OAuth via NextAuth.',
       technologies: ['Next.js 15', 'TypeScript', 'React Flow', 'Prisma ORM', 'PostgreSQL', 'NextAuth', 'TailwindCSS', 'Shadcn UI', 'Google APIs', 'OpenAI/Grok AI', 'Zod', 'Node.js'],
       github: 'https://github.com/Roshan0612/Autozynq',
-      demo: 'https://autozynq-9bs2.vercel.app/',
+      Live: 'https://autozynq-9bs2.vercel.app/',
       featured: true,
       status: 'Currently Working'
     },
@@ -19,7 +19,7 @@ const Projects = () => {
       description: '• Developed a full-stack responsive web application for gym management with separate admin and user portals.• Admin portal: Create and manage exercises, diet plans, coupons, and subscriptions; assign exercises and diet plans to individual users; track subscription status and user activity.• User portal: View assigned diet and exercise plans, track daily calories, and monitor personal progress based on input data.• Implemented JWT authentication for secure role-based access control and Framer Motion animations for a smooth,responsive UI.• Designed MongoDB schemas to handle user profiles, plans, subscriptions, and activity efficiently.• Tech Stack: MERN, React.js, Node.js, Express.js, MongoDB, JWT, Framer Motion, Tailwind CSS',
       technologies: ['React.js', 'Tailwind', 'CSS', 'Motion', 'Node.js', 'Express.js', 'MongoDB','Razorpay', 'JWT'],
       github: 'https://github.com/Roshan0612/FitTrack',
-      demo: 'https://tinyurl.com/29t4mtyj',
+      Live: 'https://tinyurl.com/29t4mtyj',
       featured: true
     },
     {
@@ -28,7 +28,7 @@ const Projects = () => {
       description: 'E-Commerce Platform. Developed a full-stack e-commerce application for tribal communities using the MERN stack. Integrated Razorpay to enable secure and seamless online transactions. Implemented JWT-based authentication with role-based access control. Designed product categorization and shopping cart functionality. Enabled middleman support to manage multiple tribal profiles and product listings.',
       technologies: ['React.js', 'Tailwind', 'CSS', 'Node.js', 'Express.js', 'MongoDB', 'Razorpay', 'JWT'],
       github: 'https://github.com/Roshan0612/tribesHub-E_marketplace',
-      demo: '#',
+      Live: '#',
       featured: true
     },
     {
@@ -37,7 +37,7 @@ const Projects = () => {
       image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1768761937/b1d3140e-06e5-498a-adc0-7b172a827e51.png',
       technologies: ['Nextjs.js', 'Typescript', 'Aws', 'Tailwind CSS', 'FFMPEG','MediaRecorder API'],
       github: 'https://github.com/Roshan0612/marvedge-screen-recorder',
-      demo: 'https://marvedge-screen-recorder.onrender.com/',
+      Live: 'https://marvedge-screen-recorder.onrender.com/',
       featured: true
     },
     // Additional projects appended to bottom (non-featured)
@@ -46,7 +46,7 @@ const Projects = () => {
       description: '',
       image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1767892981/89ce4c8c-6ca9-43b5-8860-c797f3969f4b.png',
       technologies: [],
-      demo: 'https://ai-workflow-hcko.onrender.com/',
+      Live: 'https://ai-workflow-hcko.onrender.com/',
       github: 'https://github.com/Roshan0612/ai-workflow',
       featured: false
     },
@@ -55,7 +55,7 @@ const Projects = () => {
       description: '',
       image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1767893537/8ff7fb06-5a5f-4f1b-9d7b-4c56f83ef2a0.png',
       technologies: [],
-      demo: 'https://collaborative-task-manager-1-r7i4.onrender.com/',
+      Live: 'https://collaborative-task-manager-1-r7i4.onrender.com/',
       github: 'https://github.com/Roshan0612/Collaborative-Task-Manager',
       featured: false
     },
@@ -64,7 +64,7 @@ const Projects = () => {
       description: '',
       image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1767893796/35d47676-dfa3-47aa-8e6f-ff0522166623.png',
       technologies: [],
-      demo: 'https://ownpresences.onrender.com/',
+      Live: 'https://ownpresences.onrender.com/',
       github: 'https://github.com/Roshan0612/ownpresence',
       featured: false
     },
@@ -73,7 +73,7 @@ const Projects = () => {
       description: '',
       image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1768227951/709c761e-7522-42fc-84d6-9f54353e710a.png',
       technologies: [],
-      demo: 'https://gigflow-client.onrender.com',
+      Live: 'https://gigflow-client.onrender.com',
       github: 'https://github.com/Roshan0612/gigflow',
       featured: false
     },
@@ -82,7 +82,7 @@ const Projects = () => {
       description: '',
       image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1762324496/WhatsApp_Image_2025-11-05_at_12.03.50_358abeba_b4rirx.jpg',
       technologies: ['React', 'TypeScript', 'vite','tailwind css'],
-      demo: 'https://www.ratikamakeup.studio/',
+      Live: 'https://www.ratikamakeup.studio/',
       github: '#',
       featured: false
     },
@@ -91,7 +91,7 @@ const Projects = () => {
       description: '',
       image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1770229124/e0f59266-ddff-43bd-b1cc-f2b3e2a4a22d.png',
       technologies: [],
-      demo: 'https://webtruvo.onrender.com/',
+      Live: 'https://webtruvo.onrender.com/',
       github: 'https://github.com/Roshan0612/webtruvo',
       featured: false
     }
