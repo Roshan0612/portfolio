@@ -9,7 +9,7 @@ const Projects = () => {
       description: 'Built a production-ready Zapier/Make-style automation platform with a visual node-based builder and real-time workflow execution. Supports webhooks, Google Forms/Sheets triggers, retries, and error handling. Includes 15+ integration nodes (Gmail, Drive, Slack, AI email generation), execution monitoring, idempotency, and secure OAuth via NextAuth.',
       technologies: ['Next.js 15', 'TypeScript', 'React Flow', 'Prisma ORM', 'PostgreSQL', 'NextAuth', 'TailwindCSS', 'Shadcn UI', 'Google APIs', 'OpenAI/Grok AI', 'Zod', 'Node.js'],
       github: 'https://github.com/Roshan0612/Autozynq',
-      Live: 'https://autozynq-9bs2.vercel.app/',
+      live: 'https://autozynq-9bs2.vercel.app/',
       featured: true,
       status: 'Currently Working'
     },
@@ -19,7 +19,7 @@ const Projects = () => {
       description: '• Developed a full-stack responsive web application for gym management with separate admin and user portals.• Admin portal: Create and manage exercises, diet plans, coupons, and subscriptions; assign exercises and diet plans to individual users; track subscription status and user activity.• User portal: View assigned diet and exercise plans, track daily calories, and monitor personal progress based on input data.• Implemented JWT authentication for secure role-based access control and Framer Motion animations for a smooth,responsive UI.• Designed MongoDB schemas to handle user profiles, plans, subscriptions, and activity efficiently.• Tech Stack: MERN, React.js, Node.js, Express.js, MongoDB, JWT, Framer Motion, Tailwind CSS',
       technologies: ['React.js', 'Tailwind', 'CSS', 'Motion', 'Node.js', 'Express.js', 'MongoDB','Razorpay', 'JWT'],
       github: 'https://github.com/Roshan0612/FitTrack',
-      Live: 'https://tinyurl.com/29t4mtyj',
+      live: 'https://tinyurl.com/29t4mtyj',
       featured: true
     },
     {
@@ -28,7 +28,7 @@ const Projects = () => {
       description: 'E-Commerce Platform. Developed a full-stack e-commerce application for tribal communities using the MERN stack. Integrated Razorpay to enable secure and seamless online transactions. Implemented JWT-based authentication with role-based access control. Designed product categorization and shopping cart functionality. Enabled middleman support to manage multiple tribal profiles and product listings.',
       technologies: ['React.js', 'Tailwind', 'CSS', 'Node.js', 'Express.js', 'MongoDB', 'Razorpay', 'JWT'],
       github: 'https://github.com/Roshan0612/tribesHub-E_marketplace',
-      Live: '#',
+      live: '#',
       featured: true
     },
     {
@@ -37,7 +37,7 @@ const Projects = () => {
       image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1768761937/b1d3140e-06e5-498a-adc0-7b172a827e51.png',
       technologies: ['Nextjs.js', 'Typescript', 'Aws', 'Tailwind CSS', 'FFMPEG','MediaRecorder API'],
       github: 'https://github.com/Roshan0612/marvedge-screen-recorder',
-      Live: 'https://marvedge-screen-recorder.onrender.com/',
+      live: 'https://marvedge-screen-recorder.onrender.com/',
       featured: true
     },
     // Additional projects appended to bottom (non-featured)
@@ -46,7 +46,7 @@ const Projects = () => {
       description: '',
       image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1767892981/89ce4c8c-6ca9-43b5-8860-c797f3969f4b.png',
       technologies: [],
-      Live: 'https://ai-workflow-hcko.onrender.com/',
+      live: 'https://ai-workflow-hcko.onrender.com/',
       github: 'https://github.com/Roshan0612/ai-workflow',
       featured: false
     },
@@ -55,7 +55,7 @@ const Projects = () => {
       description: '',
       image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1767893537/8ff7fb06-5a5f-4f1b-9d7b-4c56f83ef2a0.png',
       technologies: [],
-      Live: 'https://collaborative-task-manager-1-r7i4.onrender.com/',
+      live: 'https://collaborative-task-manager-1-r7i4.onrender.com/',
       github: 'https://github.com/Roshan0612/Collaborative-Task-Manager',
       featured: false
     },
@@ -64,7 +64,7 @@ const Projects = () => {
       description: '',
       image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1767893796/35d47676-dfa3-47aa-8e6f-ff0522166623.png',
       technologies: [],
-      Live: 'https://ownpresences.onrender.com/',
+      live: 'https://ownpresences.onrender.com/',
       github: 'https://github.com/Roshan0612/ownpresence',
       featured: false
     },
@@ -73,7 +73,7 @@ const Projects = () => {
       description: '',
       image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1768227951/709c761e-7522-42fc-84d6-9f54353e710a.png',
       technologies: [],
-      Live: 'https://gigflow-client.onrender.com',
+      live: 'https://gigflow-client.onrender.com',
       github: 'https://github.com/Roshan0612/gigflow',
       featured: false
     },
@@ -82,7 +82,7 @@ const Projects = () => {
       description: '',
       image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1762324496/WhatsApp_Image_2025-11-05_at_12.03.50_358abeba_b4rirx.jpg',
       technologies: ['React', 'TypeScript', 'vite','tailwind css'],
-      Live: 'https://www.ratikamakeup.studio/',
+      live: 'https://www.ratikamakeup.studio/',
       github: '#',
       featured: false
     },
@@ -91,7 +91,7 @@ const Projects = () => {
       description: '',
       image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1770229124/e0f59266-ddff-43bd-b1cc-f2b3e2a4a22d.png',
       technologies: [],
-      Live: 'https://webtruvo.onrender.com/',
+      live: 'https://webtruvo.onrender.com/',
       github: 'https://github.com/Roshan0612/webtruvo',
       featured: false
     }
@@ -131,9 +131,9 @@ const Projects = () => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-teal-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 gap-4">
-                    {project.demo !== '#' && (
+                    {project.live !== '#' && (
                       <a
-                        href={project.demo}
+                        href={project.live}
                         className="bg-teal-500/90 hover:bg-teal-600 text-white p-4 rounded-full transition-all duration-300 hover:scale-125 hover:shadow-lg hover:shadow-teal-500/50 backdrop-blur-sm border border-teal-400/50"
                         target="_blank" rel="noopener noreferrer"
                       >
@@ -174,12 +174,12 @@ const Projects = () => {
                 </div>
                 <div className="flex gap-6 pt-4">
                   <a
-                    href={project.demo}
+                    href={project.live}
                     className="flex items-center space-x-2 text-teal-400 hover:text-teal-300 transition-all duration-300 font-medium link-hover group/link"
                     target="_blank" rel="noopener noreferrer"
                   >
                     <ExternalLink size={20} className="group-hover/link:translate-x-1 transition-transform" />
-                    <span>Live Demo</span>
+                    <span>Live</span>
                   </a>
                   <a
                     href={project.github}
@@ -209,7 +209,7 @@ const Projects = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-teal-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <div className="absolute top-4 right-4 flex space-x-2 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-y-0 translate-y-2">
                     <a
-                      href={project.demo}
+                      href={project.live}
                       className="bg-teal-500/80 hover:bg-teal-600 text-white p-2.5 rounded-full transition-all duration-300 hover:scale-110 backdrop-blur-sm border border-teal-400/50"
                       target="_blank" rel="noopener noreferrer"
                     >
