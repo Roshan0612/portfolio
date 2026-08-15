@@ -425,3 +425,49 @@
     transform: scaleX(1);
   }
 }
+
+html,
+body,
+#root {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+html,
+body {
+  overflow-x: clip;
+}
+
+body {
+  margin: 0;
+}
+
+section,
+main,
+footer {
+  min-width: 0;
+  max-width: 100%;
+}
+
+img,
+video,
+canvas {
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  html,
+  body,
+  #root {
+    overflow-x: hidden;
+  }
+
+  section,
+  main,
+  footer {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+}
