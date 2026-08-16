@@ -65,19 +65,19 @@ const Experience = () => {
     },
 
     {
-      title: 'Web Development Intern',
-      company: 'Weather Web Application',
-      location: 'On-site',
+      title: 'Web Developer Intern',
+      company: 'SLRTCE',
+      location: 'Mumbai, India',
       period: 'July 2024 – Aug 2024',
       type: 'Internship',
 
       description:
-        'Developed a responsive weather web application that consumed real-time weather data to provide current conditions, forecasts, and an intuitive user experience.',
+        'Developed a responsive weather web application during a one-month internship, integrating real-time weather data and building an intuitive interface for users.',
 
       achievements: [
-        'Designed and implemented a responsive weather interface using HTML, CSS, JavaScript, and React.',
-        'Integrated a weather API to fetch and display real-time weather conditions and forecast data.',
-        'Implemented dynamic UI updates based on API responses to provide users with clear and accessible weather information.'
+        'Designed and implemented a responsive frontend using HTML, CSS, JavaScript, and React.',
+        'Integrated a weather API to retrieve and display real-time weather conditions and forecast data.',
+        'Built dynamic UI components that updated weather information based on API responses.'
       ],
 
       technologies: [
