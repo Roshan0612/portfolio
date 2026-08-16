@@ -1,18 +1,51 @@
 import React from 'react';
 import { ChevronDown, Github, Linkedin, Mail } from 'lucide-react';
 
+const LeetCodeIcon = ({ size = 20 }: { size?: number }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+  >
+    <path
+      d="M21.5 14.5H13.8C13.05 14.5 12.45 13.9 12.45 13.15C12.45 12.4 13.05 11.8 13.8 11.8H21.5C22.25 11.8 22.85 12.4 22.85 13.15C22.85 13.9 22.25 14.5 21.5 14.5Z"
+      fill="currentColor"
+    />
+    <path
+      d="M7.15 20.8C5.65 19.95 4.35 18.75 3.4 17.3C2.45 15.85 1.9 14.2 1.8 12.5C1.7 10.8 2.05 9.05 2.85 7.5C3.65 5.95 4.85 4.6 6.3 3.65C7.75 2.7 9.4 2.15 11.1 2.05C12.8 1.95 14.55 2.3 16.1 3.1L14.8 5.45C13.7 4.9 12.45 4.65 11.25 4.75C10.05 4.85 8.9 5.3 7.95 6.05C7 6.8 6.25 7.8 5.8 8.95C5.35 10.1 5.2 11.35 5.4 12.55C5.6 13.75 6.1 14.85 6.9 15.75C7.7 16.65 8.75 17.3 9.9 17.65C11.05 18 12.3 18 13.45 17.65C14.6 17.3 15.65 16.65 16.45 15.75L18.4 17.65C17.25 18.85 15.8 19.75 14.2 20.25C12.6 20.75 10.9 20.85 9.25 20.55C8.5 20.4 7.8 20.15 7.15 20.8Z"
+      fill="currentColor"
+    />
+    <path
+      d="M12.05 9.1L16.55 4.6C17.05 4.1 17.85 4.1 18.35 4.6C18.85 5.1 18.85 5.9 18.35 6.4L13.85 10.9L12.05 9.1Z"
+      fill="currentColor"
+    />
+  </svg>
+);
+
 const AnimatedText = () => {
-  const roles = ['Software Engineer','Computer Engineer', 'Full-Stack Developer', 'Web Developer'];
+  const roles = [
+    'Software Engineer',
+    'Computer Engineer',
+    'Full-Stack Developer',
+    'Web Developer'
+  ];
+
   const [currentRole, setCurrentRole] = React.useState(0);
   const [displayedText, setDisplayedText] = React.useState('');
   const [typing, setTyping] = React.useState(true);
 
   React.useEffect(() => {
     let timeout: NodeJS.Timeout;
+
     if (typing) {
       if (displayedText.length < roles[currentRole].length) {
         timeout = setTimeout(() => {
-          setDisplayedText(roles[currentRole].slice(0, displayedText.length + 1));
+          setDisplayedText(
+            roles[currentRole].slice(0, displayedText.length + 1)
+          );
         }, 80);
       } else {
         timeout = setTimeout(() => {
@@ -26,6 +59,7 @@ const AnimatedText = () => {
         setCurrentRole((prev) => (prev + 1) % roles.length);
       }, 500);
     }
+
     return () => clearTimeout(timeout);
   }, [displayedText, typing, currentRole, roles]);
 
@@ -40,114 +74,200 @@ const AnimatedText = () => {
 const Hero = () => {
   const scrollToAbout = () => {
     const element = document.getElementById('about');
+
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      element.scrollIntoView({
+        behavior: 'smooth'
+      });
     }
   };
+
+  const scrollToProjects = () => {
+    const element = document.getElementById('projects');
+
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth'
+      });
+    }
+  };
+
   const handleDownload = () => {
     const link = document.createElement("a");
-    link.href = "/roshan-resume.pdf"; 
-    link.download = "roshan-resume.pdf";       
+    link.href = "/roshan-resume.pdf";
+    link.download = "roshan-resume.pdf";
     link.click();
   };
 
   return (
-    <section id="hero" className="w-full min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-gray-900 to-black pt-20 relative overflow-hidden">
-      {/* Animated background elements */}
+    <section
+      id="hero"
+      className="w-full min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-gray-900 to-black pt-20 relative overflow-hidden"
+    >
+
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-teal-500/20 to-teal-500/5 rounded-full blur-3xl animate-float"></div>
+
         <div className="absolute bottom-20 right-10 w-72 h-72 bg-gradient-to-br from-gray-700/20 to-gray-800/5 rounded-full blur-3xl animate-float-delayed"></div>
+
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-gray-700/10 to-gray-800/5 rounded-full blur-3xl opacity-50"></div>
       </div>
 
       <div className="max-w-[1920px] mx-auto px-3 sm:px-8 lg:px-16 xl:px-24 relative z-10">
+
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left side - Text content */}
+
           <div className="text-center lg:text-left">
+
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6 animate-fade-in-up leading-tight">
-              Hi, I'm <span className="gradient-text bg-clip-text">Roshan Gawade</span>
+              Hi, I'm{' '}
+              <span className="gradient-text bg-clip-text">
+                Roshan Gawade
+              </span>
             </h1>
+
             <div className="text-2xl sm:text-3xl lg:text-4xl text-gray-200 mb-8 h-20 relative font-semibold animate-fade-in-up stagger-1">
               <span className="inline-flex items-baseline gap-2 align-middle">
-                <span className="align-middle">I am a</span>
-                <span className="align-middle"><AnimatedText /></span>
+                <span className="align-middle">
+                  I am a
+                </span>
+
+                <span className="align-middle">
+                  <AnimatedText />
+                </span>
               </span>
             </div>
+
             <p className="text-lg text-gray-300 mb-12 max-w-2xl mx-auto lg:mx-0 leading-relaxed animate-fade-in-up stagger-2">
-                Computer Science Engineering graduate with hands-on experience in full-stack web development using React.js,
-                Node.js, Express.js, MongoDB, PostgreSQL, and MySQL. Built scalable web applications through internships,
-                freelance work, and personal projects, and solved 200+ DSA problems on LeetCode and GeeksforGeeks.            
+              Computer Science Engineering graduate with hands-on experience in full-stack web development using React.js,
+              Node.js, Express.js, MongoDB, PostgreSQL, and MySQL. Built scalable web applications through internships,
+              freelance work, and personal projects, and solved 200+ DSA problems on LeetCode and GeeksforGeeks.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center mb-12 animate-fade-in-up stagger-3">
+
               <button
                 className="bg-gradient-to-r from-teal-400 to-gray-700 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 hover:from-teal-500 hover:to-gray-800 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 btn-hover group relative overflow-hidden"
                 onClick={handleDownload}
               >
-                <span className="relative z-10">Download Resume</span>
+                <span className="relative z-10">
+                  Download Resume
+                </span>
+
                 <div className="absolute inset-0 bg-gradient-to-r from-gray-800 to-teal-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
               </button>
-              <button className="px-8 py-3 border-2 border-teal-400/50 text-teal-300 rounded-lg font-semibold hover:border-teal-400 hover:text-teal-200 transition-all duration-300 hover:bg-teal-400/10">
+
+              <button
+                type="button"
+                onClick={scrollToProjects}
+                className="px-8 py-3 border-2 border-teal-400/50 text-teal-300 rounded-lg font-semibold hover:border-teal-400 hover:text-teal-200 transition-all duration-300 hover:bg-teal-400/10"
+              >
                 Explore My Work
               </button>
+
             </div>
 
-            {/* Social Links */}
             <div className="flex justify-center lg:justify-start space-x-6 animate-fade-in-up stagger-4">
+
               <a
                 href="https://github.com/Roshan0612"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="p-3 rounded-full text-gray-400 hover:text-teal-400 bg-gray-900/50 hover:bg-teal-400/10 transition-all duration-300 transform hover:scale-125 border border-gray-800/50 hover:border-teal-400/30 group"
                 aria-label="GitHub"
               >
-                <Github size={20} className="transition-transform group-hover:rotate-12" />
+                <Github
+                  size={20}
+                  className="transition-transform group-hover:rotate-12"
+                />
               </a>
+
               <a
                 href="https://www.linkedin.com/in/roshan-gawade-469bb422a/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="p-3 rounded-full text-gray-400 hover:text-gray-300 bg-gray-900/50 hover:bg-gray-700/20 transition-all duration-300 transform hover:scale-125 border border-gray-800/50 hover:border-teal-400/30 group"
                 aria-label="LinkedIn"
               >
-                <Linkedin size={20} className="transition-transform group-hover:rotate-12" />
+                <Linkedin
+                  size={20}
+                  className="transition-transform group-hover:rotate-12"
+                />
               </a>
+
+              <a
+                href="https://leetcode.com/u/RoshanGawade10/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 rounded-full text-gray-400 hover:text-[#FFA116] bg-gray-900/50 hover:bg-[#FFA116]/10 transition-all duration-300 transform hover:scale-125 border border-gray-800/50 hover:border-[#FFA116]/30 group"
+                aria-label="LeetCode"
+              >
+                <LeetCodeIcon size={20} />
+              </a>
+
               <a
                 href="https://mail.google.com/mail/u/0/#inbox?compose=new"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="p-3 rounded-full text-gray-400 hover:text-orange-400 bg-gray-900/50 hover:bg-orange-400/10 transition-all duration-300 transform hover:scale-125 border border-gray-800/50 hover:border-orange-400/30 group"
                 aria-label="Email"
               >
-                <Mail size={20} className="transition-transform group-hover:rotate-12" />
+                <Mail
+                  size={20}
+                  className="transition-transform group-hover:rotate-12"
+                />
               </a>
+
             </div>
           </div>
 
-          {/* Right side - Profile photo */}
           <div className="flex justify-center lg:justify-end">
+
             <div className="relative">
+
               <div className="w-80 h-80 lg:w-96 lg:h-96 rounded-full overflow-hidden border-4 border-teal-400 p-1 bg-gradient-to-r from-teal-400 to-gray-700 animate-pulse-slow shadow-2xl">
+
                 <div className="w-full h-full rounded-full overflow-hidden bg-gray-900">
+
                   <img
                     src="https://res.cloudinary.com/dswa5docr/image/upload/v1767027372/headshot_roshan_portfolio_lwgaci.jpg"
                     alt="Roshan Gawade"
                     className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
                   />
+
                 </div>
               </div>
-              {/* Floating elements around the photo */}
+
               <div className="absolute -top-4 -right-4 w-8 h-8 bg-teal-400 rounded-full animate-float shadow-lg shadow-teal-400/50"></div>
+
               <div className="absolute -bottom-6 -left-6 w-6 h-6 bg-gray-600 rounded-full animate-float-delayed shadow-lg shadow-gray-600/50"></div>
+
               <div className="absolute top-1/2 -left-8 w-4 h-4 bg-orange-400 rounded-full animate-float shadow-lg shadow-orange-400/50"></div>
+
             </div>
           </div>
+
         </div>
-        
+
         <div className="text-center mt-16">
+
           <button
             onClick={scrollToAbout}
             className="inline-flex flex-col items-center text-gray-400 hover:text-teal-400 transition-all duration-300 group"
             aria-label="Scroll down"
           >
-            <span className="text-sm font-medium mb-2 opacity-0 group-hover:opacity-100 transition-opacity">Scroll Down</span>
-            <ChevronDown size={32} className="group-hover:translate-y-1 transition-transform duration-300 animate-bounce" />
+            <span className="text-sm font-medium mb-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              Scroll Down
+            </span>
+
+            <ChevronDown
+              size={32}
+              className="group-hover:translate-y-1 transition-transform duration-300 animate-bounce"
+            />
           </button>
+
         </div>
+
       </div>
     </section>
   );

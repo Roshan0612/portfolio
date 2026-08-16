@@ -154,14 +154,7 @@ const Contact = () => {
         sm:py-24
       "
     >
-
-      {/* =====================================================
-          NATURAL BACKGROUND
-      ===================================================== */}
-
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-
-        {/* Subtle technical grid */}
         <div
           className="absolute inset-0 opacity-[0.035]"
           style={{
@@ -184,7 +177,6 @@ const Contact = () => {
           }}
         />
 
-        {/* Extremely subtle teal light source */}
         <div
           className="
             absolute
@@ -201,7 +193,6 @@ const Contact = () => {
           }}
         />
 
-        {/* Extremely subtle cool blue light source */}
         <div
           className="
             absolute
@@ -218,7 +209,6 @@ const Contact = () => {
           }}
         />
 
-        {/* Fine horizontal structural line */}
         <div
           className="
             absolute
@@ -232,7 +222,6 @@ const Contact = () => {
             to-transparent
           "
         />
-
       </div>
 
       <div
@@ -247,13 +236,7 @@ const Contact = () => {
           xl:px-24
         "
       >
-
-        {/* =====================================================
-            HEADER
-        ===================================================== */}
-
         <div className="mb-16 text-center animate-fade-in-up">
-
           <h2 className="mb-6 text-4xl font-bold text-white sm:text-5xl">
             Get In{' '}
             <span className="gradient-text">
@@ -285,15 +268,9 @@ const Contact = () => {
             Have a project, opportunity, or idea?
             Choose the way you would like to connect with me.
           </p>
-
         </div>
 
-        {/* =====================================================
-            CONNECTION OPTIONS
-        ===================================================== */}
-
         <div className="mx-auto max-w-6xl">
-
           <div className="mb-7 text-center">
             <span
               className="
@@ -317,9 +294,7 @@ const Contact = () => {
               lg:grid-cols-4
             "
           >
-
             {communicationMethods.map((method, index) => {
-
               const Icon = method.icon;
 
               const isActive =
@@ -337,7 +312,6 @@ const Contact = () => {
                     animationDelay: `${index * 0.1}s`,
                   }}
                 >
-
                   <div
                     className={`
                       relative
@@ -375,9 +349,6 @@ const Contact = () => {
                         : '0 10px 25px rgba(0,0,0,0.18)',
                     }}
                   >
-
-                    {/* Natural edge reflection */}
-
                     <div
                       className="
                         pointer-events-none
@@ -391,8 +362,6 @@ const Contact = () => {
                         to-transparent
                       "
                     />
-
-                    {/* Brand colored top accent */}
 
                     <div
                       className="
@@ -412,8 +381,6 @@ const Contact = () => {
                           method.color,
                       }}
                     />
-
-                    {/* ICON */}
 
                     <div
                       className="
@@ -442,8 +409,6 @@ const Contact = () => {
                         strokeWidth={1.8}
                       />
                     </div>
-
-                    {/* TEXT */}
 
                     <h3
                       className="
@@ -499,8 +464,6 @@ const Contact = () => {
                       />
                     </div>
 
-                    {/* CHECK */}
-
                     <div
                       className={`
                         absolute
@@ -531,18 +494,11 @@ const Contact = () => {
                         className="text-white"
                       />
                     </div>
-
                   </div>
-
                 </button>
               );
             })}
-
           </div>
-
-          {/* =================================================
-              CONNECTION LINE
-          ================================================= */}
 
           <div
             className="
@@ -553,7 +509,6 @@ const Contact = () => {
               max-w-4xl
             "
           >
-
             <div
               className="
                 absolute
@@ -613,18 +568,11 @@ const Contact = () => {
                 }
               `}
             />
-
           </div>
 
-          {/* =================================================
-              DESTINATION
-          ================================================= */}
-
           <div className="mx-auto max-w-3xl">
-
             {activeMethod ? (
               (() => {
-
                 const method =
                   communicationMethods.find(
                     item =>
@@ -659,9 +607,6 @@ const Contact = () => {
                       `,
                     }}
                   >
-
-                    {/* Physical side accent */}
-
                     <div
                       className="
                         absolute
@@ -686,7 +631,6 @@ const Contact = () => {
                         sm:justify-between
                       "
                     >
-
                       <div
                         className="
                           flex
@@ -694,7 +638,6 @@ const Contact = () => {
                           gap-4
                         "
                       >
-
                         <div
                           className="
                             flex
@@ -721,7 +664,6 @@ const Contact = () => {
                         </div>
 
                         <div>
-
                           <p
                             className="
                               mb-1
@@ -743,9 +685,7 @@ const Contact = () => {
                           >
                             {method.name}
                           </h3>
-
                         </div>
-
                       </div>
 
                       <a
@@ -789,12 +729,9 @@ const Contact = () => {
                           size={15}
                         />
                       </a>
-
                     </div>
-
                   </div>
                 );
-
               })()
             ) : (
               <div
@@ -804,7 +741,6 @@ const Contact = () => {
                   py-8
                 "
               >
-
                 <div
                   className="
                     flex
@@ -814,7 +750,6 @@ const Contact = () => {
                     text-gray-500
                   "
                 >
-
                   <span
                     className="
                       h-px
@@ -834,19 +769,11 @@ const Contact = () => {
                       bg-gray-700
                     "
                   />
-
                 </div>
-
               </div>
             )}
-
           </div>
-
         </div>
-
-        {/* =====================================================
-            MESSAGE FORM
-        ===================================================== */}
 
         <div
           className="
@@ -855,9 +782,7 @@ const Contact = () => {
             max-w-5xl
           "
         >
-
           <div className="mb-10 text-center">
-
             <p
               className="
                 mb-3
@@ -894,7 +819,6 @@ const Contact = () => {
               Tell me what you are building,
               what you need, or simply say hello.
             </p>
-
           </div>
 
           <div
@@ -912,9 +836,6 @@ const Contact = () => {
                 '0 18px 45px rgba(0,0,0,0.24)',
             }}
           >
-
-            {/* FORM INTRO */}
-
             <div
               className="
                 relative
@@ -927,9 +848,6 @@ const Contact = () => {
                 lg:border-r
               "
             >
-
-              {/* Subtle edge light */}
-
               <div
                 className="
                   absolute
@@ -944,7 +862,6 @@ const Contact = () => {
               />
 
               <div className="relative">
-
                 <div
                   className="
                     mb-8
@@ -995,7 +912,6 @@ const Contact = () => {
                     pt-6
                   "
                 >
-
                   <div
                     className="
                       flex
@@ -1005,7 +921,6 @@ const Contact = () => {
                       text-gray-400
                     "
                   >
-
                     <span
                       className="
                         h-2
@@ -1016,22 +931,15 @@ const Contact = () => {
                     />
 
                     Available for new opportunities
-
                   </div>
-
                 </div>
-
               </div>
-
             </div>
-
-            {/* FORM */}
 
             <form
               onSubmit={handleSubmit}
               className="p-7 sm:p-9"
             >
-
               <div
                 className="
                   grid
@@ -1039,11 +947,7 @@ const Contact = () => {
                   sm:grid-cols-2
                 "
               >
-
-                {/* NAME */}
-
                 <div>
-
                   <label
                     htmlFor="name"
                     className="
@@ -1084,13 +988,9 @@ const Contact = () => {
                       focus:ring-teal-400/20
                     "
                   />
-
                 </div>
 
-                {/* EMAIL */}
-
                 <div>
-
                   <label
                     htmlFor="email"
                     className="
@@ -1131,15 +1031,10 @@ const Contact = () => {
                       focus:ring-teal-400/20
                     "
                   />
-
                 </div>
-
               </div>
 
-              {/* SUBJECT */}
-
               <div className="mt-5">
-
                 <label
                   htmlFor="subject"
                   className="
@@ -1180,13 +1075,9 @@ const Contact = () => {
                     focus:ring-teal-400/20
                   "
                 />
-
               </div>
 
-              {/* MESSAGE */}
-
               <div className="mt-5">
-
                 <label
                   htmlFor="message"
                   className="
@@ -1229,10 +1120,7 @@ const Contact = () => {
                     focus:ring-teal-400/20
                   "
                 />
-
               </div>
-
-              {/* SUBMIT */}
 
               <button
                 type="submit"
@@ -1262,7 +1150,6 @@ const Contact = () => {
                   }
                 `}
               >
-
                 {sending ? (
                   <>
                     <span
@@ -1290,18 +1177,10 @@ const Contact = () => {
                     <Send size={18} />
                   </>
                 )}
-
               </button>
-
             </form>
-
           </div>
-
         </div>
-
-        {/* =====================================================
-            FOOTER CONTACT BAR
-        ===================================================== */}
 
         <div
           className="
@@ -1313,7 +1192,6 @@ const Contact = () => {
             pt-8
           "
         >
-
           <div
             className="
               flex
@@ -1324,9 +1202,6 @@ const Contact = () => {
               sm:flex-row
             "
           >
-
-            {/* EMAIL */}
-
             <a
               href="mailto:roshangawade160@gmail.com"
               className="
@@ -1339,20 +1214,15 @@ const Contact = () => {
                 hover:text-teal-400
               "
             >
-
               <Mail
                 size={16}
                 className="text-orange-400"
               />
 
               roshangawade160@gmail.com
-
             </a>
 
-            {/* SOCIAL */}
-
             <div className="flex items-center gap-3">
-
               <a
                 href="https://github.com/Roshan0612"
                 target="_blank"
@@ -1399,9 +1269,39 @@ const Contact = () => {
                 <Linkedin size={18} />
               </a>
 
+              <a
+                href="https://leetcode.com/u/RoshanGawade10/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LeetCode"
+                className="
+                  rounded-lg
+                  border
+                  border-gray-800
+                  bg-gray-900/70
+                  p-3
+                  text-gray-400
+                  transition-all
+                  duration-300
+                  hover:-translate-y-1
+                  hover:border-[#FFA116]/40
+                  hover:bg-[#FFA116]/10
+                  hover:text-[#FFA116]
+                "
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path d="M22.5 14.5c0-.83-.67-1.5-1.5-1.5h-7.17l-1.66-1.66a1.5 1.5 0 0 0-2.12 2.12l2.1 2.1a1.5 1.5 0 0 0 1.06.44H21c.83 0 1.5-.67 1.5-1.5ZM8.5 20.5a1.5 1.5 0 0 0 0-3H7.17a4.17 4.17 0 0 1 0-8.34H9.5a1.5 1.5 0 0 0 0-3H7.17a7.17 7.17 0 0 0 0 14.34H8.5Z" />
+                  <path d="M15.5 3.5a1.5 1.5 0 0 0-2.12 0l-7.7 7.7a1.5 1.5 0 0 0 2.12 2.12l7.7-7.7a1.5 1.5 0 0 0 0-2.12Z" />
+                </svg>
+              </a>
             </div>
-
-            {/* LOCATION */}
 
             <div
               className="
@@ -1412,20 +1312,15 @@ const Contact = () => {
                 text-gray-500
               "
             >
-
               <MapPin
                 size={15}
                 className="text-teal-400"
               />
 
               Mumbai, India
-
             </div>
-
           </div>
-
         </div>
-
       </div>
     </section>
   );
