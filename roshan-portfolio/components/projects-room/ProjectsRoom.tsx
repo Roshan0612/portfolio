@@ -185,6 +185,23 @@ function RoomArchitecture() {
         material={darkWoodMaterial}
       />
 
+      {/* Recessed ceiling structure */}
+      <Box position={[0, 7.82, -4.7]} scale={[15.8, 0.08, 0.18]} material={wallMaterial} />
+      <Box position={[0, 7.82, 0]} scale={[15.8, 0.08, 0.18]} material={wallMaterial} />
+      <Box position={[0, 7.82, 4.7]} scale={[15.8, 0.08, 0.18]} material={wallMaterial} />
+      <Box position={[-5.6, 7.84, 0]} scale={[0.12, 0.06, 15.2]} material={darkWoodMaterial} />
+      <Box position={[5.6, 7.84, 0]} scale={[0.12, 0.06, 15.2]} material={darkWoodMaterial} />
+
+      {/* Hallway architectural lighting */}
+      <mesh position={[0, 6.62, 10.4]}>
+        <boxGeometry args={[15.6, 0.045, 0.045]} />
+        <meshBasicMaterial color="#a855f7" toneMapped={false} />
+      </mesh>
+      <mesh position={[0, 0.2, 10.4]}>
+        <boxGeometry args={[15.6, 0.04, 0.04]} />
+        <meshBasicMaterial color="#29d9ff" toneMapped={false} />
+      </mesh>
+
       {/* Existing room baseboards */}
       <Box
         position={[0, 0.15, -7.82]}
@@ -200,6 +217,18 @@ function RoomArchitecture() {
         position={[8.82, 0.15, 0]}
         scale={[0.15, 0.3, 16]}
         material={darkWoodMaterial}
+      />
+
+      {/* Solid front wall sections keep the glass door as the only transparent opening. */}
+      <Box
+        position={[-7.1, 4, 7.82]}
+        scale={[3.8, 8, 0.55]}
+        material={wallMaterial}
+      />
+      <Box
+        position={[3.25, 4, 7.82]}
+        scale={[11.5, 8, 0.55]}
+        material={wallMaterial}
       />
 
       {/* Entrance architecture: the room begins with a real wall mass */}
@@ -259,22 +288,27 @@ function RoomArchitecture() {
    DOOR
 ========================================================= */
 
-function Door({ progressRef }: { progressRef: React.MutableRefObject<number> }) {
+function Door({ cameraPositionRef }: { cameraPositionRef: React.MutableRefObject<THREE.Vector3> }) {
   const doorRef = useRef<Group>(null);
+  const isOpenRef = useRef(false);
+  const doorPosition = useMemo(() => new THREE.Vector3(-3.8, 3.8, 7.82), []);
 
   useFrame((_state, delta) => {
     if (!doorRef.current) return;
 
-    /* The camera reaches the doorway around 0.18. Open gradually after that. */
-    const openStart = 0.12;
-    const openEnd = 0.24;
-    const progress = THREE.MathUtils.clamp(
-      (progressRef.current - openStart) / (openEnd - openStart),
-      0,
-      1,
-    );
-    const eased = THREE.MathUtils.smoothstep(progress, 0, 1);
-    const targetRotation = -eased * THREE.MathUtils.degToRad(96);
+    const distance = cameraPositionRef.current.distanceTo(doorPosition);
+    const openDistance = 4.9;
+    const closeDistance = 6.35;
+
+    if (!isOpenRef.current && distance < openDistance) {
+      isOpenRef.current = true;
+    } else if (isOpenRef.current && distance > closeDistance) {
+      isOpenRef.current = false;
+    }
+
+    const targetRotation = isOpenRef.current
+      ? -THREE.MathUtils.degToRad(96)
+      : 0;
 
     doorRef.current.rotation.y = THREE.MathUtils.damp(
       doorRef.current.rotation.y,
@@ -297,12 +331,14 @@ function Door({ progressRef }: { progressRef: React.MutableRefObject<number> }) 
           {/* Glass slab */}
           <mesh position={[0, 3.95, 0]} castShadow receiveShadow>
             <boxGeometry args={[2.7, 7.65, 0.12]} />
-            <meshStandardMaterial
-              color="#9ed7e8"
+            <meshPhysicalMaterial
+              color="#8ed8ef"
               transparent
               opacity={0.18}
-              roughness={0.12}
+              roughness={0.08}
               metalness={0.08}
+              transmission={0.12}
+              thickness={0.04}
               emissive="#173844"
               emissiveIntensity={0.18}
               side={THREE.DoubleSide}
@@ -349,6 +385,7 @@ function Door({ progressRef }: { progressRef: React.MutableRefObject<number> }) 
     </group>
   );
 }
+
 /* =========================================================
    WINDOW
 ========================================================= */
@@ -842,9 +879,9 @@ function Desk({ mainMonitorRef }: { mainMonitorRef: React.RefObject<Group | null
           -0.2,
         ]}
         scale={[
-          2.5,
-          1.45,
-          0.2,
+          3.6,
+          1.85,
+          0.24,
         ]}
       />
 
@@ -1698,6 +1735,122 @@ function Whiteboard() {
 }
 
 /* =========================================================
+   LOUNGE / ROOM DETAILS
+========================================================= */
+
+function Sofa() {
+  return (
+    <group position={[-4.9, 0, -1.8]} rotation={[0, 0.08, 0]}>
+      <Box position={[0, 1.05, 0]} scale={[4.2, 0.9, 1.55]} material={darkWoodMaterial} />
+      <Box position={[0, 1.68, -0.56]} scale={[4.2, 1.25, 0.34]} material={wallMaterial} />
+      <Box position={[-1.65, 1.52, 0.05]} scale={[0.7, 0.48, 1.15]} material={woodMaterial} />
+      <Box position={[0, 1.55, 0.05]} scale={[0.82, 0.5, 1.15]} material={woodMaterial} />
+      <Box position={[1.65, 1.52, 0.05]} scale={[0.7, 0.48, 1.15]} material={woodMaterial} />
+      <Box position={[-1.92, 0.58, 0]} scale={[0.16, 0.55, 1.15]} material={metalMaterial} />
+      <Box position={[1.92, 0.58, 0]} scale={[0.16, 0.55, 1.15]} material={metalMaterial} />
+    </group>
+  );
+}
+
+function CoffeeTable() {
+  return (
+    <group position={[-4.8, 0, 0.55]}>
+      <Box position={[0, 0.78, 0]} scale={[2.7, 0.16, 1.25]} material={darkWoodMaterial} />
+      {[-0.95, 0.95].map((x) => (
+        <Box key={x} position={[x, 0.38, 0]} scale={[0.12, 0.75, 0.12]} material={metalMaterial} />
+      ))}
+      <Coffee position={[-0.55, 0.9, 0]} />
+      <Box position={[0.55, 0.88, 0.1]} scale={[0.9, 0.035, 0.58]} material={monitorMaterial} />
+    </group>
+  );
+}
+
+function LoungeRug() {
+  return (
+    <mesh position={[-4.8, 0.025, -0.55]} rotation={[-Math.PI / 2, 0, 0]}>
+      <boxGeometry args={[7.2, 4.8, 0.05]} />
+      <meshStandardMaterial
+        color="#2b1c35"
+        roughness={0.92}
+        emissive="#160b20"
+        emissiveIntensity={0.12}
+      />
+    </mesh>
+  );
+}
+
+function StorageCabinet() {
+  return (
+    <group position={[7.0, 0, 1.2]}>
+      <Box position={[0, 1.55, 0]} scale={[2.7, 2.9, 0.9]} material={darkWoodMaterial} />
+      {[-0.82, 0, 0.82].map((x) => (
+        <Box key={x} position={[x, 1.55, -0.48]} scale={[0.62, 0.055, 0.035]} material={metalMaterial} />
+      ))}
+      <mesh position={[0, 3.15, 0]}>
+        <boxGeometry args={[2.95, 0.08, 1.0]} />
+        <meshStandardMaterial color="#24202b" roughness={0.42} metalness={0.35} />
+      </mesh>
+    </group>
+  );
+}
+
+function WallTechDecor() {
+  return (
+    <group>
+      <group position={[6.75, 4.8, -7.68]}>
+        <Box position={[0, 0, 0]} scale={[3.2, 1.9, 0.08]} material={darkWoodMaterial} />
+        <Box position={[0, 0, -0.055]} scale={[2.75, 1.45, 0.025]} material={metalMaterial} />
+        <mesh position={[0, 0, -0.08]}>
+          <planeGeometry args={[2.45, 1.2]} />
+          <meshBasicMaterial color="#7a42d8" transparent opacity={0.22} />
+        </mesh>
+        <mesh position={[-0.72, 0.25, -0.1]}>
+          <boxGeometry args={[0.95, 0.035, 0.035]} />
+          <meshBasicMaterial color="#29d9ff" toneMapped={false} />
+        </mesh>
+        <mesh position={[-0.4, -0.1, -0.1]}>
+          <boxGeometry args={[1.55, 0.035, 0.035]} />
+          <meshBasicMaterial color="#a855f7" toneMapped={false} />
+        </mesh>
+      </group>
+
+      <group position={[2.8, 5.4, -7.7]}>
+        <Box position={[0, 0, 0]} scale={[1.6, 1.1, 0.08]} material={darkWoodMaterial} />
+        <mesh position={[0, 0, -0.06]}>
+          <planeGeometry args={[1.25, 0.75]} />
+          <meshBasicMaterial color="#321c55" />
+        </mesh>
+        <mesh position={[0, 0, -0.08]}>
+          <boxGeometry args={[0.8, 0.025, 0.025]} />
+          <meshBasicMaterial color="#4ad9ff" toneMapped={false} />
+        </mesh>
+      </group>
+    </group>
+  );
+}
+
+function RoomDetails() {
+  return (
+    <>
+      <LoungeRug />
+      <Sofa />
+      <CoffeeTable />
+      <StorageCabinet />
+      <WallTechDecor />
+
+      <Plant position={[-7.0, 0.7, 2.9]} scale={1.25} />
+      <Plant position={[-1.3, 0.45, 2.2]} scale={0.78} />
+      <Plant position={[7.2, 0.55, -0.7]} scale={0.9} />
+
+      {/* A compact speaker pair and desk charging dock keep the workstation lived-in. */}
+      <Box position={[1.35, 3.03, 0.05]} scale={[0.42, 0.34, 0.34]} material={monitorMaterial} />
+      <Box position={[-0.25, 3.03, 0.05]} scale={[0.42, 0.34, 0.34]} material={monitorMaterial} />
+      <Box position={[2.55, 3.03, 0.35]} scale={[0.28, 0.06, 0.48]} material={metalMaterial} />
+    </>
+  );
+}
+
+/* =========================================================
    PURPLE OFFICE LIGHTING
    Large low-cost wall washes make the architecture readable.
    No post-processing/bloom is required.
@@ -1800,21 +1953,22 @@ function PurpleOfficeLighting() {
 ========================================================= */
 
 function Room({
-  progressRef,
+  cameraPositionRef,
   mainMonitorRef,
 }: {
-  progressRef: React.MutableRefObject<number>;
+  cameraPositionRef: React.MutableRefObject<THREE.Vector3>;
   mainMonitorRef: React.RefObject<Group | null>;
 }) {
   return (
     <>
       <RoomArchitecture />
-      <Door progressRef={progressRef} />
+      <Door cameraPositionRef={cameraPositionRef} />
       <Window />
       <Bookshelf />
       <Desk mainMonitorRef={mainMonitorRef} />
       <Chair />
       <Whiteboard />
+      <RoomDetails />
 
       <PurpleOfficeLighting />
 
@@ -1856,7 +2010,7 @@ function Room({
       <pointLight position={[6.0, 4.4, -2.5]} intensity={5.8} distance={11} color="#d34dff" />
       <pointLight position={[0, 3.2, 3.5]} intensity={4.0} distance={10} color="#6846ff" />
       <pointLight position={[0, 1.0, -6.0]} intensity={3.0} distance={8} color="#9f3cff" />
-      <pointLight position={[3.5, 3.8, -3]} intensity={3.5} distance={7} color="#31c8ff" />
+      <pointLight position={[3.5, 3.8, -3]} intensity={4.2} distance={7.5} color="#31c8ff" />
     </>
   );
 }
@@ -1867,9 +2021,11 @@ function Room({
 function CinematicCamera({
   progressRef,
   mainMonitorRef,
+  cameraPositionRef,
 }: {
   progressRef: React.MutableRefObject<number>;
   mainMonitorRef: React.RefObject<Group | null>;
+  cameraPositionRef: React.MutableRefObject<THREE.Vector3>;
 }) {
   const camera = useRef<THREE.PerspectiveCamera>(null);
 
@@ -1878,18 +2034,18 @@ function CinematicCamera({
       new THREE.CatmullRomCurve3(
         [
           new THREE.Vector3(-5.4, 2.55, 14.2),
-          new THREE.Vector3(-5.05, 2.62, 11.9),
-          new THREE.Vector3(-4.25, 2.72, 9.2),
-          new THREE.Vector3(-2.9, 2.78, 7.1),
-          new THREE.Vector3(-1.65, 2.88, 5.2),
-          new THREE.Vector3(-0.5, 2.95, 3.3),
-          new THREE.Vector3(-2.7, 3.15, 1.1),
-          new THREE.Vector3(-4.2, 3.35, -1.4),
-          new THREE.Vector3(-0.8, 3.2, -2.55),
-          new THREE.Vector3(2.25, 3.05, -2.2),
-          new THREE.Vector3(4.35, 3.35, -2.35),
-          new THREE.Vector3(5.05, 3.55, -3.15),
-          new THREE.Vector3(4.85, 4.02, -3.92),
+          new THREE.Vector3(-5.05, 2.62, 12.0),
+          new THREE.Vector3(-4.35, 2.72, 9.5),
+          new THREE.Vector3(-3.0, 2.82, 7.1),
+          new THREE.Vector3(-1.7, 2.9, 5.2),
+          new THREE.Vector3(-0.2, 3.0, 3.1),
+          new THREE.Vector3(1.2, 3.02, 1.0),
+          new THREE.Vector3(2.55, 3.05, -0.9),
+          new THREE.Vector3(3.45, 3.12, -2.25),
+          new THREE.Vector3(4.15, 3.28, -2.65),
+          new THREE.Vector3(4.35, 3.5, -3.05),
+          new THREE.Vector3(4.15, 3.78, -3.55),
+          new THREE.Vector3(3.95, 4.05, -4.1),
         ],
         false,
         "catmullrom",
@@ -1903,18 +2059,18 @@ function CinematicCamera({
       new THREE.CatmullRomCurve3(
         [
           new THREE.Vector3(-3.8, 3.9, 7.82),
-          new THREE.Vector3(-3.7, 3.8, 7.4),
-          new THREE.Vector3(-3.0, 3.55, 4.8),
-          new THREE.Vector3(-1.0, 3.2, 1.8),
-          new THREE.Vector3(-3.7, 3.0, -2.7),
-          new THREE.Vector3(-5.5, 3.3, -5.8),
-          new THREE.Vector3(-1.7, 3.15, -5.8),
-          new THREE.Vector3(2.5, 3.15, -4.5),
-          new THREE.Vector3(4.1, 3.2, -3.3),
-          new THREE.Vector3(4.25, 3.55, -3.0),
-          new THREE.Vector3(4.15, 4.02, -3.95),
-          new THREE.Vector3(4.15, 4.05, -3.95),
-          new THREE.Vector3(4.15, 4.05, -3.95),
+          new THREE.Vector3(-3.6, 3.8, 7.1),
+          new THREE.Vector3(-2.6, 3.6, 4.8),
+          new THREE.Vector3(-0.6, 3.25, 2.0),
+          new THREE.Vector3(1.0, 3.15, -0.4),
+          new THREE.Vector3(2.5, 3.15, -2.2),
+          new THREE.Vector3(3.3, 3.2, -3.0),
+          new THREE.Vector3(3.8, 3.35, -3.45),
+          new THREE.Vector3(3.95, 3.65, -3.85),
+          new THREE.Vector3(3.95, 4.0, -4.1),
+          new THREE.Vector3(3.95, 4.05, -4.1),
+          new THREE.Vector3(3.95, 4.05, -4.1),
+          new THREE.Vector3(3.95, 4.05, -4.1),
         ],
         false,
         "catmullrom",
@@ -1956,11 +2112,6 @@ function CinematicCamera({
       monitorQuaternion.setFromRotationMatrix(mainMonitorRef.current.matrixWorld);
       monitorForward.set(0, 0, 1).applyQuaternion(monitorQuaternion).normalize();
 
-      const approach = THREE.MathUtils.smoothstep(
-        THREE.MathUtils.clamp((progress - 0.62) / 0.18, 0, 1),
-        0,
-        1,
-      );
       const finalPush = THREE.MathUtils.smoothstep(
         THREE.MathUtils.clamp((progress - 0.80) / 0.20, 0, 1),
         0,
@@ -2010,12 +2161,15 @@ function CinematicCamera({
     }
 
     camera.current.lookAt(lookAtPoint);
+    cameraPositionRef.current.copy(camera.current.position);
 
     /* Almost imperceptible cinematic breathing only during room exploration. */
     if (progress < 0.62) {
       camera.current.position.x += Math.sin(state.clock.elapsedTime * 0.42) * 0.004;
       camera.current.position.y += Math.cos(state.clock.elapsedTime * 0.35) * 0.0025;
     }
+
+    cameraPositionRef.current.copy(camera.current.position);
   });
 
   return (
@@ -2219,6 +2373,7 @@ function FourWallNeonArchitecture() {
 
 function Scene() {
   const progressRef = useRef(0);
+  const cameraPositionRef = useRef(new THREE.Vector3(-5.4, 2.55, 14.2));
   const mainMonitorRef = useRef<Group | null>(null);
   const touchY = useRef<number | null>(null);
 
@@ -2276,10 +2431,11 @@ function Scene() {
         <CinematicCamera
           progressRef={progressRef}
           mainMonitorRef={mainMonitorRef}
+          cameraPositionRef={cameraPositionRef}
         />
 
         <Room
-          progressRef={progressRef}
+          cameraPositionRef={cameraPositionRef}
           mainMonitorRef={mainMonitorRef}
         />
 

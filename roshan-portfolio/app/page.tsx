@@ -1,5 +1,5 @@
-import ProjectsRoom from "@/components/projects-room/ProjectsRoom";
+import LiftSection from "@/components/portfolio/lift/LiftSection";
 
-export default function Home() {
-  return <ProjectsRoom />;
+export default function Page() {
+  return <LiftSection />;
 }
