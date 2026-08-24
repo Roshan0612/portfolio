@@ -1,20 +1,14 @@
 "use client";
 
 import * as THREE from "three";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
 import {
-  Canvas,
-  useFrame,
-} from "@react-three/fiber";
-import {
-  Html,
+  Environment,
   PerspectiveCamera,
+  ScrollControls,
+  Text,
+  useScroll,
 } from "@react-three/drei";
 
 export type ElevatorFloorId =
@@ -24,20 +18,6 @@ export type ElevatorFloorId =
   | "experience"
   | "contact";
 
-export type ElevatorState =
-  | "approach"
-  | "waiting"
-  | "opening"
-  | "entering"
-  | "closing"
-  | "lookAround"
-  | "idle"
-  | "selecting"
-  | "moving"
-  | "arriving"
-  | "openingDestination"
-  | "complete";
-
 export interface ElevatorFloor {
   id: ElevatorFloorId;
   floor: number;
@@ -45,14 +25,6 @@ export interface ElevatorFloor {
   shortLabel: string;
   accent: string;
 }
-
-export const ELEVATOR_FLOORS: readonly ElevatorFloor[] = [
-  { id: "skills", floor: 1, label: "SKILLS", shortLabel: "SKL", accent: "#a855f7" },
-  { id: "projects", floor: 2, label: "PROJECTS", shortLabel: "PRJ", accent: "#00e5ff" },
-  { id: "education", floor: 3, label: "EDUCATION", shortLabel: "EDU", accent: "#8b5cf6" },
-  { id: "experience", floor: 4, label: "EXPERIENCE", shortLabel: "EXP", accent: "#38bdf8" },
-  { id: "contact", floor: 5, label: "CONTACT", shortLabel: "CNT", accent: "#c084fc" },
-];
 
 export type ElevatorEvent =
   | "approach"
@@ -70,1093 +42,745 @@ export interface LiftSectionProps {
   className?: string;
 }
 
-type DoorProgressRef = React.MutableRefObject<number>;
-type CabinYRef = React.MutableRefObject<number>;
+export const ELEVATOR_FLOORS: readonly ElevatorFloor[] = [
+  { id: "skills", floor: 1, label: "SKILLS", shortLabel: "SKL", accent: "#b58cff" },
+  { id: "projects", floor: 2, label: "PROJECTS", shortLabel: "PRJ", accent: "#a879ff" },
+  { id: "education", floor: 3, label: "EDUCATION", shortLabel: "EDU", accent: "#c59dff" },
+  { id: "experience", floor: 4, label: "EXPERIENCE", shortLabel: "EXP", accent: "#9e7ae8" },
+  { id: "contact", floor: 5, label: "CONTACT", shortLabel: "CNT", accent: "#d3b7ff" },
+];
 
-const COLORS = {
-  background: "#111017",
-  metal: "#2a2930",
-  metalLight: "#47454e",
-  metalDark: "#1b1a20",
-  panel: "#24232a",
-  stone: "#292830",
-  purple: "#a56cff",
-  cyan: "#48dfff",
-  white: "#f2f0f5",
-  warm: "#fff3d6",
+const PHASES = {
+  approachStart: 0.0,
+  approachEnd: 0.18,
+  openStart: 0.18,
+  openEnd: 0.30,
+  enterStart: 0.30,
+  enterEnd: 0.45,
+  turnStart: 0.45,
+  turnEnd: 0.61,
+  focusStart: 0.61,
+  focusEnd: 0.72,
+  closeStart: 0.72,
+  closeEnd: 0.80,
+  travelStart: 0.80,
+  travelEnd: 0.94,
+  arrivalStart: 0.94,
+  arrivalEnd: 1.0,
+} as const;
+
+const colors = {
+  exterior: "#d9d4ca",
+  exteriorDark: "#b9b2a5",
+  stone: "#9a9185",
+  stoneDark: "#726a61",
+  warmWhite: "#fff4df",
+  warmLight: "#ffe7bf",
+  champagne: "#bca27a",
+  bronze: "#80684a",
+  brushed: "#b8b9b5",
+  brushedDark: "#777a76",
+  wall: "#b5aaa0",
+  wallInset: "#8d8379",
+  cabin: "#b6a99b",
+  cabinInset: "#8f8479",
+  floor: "#756e66",
+  floorLight: "#a39b91",
+  purple: "#a879ff",
+  purpleSoft: "#d1b9ff",
+  display: "#17191b",
+  glass: "#d8e0df",
 };
 
-const metalMaterial = new THREE.MeshStandardMaterial({
-  color: COLORS.metal,
-  roughness: 0.34,
-  metalness: 0.82,
-});
+function phase(start: number, end: number, value: number) {
+  if (end <= start) return 0;
+  return THREE.MathUtils.clamp((value - start) / (end - start), 0, 1);
+}
 
-const metalLightMaterial = new THREE.MeshStandardMaterial({
-  color: COLORS.metalLight,
-  roughness: 0.28,
-  metalness: 0.9,
-});
-
-const darkMaterial = new THREE.MeshStandardMaterial({
-  color: COLORS.metalDark,
-  roughness: 0.5,
-  metalness: 0.45,
-});
-
-const floorMaterial = new THREE.MeshStandardMaterial({
-  color: COLORS.stone,
-  roughness: 0.3,
-  metalness: 0.42,
-});
-
-const stoneInsetMaterial = new THREE.MeshStandardMaterial({
-  color: "#35333b",
-  roughness: 0.42,
-  metalness: 0.18,
-});
-
-const glassMaterial = new THREE.MeshPhysicalMaterial({
-  color: "#8a7da4",
-  transparent: true,
-  opacity: 0.12,
-  roughness: 0.14,
-  metalness: 0.3,
-  transmission: 0.08,
-  thickness: 0.04,
-});
-
-const purpleEmissiveMaterial = new THREE.MeshBasicMaterial({
-  color: COLORS.purple,
-});
-
-const cyanEmissiveMaterial = new THREE.MeshBasicMaterial({
-  color: COLORS.cyan,
-});
-
-const warmEmissiveMaterial = new THREE.MeshBasicMaterial({
-  color: COLORS.warm,
-});
+function smooth(value: number) {
+  return THREE.MathUtils.smootherstep(THREE.MathUtils.clamp(value, 0, 1), 0, 1);
+}
 
 function Box({
   position,
   scale,
-  material = metalMaterial,
+  material,
   rotation,
 }: {
   position: [number, number, number];
   scale: [number, number, number];
-  material?: THREE.Material;
+  material: THREE.Material;
   rotation?: [number, number, number];
 }) {
   return (
-    <mesh
-      position={position}
-      rotation={rotation}
-      material={material}
-      castShadow
-      receiveShadow
-    >
-      <boxGeometry args={scale} />
+    <mesh position={position} scale={scale} rotation={rotation} material={material} castShadow receiveShadow>
+      <boxGeometry args={[1, 1, 1]} />
     </mesh>
   );
 }
 
-function NeonLine({
+function Line({
   position,
   scale,
-  color = "purple",
-  rotation,
+  material,
 }: {
   position: [number, number, number];
   scale: [number, number, number];
-  color?: "purple" | "cyan";
+  material: THREE.Material;
+}) {
+  return <Box position={position} scale={scale} material={material} />;
+}
+
+function Cylinder({
+  position,
+  rotation,
+  scale,
+  material,
+}: {
+  position: [number, number, number];
   rotation?: [number, number, number];
+  scale: [number, number, number];
+  material: THREE.Material;
 }) {
   return (
-    <mesh
-      position={position}
-      rotation={rotation}
-      material={
-        color === "purple"
-          ? purpleEmissiveMaterial
-          : cyanEmissiveMaterial
-      }
-    >
-      <boxGeometry args={scale} />
+    <mesh position={position} rotation={rotation} scale={scale} material={material} castShadow receiveShadow>
+      <cylinderGeometry args={[1, 1, 1, 24]} />
     </mesh>
   );
 }
 
-function ElevatorExterior() {
+
+function LiftLighting() {
+  return (
+    <>
+      <ambientLight intensity={1.25} color="#fff6ea" />
+      <hemisphereLight intensity={1.5} color="#fff4df" groundColor="#766d63" />
+
+      <rectAreaLight
+        position={[0, 7.0, 3.2]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        width={7}
+        height={4}
+        intensity={7}
+        color="#fff1d6"
+      />
+      <rectAreaLight
+        position={[0, 5.2, -2.0]}
+        rotation={[0, 0, 0]}
+        width={5}
+        height={5}
+        intensity={4.5}
+        color="#ffe5bd"
+      />
+      <pointLight position={[-4, 4.5, 5]} intensity={4} distance={13} color="#d9e5ff" />
+      <pointLight position={[4, 4.2, -1]} intensity={3.5} distance={9} color="#fff0d5" />
+      <pointLight position={[0, 2.7, 0.4]} intensity={0.7} distance={5} color={colors.purpleSoft} />
+    </>
+  );
+}
+
+function Lobby() {
+  const wall = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: colors.exterior, roughness: 0.72, metalness: 0.08 }),
+    [],
+  );
+  const wallDark = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: colors.exteriorDark, roughness: 0.78, metalness: 0.12 }),
+    [],
+  );
+  const stone = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: colors.stone, roughness: 0.48, metalness: 0.08 }),
+    [],
+  );
+  const trim = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: colors.champagne, roughness: 0.28, metalness: 0.72 }),
+    [],
+  );
+  const warm = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: "#f2dfc2", roughness: 0.58, metalness: 0.05 }),
+    [],
+  );
+  const purple = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: colors.purple, emissive: colors.purple, emissiveIntensity: 1.5, roughness: 0.4, metalness: 0.15 }),
+    [],
+  );
+
   return (
     <group>
-      <Box
-        position={[0, 3.2, -0.15]}
-        scale={[6.9, 6.9, 0.45]}
-        material={darkMaterial}
-      />
+      <Box position={[0, -0.25, 7]} scale={[22, 0.45, 25]} material={stone} />
+      <Box position={[-10.8, 4.5, 1]} scale={[0.35, 9.5, 20]} material={wall} />
+      <Box position={[10.8, 4.5, 1]} scale={[0.35, 9.5, 20]} material={wall} />
+      <Box position={[0, 9.1, 1]} scale={[22, 0.35, 20]} material={wallDark} />
 
-      <Box
-        position={[0, 3.35, 0.1]}
-        scale={[5.8, 6.45, 0.28]}
-        material={metalLightMaterial}
-      />
+      <Box position={[-7.4, 4.5, 1]} scale={[5.4, 8.7, 0.22]} material={wallDark} />
+      <Box position={[7.4, 4.5, 1]} scale={[5.4, 8.7, 0.22]} material={wallDark} />
 
-      <Box
-        position={[-3.05, 3.2, 0.38]}
-        scale={[0.46, 6.5, 0.5]}
-        material={metalMaterial}
-      />
-      <Box
-        position={[3.05, 3.2, 0.38]}
-        scale={[0.46, 6.5, 0.5]}
-        material={metalMaterial}
-      />
-      <Box
-        position={[0, 6.32, 0.38]}
-        scale={[6.55, 0.42, 0.5]}
-        material={metalMaterial}
-      />
+      <Box position={[-7.4, 4.5, 0.86]} scale={[4.7, 7.8, 0.08]} material={warm} />
+      <Box position={[7.4, 4.5, 0.86]} scale={[4.7, 7.8, 0.08]} material={warm} />
 
-      <NeonLine
-        position={[-2.78, 3.3, 0.68]}
-        scale={[0.045, 5.95, 0.035]}
-        color="purple"
-      />
-      <NeonLine
-        position={[2.78, 3.3, 0.68]}
-        scale={[0.045, 5.95, 0.035]}
-        color="cyan"
-      />
+      {[-9.1, -5.7, 5.7, 9.1].map((x) => (
+        <Box key={x} position={[x, 4.6, 0.62]} scale={[0.09, 8.1, 0.08]} material={trim} />
+      ))}
 
-      <Box
-        position={[0, 6.05, 0.7]}
-        scale={[2.35, 0.58, 0.08]}
-        material={darkMaterial}
-      />
+      {[-7.6, -4.0, 4.0, 7.6].map((x) => (
+        <Box key={x} position={[x, 8.25, 0.65]} scale={[3.0, 0.08, 0.06]} material={trim} />
+      ))}
 
-      <Html
-        position={[0, 6.05, 0.76]}
-        center
-        transform
-        distanceFactor={7}
-        style={{
-          color: COLORS.white,
-          fontFamily: "system-ui, sans-serif",
-          fontSize: "11px",
-          fontWeight: 600,
-          letterSpacing: "0.28em",
-          whiteSpace: "nowrap",
-          textShadow: "0 0 12px rgba(168,85,247,.8)",
-          userSelect: "none",
-        }}
-      >
-        PORTFOLIO
-      </Html>
+      <Box position={[0, 8.45, 3.0]} scale={[18.5, 0.08, 0.12]} material={trim} />
+      <Box position={[0, 0.05, 3.0]} scale={[18.5, 0.08, 0.12]} material={trim} />
 
-      <Box
-        position={[0, 0.18, 0.25]}
-        scale={[6.6, 0.36, 1.1]}
-        material={floorMaterial}
-      />
-      <NeonLine
-        position={[0, 0.38, 0.72]}
-        scale={[5.55, 0.035, 0.035]}
-        color="purple"
-      />
+      <Box position={[-7.0, 1.05, 3.7]} scale={[4.2, 0.18, 0.95]} material={wallDark} />
+      <Box position={[-7.0, 1.75, 3.25]} scale={[3.8, 0.12, 0.14]} material={trim} />
+      <Box position={[-8.35, 1.95, 3.55]} scale={[0.1, 1.7, 0.1]} material={trim} />
+      <Box position={[-5.65, 1.95, 3.55]} scale={[0.1, 1.7, 0.1]} material={trim} />
 
-      <group position={[3.72, 3.05, 0.62]}>
-        <Box
-          position={[0, 0, 0]}
-          scale={[0.7, 1.5, 0.12]}
-          material={darkMaterial}
-        />
-        <NeonLine
-          position={[0, 0.42, 0.08]}
-          scale={[0.16, 0.16, 0.03]}
-          color="cyan"
-        />
-        <NeonLine
-          position={[0, -0.42, 0.08]}
-          scale={[0.16, 0.16, 0.03]}
-          color="purple"
-        />
-        <Html
-          position={[0, -0.02, 0.09]}
-          center
-          transform
-          distanceFactor={6}
-          style={{
-            color: "rgba(235,232,244,.55)",
-            fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
-            fontSize: "8px",
-            letterSpacing: "0.1em",
-            whiteSpace: "nowrap",
-            pointerEvents: "none",
-            userSelect: "none",
-          }}
-        >
-          CALL
-        </Html>
+      <group position={[7.0, 0, 4.0]}>
+        <Box position={[0, 2.0, 0]} scale={[2.2, 3.5, 0.15]} material={wallDark} />
+        <Box position={[0, 2.0, -0.1]} scale={[1.9, 3.1, 0.08]} material={warm} />
+        <Line position={[0, 0.75, -0.16]} scale={[1.3, 0.035, 0.025]} material={purple} />
+      </group>
+
+      <Box position={[0, 8.35, 0.9]} scale={[17.5, 0.06, 0.06]} material={trim} />
+      <Line position={[-4.2, 7.35, 0.58]} scale={[2.5, 0.04, 0.025]} material={purple} />
+      <Line position={[4.2, 7.35, 0.58]} scale={[2.5, 0.04, 0.025]} material={purple} />
+
+      <group position={[-7.8, 0, 1.9]}>
+        <Cylinder position={[0, 0.85, 0]} scale={[0.65, 0.16, 0.65]} material={wallDark} />
+        <Cylinder position={[0, 1.85, 0]} scale={[0.22, 1.5, 0.22]} material={trim} />
+        <mesh position={[0, 2.8, 0]} castShadow>
+          <sphereGeometry args={[0.9, 24, 16]} />
+          <meshStandardMaterial color="#66715d" roughness={0.85} />
+        </mesh>
+      </group>
+
+      <group position={[8.0, 0, 1.5]}>
+        <Box position={[0, 0.6, 0]} scale={[1.6, 0.12, 0.7]} material={wallDark} />
+        <Box position={[-0.62, 1.0, 0]} scale={[0.12, 0.9, 0.65]} material={trim} />
+        <Box position={[0.62, 1.0, 0]} scale={[0.12, 0.9, 0.65]} material={trim} />
+        <Box position={[0, 1.45, 0]} scale={[1.5, 0.1, 0.65]} material={warm} />
       </group>
     </group>
   );
 }
 
-function ElevatorDoors({
-  openProgressRef,
+function ExteriorElevator() {
+  const frame = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: colors.brushed, roughness: 0.34, metalness: 0.82 }),
+    [],
+  );
+  const frameDark = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: colors.brushedDark, roughness: 0.38, metalness: 0.72 }),
+    [],
+  );
+  const stone = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: "#8f877d", roughness: 0.45, metalness: 0.1 }),
+    [],
+  );
+  const glass = useMemo(
+    () => new THREE.MeshPhysicalMaterial({ color: colors.glass, transparent: true, opacity: 0.26, roughness: 0.08, metalness: 0.05, transmission: 0.12, thickness: 0.04 }),
+    [],
+  );
+  const purple = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: colors.purple, emissive: colors.purple, emissiveIntensity: 1.2, roughness: 0.38, metalness: 0.1 }),
+    [],
+  );
+
+  return (
+    <group>
+      <Box position={[0, 4.2, 0.18]} scale={[7.3, 8.4, 0.34]} material={stone} />
+      <Box position={[-3.72, 4.2, 0.42]} scale={[0.52, 8.5, 0.58]} material={frameDark} />
+      <Box position={[3.72, 4.2, 0.42]} scale={[0.52, 8.5, 0.58]} material={frameDark} />
+      <Box position={[0, 8.18, 0.42]} scale={[7.46, 0.58, 0.58]} material={frameDark} />
+      <Box position={[0, 0.2, 0.42]} scale={[7.45, 0.32, 0.72]} material={frame} />
+      <Box position={[0, 0.42, 0.76]} scale={[6.7, 0.08, 0.06]} material={purple} />
+
+      <Box position={[0, 6.95, 0.46]} scale={[2.2, 0.72, 0.1]} material={glass} />
+      <Text position={[0, 7.0, 0.54]} fontSize={0.18} color="#f5efe4" anchorX="center" anchorY="middle" letterSpacing={0.08}>
+        PORTFOLIO LIFT
+      </Text>
+      <Text position={[0, 6.72, 0.54]} fontSize={0.11} color="#b8b0a4" anchorX="center" anchorY="middle" letterSpacing={0.12}>
+        01
+      </Text>
+
+      <Box position={[-4.2, 3.8, 0.2]} scale={[0.12, 5.9, 0.1]} material={frame} />
+      <Box position={[4.2, 3.8, 0.2]} scale={[0.12, 5.9, 0.1]} material={frame} />
+      <Box position={[0, 0.55, 0.18]} scale={[6.9, 0.1, 0.1]} material={frame} />
+    </group>
+  );
+}
+
+function DoorSet({ progress }: { progress: number }) {
+  const metal = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: "#a7aaa6", roughness: 0.32, metalness: 0.88 }),
+    [],
+  );
+  const dark = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: "#6e716d", roughness: 0.4, metalness: 0.78 }),
+    [],
+  );
+  const trim = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: colors.champagne, roughness: 0.25, metalness: 0.8 }),
+    [],
+  );
+
+  const open = smooth(progress);
+  const offset = 1.48 * open;
+
+  return (
+    <group position={[0, 3.65, 0.62]}>
+      <group position={[-1.52 - offset, 0, 0]}>
+        <Box position={[0, 0, 0]} scale={[1.48, 6.25, 0.18]} material={metal} />
+        <Box position={[0.48, 0, -0.12]} scale={[0.055, 5.8, 0.05]} material={dark} />
+        <Box position={[-0.69, 0, 0.12]} scale={[0.06, 6.0, 0.04]} material={trim} />
+      </group>
+      <group position={[1.52 + offset, 0, 0]}>
+        <Box position={[0, 0, 0]} scale={[1.48, 6.25, 0.18]} material={metal} />
+        <Box position={[-0.48, 0, -0.12]} scale={[0.055, 5.8, 0.05]} material={dark} />
+        <Box position={[0.69, 0, 0.12]} scale={[0.06, 6.0, 0.04]} material={trim} />
+      </group>
+      <Box position={[0, 3.12, 0.12]} scale={[6.4, 0.18, 0.14]} material={dark} />
+      <Box position={[0, -3.12, 0.12]} scale={[6.4, 0.14, 0.18]} material={trim} />
+      <Line position={[-1.54, 0, 0.17]} scale={[0.025, 5.85, 0.02]} material={trim} />
+      <Line position={[1.54, 0, 0.17]} scale={[0.025, 5.85, 0.02]} material={trim} />
+    </group>
+  );
+}
+
+function CabinArchitecture() {
+  const wall = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: colors.cabin, roughness: 0.62, metalness: 0.18 }),
+    [],
+  );
+  const inset = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: colors.cabinInset, roughness: 0.55, metalness: 0.28 }),
+    [],
+  );
+  const trim = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: colors.champagne, roughness: 0.27, metalness: 0.8 }),
+    [],
+  );
+  const stone = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: colors.floor, roughness: 0.42, metalness: 0.22 }),
+    [],
+  );
+  const ceiling = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: "#d4c8ba", roughness: 0.76, metalness: 0.05 }),
+    [],
+  );
+  const glass = useMemo(
+    () => new THREE.MeshPhysicalMaterial({ color: "#dfe4df", transparent: true, opacity: 0.18, roughness: 0.12, metalness: 0.08, transmission: 0.08 }),
+    [],
+  );
+  const light = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: "#fff6e6", emissive: "#fff1d1", emissiveIntensity: 2.0, roughness: 0.35, metalness: 0.0 }),
+    [],
+  );
+
+  const panelX = 2.45;
+
+  return (
+    <group>
+      <Box position={[0, 3.2, -2.55]} scale={[5.35, 6.5, 0.18]} material={wall} />
+      <Box position={[-2.65, 3.2, -1.3]} scale={[0.18, 6.5, 3.0]} material={wall} />
+      <Box position={[2.65, 3.2, -1.3]} scale={[0.18, 6.5, 3.0]} material={wall} />
+      <Box position={[0, 6.45, -1.3]} scale={[5.35, 0.18, 3.0]} material={ceiling} />
+      <Box position={[0, 0.14, -1.3]} scale={[5.35, 0.28, 3.0]} material={stone} />
+
+      <Box position={[0, 3.2, -2.42]} scale={[4.5, 5.8, 0.08]} material={inset} />
+      <Box position={[-1.15, 3.2, -2.33]} scale={[0.045, 5.4, 0.035]} material={trim} />
+      <Box position={[1.15, 3.2, -2.33]} scale={[0.045, 5.4, 0.035]} material={trim} />
+      <Box position={[0, 1.35, -2.32]} scale={[4.5, 0.045, 0.035]} material={trim} />
+      <Box position={[0, 5.05, -2.32]} scale={[4.5, 0.045, 0.035]} material={trim} />
+
+      <Box position={[-2.42, 3.2, -1.15]} scale={[0.07, 5.95, 0.04]} material={trim} />
+      <Box position={[2.42, 3.2, -1.15]} scale={[0.07, 5.95, 0.04]} material={trim} />
+      <Box position={[-2.42, 1.15, -1.15]} scale={[0.035, 0.035, 2.8]} material={trim} />
+      <Box position={[2.42, 1.15, -1.15]} scale={[0.035, 0.035, 2.8]} material={trim} />
+
+      <Box position={[-2.56, 5.5, -1.1]} scale={[0.06, 1.1, 2.65]} material={glass} />
+      <Box position={[2.56, 5.5, -1.1]} scale={[0.06, 1.1, 2.65]} material={glass} />
+
+      {[-1.55, 0, 1.55].map((x) => (
+        <group key={x}>
+          <Box position={[x, 6.12, -1.25]} scale={[1.1, 0.055, 1.05]} material={light} />
+          <Box position={[x, 6.18, -1.25]} scale={[1.18, 0.05, 1.12]} material={trim} />
+        </group>
+      ))}
+
+      <Box position={[0, 6.0, 0.15]} scale={[4.7, 0.06, 0.08]} material={trim} />
+      <Box position={[0, 6.0, -2.5]} scale={[4.7, 0.06, 0.08]} material={trim} />
+
+      <Box position={[0, 0.36, -1.3]} scale={[4.8, 0.05, 2.55]} material={colorsToMaterial("#a49b91", 0.34, 0.18)} />
+      <Box position={[0, 0.405, -2.35]} scale={[4.95, 0.035, 0.05]} material={trim} />
+      <Box position={[0, 0.405, -0.25]} scale={[4.95, 0.035, 0.05]} material={trim} />
+      <Box position={[-2.35, 0.405, -1.3]} scale={[0.05, 0.035, 2.05]} material={trim} />
+      <Box position={[2.35, 0.405, -1.3]} scale={[0.05, 0.035, 2.05]} material={trim} />
+
+      <Cylinder position={[-1.95, 2.6, -0.75]} rotation={[Math.PI / 2, 0, 0]} scale={[0.12, 0.12, 1.25]} material={trim} />
+      <Cylinder position={[1.95, 2.6, -0.75]} rotation={[Math.PI / 2, 0, 0]} scale={[0.12, 0.12, 1.25]} material={trim} />
+      {[-1.95, 1.95].map((x) => (
+        <group key={x}>
+          <Cylinder position={[x, 2.6, -1.95]} rotation={[Math.PI / 2, 0, 0]} scale={[0.1, 0.1, 0.2]} material={trim} />
+          <Cylinder position={[x, 2.6, 0.45]} rotation={[Math.PI / 2, 0, 0]} scale={[0.1, 0.1, 0.2]} material={trim} />
+        </group>
+      ))}
+
+      <Box position={[0, 5.85, -2.1]} scale={[1.1, 0.04, 0.04]} material={trim} />
+      <Box position={[-0.8, 5.85, -2.1]} scale={[0.04, 0.22, 0.04]} material={trim} />
+      <Box position={[0.8, 5.85, -2.1]} scale={[0.04, 0.22, 0.04]} material={trim} />
+
+      <Box position={[0, 6.2, 0.25]} scale={[1.25, 0.035, 0.5]} material={light} />
+
+      <PointPanelLight position={[panelX, 3.5, 0.05]} />
+    </group>
+  );
+}
+
+function colorsToMaterial(color: string, roughness: number, metalness: number) {
+  return new THREE.MeshStandardMaterial({ color, roughness, metalness });
+}
+
+function PointPanelLight({ position }: { position: [number, number, number] }) {
+  return <pointLight position={position} intensity={1.6} distance={3.5} color="#d9c0ff" />;
+}
+
+function ControlPanel({
+  active,
+  selected,
+  onSelect,
 }: {
-  openProgressRef: DoorProgressRef;
+  active: boolean;
+  selected: ElevatorFloor | null;
+  onSelect: (floor: ElevatorFloor) => void;
 }) {
-  const left = useRef<THREE.Group>(null);
-  const right = useRef<THREE.Group>(null);
-
-  useFrame(() => {
-    const p = THREE.MathUtils.clamp(openProgressRef.current, 0, 1);
-    const eased = THREE.MathUtils.smootherstep(p, 0, 1);
-    const travel = 1.54;
-
-    if (left.current) left.current.position.x = -1.52 - eased * travel;
-    if (right.current) right.current.position.x = 1.52 + eased * travel;
-  });
-
-  return (
-    <group position={[0, 3.18, 0.92]}>
-      <Box position={[0, 3.14, -0.08]} scale={[3.28, 0.16, 0.28]} material={metalLightMaterial} />
-      <Box position={[-1.64, 0, -0.08]} scale={[0.16, 6.18, 0.28]} material={metalLightMaterial} />
-      <Box position={[1.64, 0, -0.08]} scale={[0.16, 6.18, 0.28]} material={metalLightMaterial} />
-
-      <group ref={left}>
-        <Box position={[0, 0, 0]} scale={[1.48, 5.95, 0.20]} material={metalLightMaterial} />
-        <Box position={[-0.61, 0, -0.13]} scale={[0.035, 5.55, 0.025]} material={metalMaterial} />
-        <Box position={[0.61, 0, -0.13]} scale={[0.035, 5.55, 0.025]} material={metalMaterial} />
-      </group>
-
-      <group ref={right}>
-        <Box position={[0, 0, 0]} scale={[1.48, 5.95, 0.20]} material={metalLightMaterial} />
-        <Box position={[-0.61, 0, -0.13]} scale={[0.035, 5.55, 0.025]} material={metalMaterial} />
-        <Box position={[0.61, 0, -0.13]} scale={[0.035, 5.55, 0.025]} material={metalMaterial} />
-      </group>
-
-      <Box position={[0, -2.91, 0.03]} scale={[3.22, 0.12, 0.42]} material={metalMaterial} />
-      <Box position={[0, -2.84, 0.09]} scale={[2.95, 0.06, 0.12]} material={stoneInsetMaterial} />
-      <NeonLine position={[-1.54, 0, 0.14]} scale={[0.018, 5.5, 0.018]} color="purple" />
-      <NeonLine position={[1.54, 0, 0.14]} scale={[0.018, 5.5, 0.018]} color="cyan" />
-    </group>
-  );
-}
-
-function ElevatorInterior() {
-  const wallPanel = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: "#34323a",
-        roughness: 0.38,
-        metalness: 0.62,
-      }),
+  const body = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: "#5e5f5c", roughness: 0.31, metalness: 0.78 }),
     [],
   );
-
-  const wallInset = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: "#26252c",
-        roughness: 0.46,
-        metalness: 0.48,
-      }),
+  const inner = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: "#2f3130", roughness: 0.24, metalness: 0.66 }),
+    [],
+  );
+  const display = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: colors.display, roughness: 0.18, metalness: 0.28, emissive: "#1c2025", emissiveIntensity: 0.4 }),
+    [],
+  );
+  const trim = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: colors.champagne, roughness: 0.25, metalness: 0.82 }),
     [],
   );
 
   return (
-    <group>
-      {/* Rear wall */}
-      <Box position={[0, 3.15, -2.25]} scale={[5.25, 6.3, 0.22]} material={wallPanel} />
-      <Box position={[0, 1.15, -2.10]} scale={[4.72, 2.0, 0.07]} material={wallInset} />
-      <Box position={[0, 4.95, -2.10]} scale={[4.72, 1.55, 0.07]} material={wallInset} />
+    <group position={[2.48, 3.0, 0.18]} rotation={[0, -Math.PI / 2, 0]}>
+      <Box position={[0, 0, 0]} scale={[1.42, 4.65, 0.22]} material={body} />
+      <Box position={[0, 0, -0.13]} scale={[1.18, 4.35, 0.08]} material={inner} />
+      <Box position={[0, 1.72, -0.19]} scale={[0.96, 0.58, 0.05]} material={display} />
+      <Box position={[0, 2.02, -0.22]} scale={[1.0, 0.04, 0.035]} material={trim} />
 
-      {/* Rear wall vertical architectural ribs */}
-      {[-2.05, -1.03, 0, 1.03, 2.05].map((x) => (
-        <Box key={`rear-rib-${x}`} position={[x, 3.12, -2.05]} scale={[0.035, 5.55, 0.055]} material={metalMaterial} />
+      <Text position={[0, 1.91, -0.245]} fontSize={0.115} color="#d8c8ac" anchorX="center" anchorY="middle" letterSpacing={0.1}>
+        DESTINATION
+      </Text>
+      <Text position={[0, 1.73, -0.245]} fontSize={0.22} color={active ? "#f7f1e6" : "#96948f"} anchorX="center" anchorY="middle" letterSpacing={0.06}>
+        {selected ? `0${selected.floor}` : "--"}
+      </Text>
+
+      {ELEVATOR_FLOORS.map((floor, index) => (
+        <PhysicalButton
+          key={floor.id}
+          floor={floor}
+          selected={selected?.id === floor.id}
+          disabled={!active}
+          position={[0, 1.05 - index * 0.64, -0.27]}
+          onSelect={onSelect}
+        />
       ))}
 
-      {/* Side walls */}
-      <Box position={[-2.62, 3.15, -1.35]} scale={[0.22, 6.3, 3.65]} material={wallPanel} />
-      <Box position={[2.62, 3.15, -1.35]} scale={[0.22, 6.3, 3.65]} material={wallPanel} />
-
-      {/* Lower side panels and upper side panels */}
-      {[-2.48, 2.48].map((x) => (
-        <React.Fragment key={`side-${x}`}>
-          <Box position={[x, 1.15, -1.35]} scale={[0.07, 1.8, 3.1]} material={wallInset} />
-          <Box position={[x, 4.95, -1.35]} scale={[0.07, 1.55, 3.1]} material={wallInset} />
-          <Box position={[x, 3.08, -2.98]} scale={[0.08, 5.7, 0.04]} material={metalMaterial} />
-        </React.Fragment>
+      <Box position={[0, -1.86, -0.2]} scale={[0.9, 0.04, 0.035]} material={trim} />
+      <Text position={[0, -2.02, -0.24]} fontSize={0.095} color={active ? "#c6b0ea" : "#7d7b77"} anchorX="center" anchorY="middle" letterSpacing={0.08}>
+        SELECT A FLOOR
+      </Text>
+      {[-0.56, 0.56].map((x) => (
+        <Cylinder key={x} position={[x, -2.18, -0.27]} rotation={[Math.PI / 2, 0, 0]} scale={[0.055, 0.055, 0.03]} material={trim} />
       ))}
-
-      {/* Corner trims */}
-      {[-2.49, 2.49].map((x) => (
-        <mesh key={`corner-${x}`} position={[x, 3.15, -2.06]} material={metalLightMaterial}>
-          <boxGeometry args={[0.12, 6.0, 0.12]} />
-        </mesh>
-      ))}
-
-      {/* Ceiling */}
-      <Box position={[0, 6.3, -1.35]} scale={[5.25, 0.22, 3.65]} material={wallInset} />
-      <Box position={[0, 6.16, -1.35]} scale={[4.35, 0.08, 2.72]} material={metalMaterial} />
-      <Box position={[0, 6.105, -1.35]} scale={[3.7, 0.045, 2.12]} material={stoneInsetMaterial} />
-
-      <NeonLine position={[-1.92, 6.04, -1.35]} scale={[0.035, 0.035, 2.15]} color="purple" />
-      <NeonLine position={[1.92, 6.04, -1.35]} scale={[0.035, 0.035, 2.15]} color="cyan" />
-
-      {[[-1.25, -1.35], [1.25, -1.35], [-1.25, -0.15], [1.25, -0.15]].map(([x, z], i) => (
-        <mesh key={`ceiling-light-${i}`} position={[x, 6.02, z]} material={warmEmissiveMaterial}>
-          <boxGeometry args={[0.75, 0.025, 0.14]} />
-        </mesh>
-      ))}
-
-      {/* Floor with border, inset and tile seams */}
-      <Box position={[0, 0.16, -1.35]} scale={[5.25, 0.28, 3.65]} material={floorMaterial} />
-      <Box position={[0, 0.315, -1.35]} scale={[4.72, 0.045, 3.12]} material={stoneInsetMaterial} />
-      <Box position={[0, 0.342, -1.35]} scale={[4.45, 0.025, 2.86]} material={floorMaterial} />
-
-      {[-1.45, 0, 1.45].map((x) => (
-        <Box key={`floor-x-${x}`} position={[x, 0.365, -1.35]} scale={[0.018, 0.018, 2.75]} material={metalMaterial} />
-      ))}
-      {[-2.2, -1.35, -0.5, 0.35, 1.2, 2.05].map((z) => (
-        <Box key={`floor-z-${z}`} position={[0, 0.365, z]} scale={[4.38, 0.018, 0.018]} material={metalMaterial} />
-      ))}
-
-      <NeonLine position={[-2.42, 0.37, -1.35]} scale={[0.025, 0.025, 3.0]} color="purple" />
-      <NeonLine position={[2.42, 0.37, -1.35]} scale={[0.025, 0.025, 3.0]} color="cyan" />
-
-      {/* Handrails with mounting brackets */}
-      {[-2.02, 2.02].map((x) => (
-        <React.Fragment key={`rail-${x}`}>
-          <mesh position={[x, 2.45, -1.95]} rotation={[0, 0, Math.PI / 2]} material={metalLightMaterial}>
-            <cylinderGeometry args={[0.07, 0.07, 3.2, 20]} />
-          </mesh>
-          {[-1.72, 1.72].map((z) => (
-            <mesh key={`mount-${x}-${z}`} position={[x, 2.45, z]} rotation={[Math.PI / 2, 0, 0]} material={metalMaterial}>
-              <cylinderGeometry args={[0.11, 0.11, 0.12, 16]} />
-            </mesh>
-          ))}
-        </React.Fragment>
-      ))}
-
-      {/* Rear handrail */}
-      <mesh position={[0, 2.45, -2.02]} rotation={[0, 0, Math.PI / 2]} material={metalLightMaterial}>
-        <cylinderGeometry args={[0.065, 0.065, 3.55, 20]} />
-      </mesh>
-
-      {/* Ventilation grille */}
-      <Box position={[-1.62, 5.28, -2.08]} scale={[1.25, 0.28, 0.04]} material={darkMaterial} />
-      {[-0.48, -0.24, 0, 0.24, 0.48].map((x) => (
-        <Box key={`vent-${x}`} position={[-1.62 + x, 5.28, -2.055]} scale={[0.035, 0.18, 0.02]} material={metalLightMaterial} />
-      ))}
-
-      {/* Small camera / emergency speaker */}
-      <mesh position={[1.72, 5.38, -2.06]} material={metalMaterial}>
-        <cylinderGeometry args={[0.11, 0.11, 0.055, 20]} />
-      </mesh>
-      <mesh position={[1.72, 5.38, -2.095]} material={cyanEmissiveMaterial}>
-        <circleGeometry args={[0.035, 16]} />
-      </mesh>
-
-      {/* Soft architectural lighting */}
-      <rectAreaLight position={[0, 5.55, -0.8]} width={3.4} height={1.8} intensity={4.2} color="#fff7e8" />
-      <pointLight position={[0, 3.5, -1.8]} intensity={2.0} distance={6} color="#f5e9ff" />
-      <pointLight position={[-2.1, 3.0, -0.4]} intensity={1.5} distance={5} color="#b47cff" />
-      <pointLight position={[2.0, 2.8, -0.5]} intensity={1.2} distance={4.5} color="#59ddff" />
-      <pointLight position={[0, 1.0, 0.5]} intensity={0.65} distance={4} color="#8bb9d1" />
     </group>
   );
 }
 
-function ElevatorButton({
+function PhysicalButton({
   floor,
   selected,
   disabled,
+  position,
   onSelect,
 }: {
   floor: ElevatorFloor;
   selected: boolean;
   disabled: boolean;
+  position: [number, number, number];
   onSelect: (floor: ElevatorFloor) => void;
 }) {
   const [hovered, setHovered] = useState(false);
-  const mesh = useRef<THREE.Mesh>(null);
+  const group = useRef<THREE.Group>(null);
+  const button = useRef<THREE.Mesh>(null);
+  const border = useMemo(
+    () => new THREE.MeshStandardMaterial({ color: "#8e8e89", roughness: 0.25, metalness: 0.82 }),
+    [],
+  );
 
-  useFrame((_, delta) => {
-    if (!mesh.current) return;
-    const targetZ = selected ? 0.075 : hovered ? 0.045 : 0;
-    mesh.current.position.z = THREE.MathUtils.damp(mesh.current.position.z, targetZ, 16, delta);
+  useFrame(() => {
+    if (!button.current) return;
+    const target = selected ? 0.055 : hovered ? 0.035 : 0;
+    button.current.position.z = target;
   });
 
-  const active = hovered || selected;
-
   return (
-    <group>
+    <group ref={group} position={position}>
+      <Box position={[0, 0, 0]} scale={[1.0, 0.45, 0.07]} material={border} />
       <mesh
-        ref={mesh}
-        onClick={(event) => {
-          event.stopPropagation();
-          if (!disabled) onSelect(floor);
-        }}
+        ref={button}
+        position={[0, 0, 0]}
         onPointerOver={(event) => {
           event.stopPropagation();
           if (!disabled) setHovered(true);
         }}
         onPointerOut={() => setHovered(false)}
+        onClick={(event) => {
+          event.stopPropagation();
+          if (!disabled) onSelect(floor);
+        }}
         castShadow
       >
-        <cylinderGeometry args={[0.34, 0.34, 0.12, 32]} />
+        <boxGeometry args={[0.88, 0.33, 0.13]} />
         <meshStandardMaterial
-          color={active ? "#5b5863" : "#302e36"}
-          emissive={active ? floor.accent : "#000000"}
-          emissiveIntensity={active ? 0.28 : 0}
-          roughness={0.25}
-          metalness={0.82}
+          color={selected || hovered ? "#8d76aa" : "#686966"}
+          emissive={selected || hovered ? floor.accent : "#000000"}
+          emissiveIntensity={selected ? 0.72 : hovered ? 0.32 : 0}
+          roughness={0.27}
+          metalness={0.62}
         />
       </mesh>
-
-      <mesh position={[0, 0.002, active ? 0.12 : 0.08]} rotation={[-Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[0.36, 0.39, 32]} />
-        <meshBasicMaterial color={active ? floor.accent : "#66616d"} />
+      <Text position={[-0.28, 0, 0.095]} fontSize={0.095} color={selected || hovered ? "#fff9ef" : "#e4dfd5"} anchorX="center" anchorY="middle">
+        {String(floor.floor).padStart(2, "0")}
+      </Text>
+      <Text position={[0.18, 0, 0.095]} fontSize={0.082} color={selected || hovered ? "#fff9ef" : "#d0ccc4"} anchorX="center" anchorY="middle" letterSpacing={0.04}>
+        {floor.label}
+      </Text>
+      <mesh position={[0.41, 0, 0.098]}>
+        <sphereGeometry args={[0.026, 12, 8]} />
+        <meshStandardMaterial color={selected ? floor.accent : "#8b8985"} emissive={selected ? floor.accent : "#000000"} emissiveIntensity={selected ? 1.2 : 0} />
       </mesh>
-
-      <Html
-        position={[0.62, 0, 0.08]}
-        center
-        transform
-        distanceFactor={4.2}
-        style={{
-          color: active ? "#ffffff" : "rgba(240,238,245,.76)",
-          fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
-          fontSize: "7px",
-          fontWeight: 700,
-          letterSpacing: "0.08em",
-          pointerEvents: "none",
-          whiteSpace: "nowrap",
-          userSelect: "none",
-          textShadow: active ? `0 0 8px ${floor.accent}` : "none",
-        }}
-      >
-        {String(floor.floor).padStart(2, "0")}  {floor.shortLabel}
-      </Html>
     </group>
   );
 }
 
-function ElevatorPanel({
-  enabled,
-  selectedFloor,
-  onSelect,
-}: {
-  enabled: boolean;
-  selectedFloor: ElevatorFloor | null;
-  onSelect: (floor: ElevatorFloor) => void;
-}) {
+function FloorDisplay({ floor, target, travelProgress, arrived }: { floor: number; target: number | null; travelProgress: number; arrived: boolean }) {
+  const frameMaterial = useMemo(() => new THREE.MeshStandardMaterial({ color: "#3f403e", roughness: 0.26, metalness: 0.7 }), []);
+  const screenMaterial = useMemo(() => new THREE.MeshStandardMaterial({ color: "#111414", roughness: 0.16, metalness: 0.24, emissive: "#171b1e", emissiveIntensity: 0.8 }), []);
+  const displayed = target && target !== floor ? Math.round(THREE.MathUtils.lerp(floor, target, smooth(travelProgress))) : floor;
   return (
-    <group position={[2.39, 3.0, -0.34]} rotation={[0, -Math.PI / 2, 0]}>
-      <Box position={[0, 0, 0]} scale={[2.35, 5.35, 0.24]} material={metalMaterial} />
-      <Box position={[0, 0, 0.02]} scale={[2.08, 5.08, 0.10]} material={darkMaterial} />
-
-      {/* Panel frame */}
-      <Box position={[0, 2.52, 0.08]} scale={[2.12, 0.055, 0.05]} material={metalLightMaterial} />
-      <Box position={[0, -2.52, 0.08]} scale={[2.12, 0.055, 0.05]} material={metalLightMaterial} />
-      <Box position={[-1.04, 0, 0.08]} scale={[0.055, 5.0, 0.05]} material={metalLightMaterial} />
-      <Box position={[1.04, 0, 0.08]} scale={[0.055, 5.0, 0.05]} material={metalLightMaterial} />
-
-      {/* Display */}
-      <Box position={[0, 1.95, 0.12]} scale={[1.42, 0.62, 0.06]} material={metalMaterial} />
-      <Box position={[0, 1.95, 0.155]} scale={[1.18, 0.38, 0.025]} material={darkMaterial} />
-      <Html
-        position={[0, 1.95, 0.19]}
-        center
-        transform
-        distanceFactor={4.2}
-        style={{
-          color: COLORS.cyan,
-          fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
-          fontSize: "10px",
-          fontWeight: 800,
-          letterSpacing: "0.16em",
-          whiteSpace: "nowrap",
-          pointerEvents: "none",
-          userSelect: "none",
-          textShadow: "0 0 10px rgba(72,223,255,.75)",
-        }}
-      >
-        {selectedFloor ? `GO ${String(selectedFloor.floor).padStart(2, "0")}` : "LIFT"}
-      </Html>
-
-      <Html
-        position={[0, 1.46, 0.14]}
-        center
-        transform
-        distanceFactor={4.2}
-        style={{
-          color: "rgba(242,240,245,.56)",
-          fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
-          fontSize: "6px",
-          letterSpacing: "0.18em",
-          whiteSpace: "nowrap",
-          pointerEvents: "none",
-          userSelect: "none",
-        }}
-      >
-        PORTFOLIO DESTINATIONS
-      </Html>
-
-      {ELEVATOR_FLOORS.map((floor, index) => (
-        <group key={floor.id} position={[-0.47, 0.88 - index * 0.66, 0.18]}>
-          <ElevatorButton
-            floor={floor}
-            selected={selectedFloor?.id === floor.id}
-            disabled={!enabled}
-            onSelect={onSelect}
-          />
-        </group>
-      ))}
-
-      {/* Service controls */}
-      <group position={[0, -2.03, 0.12]}>
-        <mesh rotation={[-Math.PI / 2, 0, 0]}>
-          <boxGeometry args={[1.48, 0.45, 0.06]} />
-          <meshStandardMaterial color="#17161c" roughness={0.4} metalness={0.65} />
-        </mesh>
-        <Html
-          position={[0, 0, 0.09]}
-          center
-          transform
-          distanceFactor={4.2}
-          style={{
-            color: "rgba(242,240,245,.42)",
-            fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
-            fontSize: "6px",
-            letterSpacing: "0.15em",
-            whiteSpace: "nowrap",
-            pointerEvents: "none",
-            userSelect: "none",
-          }}
-        >
-          EMERGENCY  •  SERVICE
-        </Html>
-      </group>
-
-      {/* Panel screws */}
-      {[
-        [-0.94, 2.34],
-        [0.94, 2.34],
-        [-0.94, -2.34],
-        [0.94, -2.34],
-      ].map(([x, y]) => (
-        <mesh key={`${x}-${y}`} position={[x, y, 0.14]}>
-          <cylinderGeometry args={[0.035, 0.035, 0.025, 16]} />
-          <meshStandardMaterial color="#8c8992" roughness={0.25} metalness={0.9} />
-        </mesh>
-      ))}
+    <group position={[0, 6.84, 0.98]}>
+      <Box position={[0, 0, 0]} scale={[1.5, 0.58, 0.1]} material={frameMaterial} />
+      <Box position={[0, 0, -0.06]} scale={[1.25, 0.42, 0.03]} material={screenMaterial} />
+      <Text position={[0, 0.02, -0.085]} fontSize={0.23} color={arrived ? "#fff0d0" : colors.purpleSoft} anchorX="center" anchorY="middle" letterSpacing={0.06}>
+        {arrived ? `ARRIVED  0${displayed}` : target && target !== floor ? `0${displayed}  /  0${target}` : `0${displayed}`}
+      </Text>
     </group>
   );
 }
 
-function FloorIndicator({
-  floor,
-  target,
-  moving,
-}: {
-  floor: number;
-  target: number | null;
-  moving: boolean;
-}) {
-  return (
-    <group position={[0, 6.62, 0.94]}>
-      <Box position={[0, 0, 0]} scale={[1.65, 0.62, 0.12]} material={metalMaterial} />
-      <Box position={[0, 0, 0.07]} scale={[1.42, 0.42, 0.035]} material={darkMaterial} />
-      <Html
-        position={[0, 0, 0.10]}
-        center
-        transform
-        distanceFactor={6}
-        style={{
-          color: moving ? COLORS.cyan : COLORS.white,
-          fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
-          fontSize: "12px",
-          fontWeight: 800,
-          letterSpacing: "0.18em",
-          whiteSpace: "nowrap",
-          textShadow: moving ? "0 0 12px rgba(72,223,255,.85)" : "0 0 9px rgba(255,255,255,.35)",
-          userSelect: "none",
-        }}
-      >
-        {moving
-          ? `${String(floor).padStart(2, "0")}  →  ${String(target ?? floor).padStart(2, "0")}`
-          : `FLOOR  ${String(floor).padStart(2, "0")}`}
-      </Html>
-    </group>
-  );
-}
-
-function ElevatorCabin({
-  cabinYRef,
-  doorProgressRef,
-  currentFloor,
-  targetFloor,
-  moving,
-  panelEnabled,
-  selectedFloor,
-  onSelectFloor,
-}: {
-  cabinYRef: CabinYRef;
-  doorProgressRef: DoorProgressRef;
-  currentFloor: number;
-  targetFloor: number | null;
-  moving: boolean;
-  panelEnabled: boolean;
-  selectedFloor: ElevatorFloor | null;
-  onSelectFloor: (floor: ElevatorFloor) => void;
-}) {
-  const cabin = useRef<THREE.Group>(null);
-
-  useFrame(() => {
-    if (cabin.current) cabin.current.position.y = cabinYRef.current;
-  });
-
-  return (
-    <group ref={cabin}>
-      <ElevatorInterior />
-      <ElevatorDoors openProgressRef={doorProgressRef} />
-      <ElevatorPanel
-        enabled={panelEnabled}
-        selectedFloor={selectedFloor}
-        onSelect={onSelectFloor}
-      />
-      <FloorIndicator
-        floor={currentFloor}
-        target={targetFloor}
-        moving={moving}
-      />
-    </group>
-  );
-}
-
-function LobbyArchitecture() {
-  const wallMaterial = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: "#29252f",
-        roughness: 0.62,
-        metalness: 0.18,
-      }),
-    [],
-  );
-
-  const floorLobby = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: "#24232a",
-        roughness: 0.34,
-        metalness: 0.32,
-      }),
-    [],
-  );
-
+function CabinLights({ travelProgress }: { travelProgress: number }) {
+  const brightness = 1 + Math.sin(travelProgress * Math.PI) * 0.08;
   return (
     <group>
-      {/* Lobby shell */}
-      <Box position={[0, -0.18, 8.5]} scale={[20, 0.35, 18]} material={floorLobby} />
-      <Box position={[-10, 4.5, 0]} scale={[0.3, 9, 18]} material={wallMaterial} />
-      <Box position={[10, 4.5, 0]} scale={[0.3, 9, 18]} material={wallMaterial} />
-      <Box position={[0, 8.9, 0]} scale={[20, 0.3, 18]} material={wallMaterial} />
-
-      {/* Floor inlay lines */}
-      {[-7.5, -3.5, 0.5, 4.5, 8].map((z, index) => (
-        <NeonLine key={z} position={[0, 0.04, z]} scale={[17.5, 0.018, 0.018]} color={index % 2 ? "cyan" : "purple"} />
-      ))}
-
-      <Box position={[0, 0.05, 6.0]} scale={[12.5, 0.05, 0.035]} material={metalLightMaterial} />
-
-      {/* Architectural wall fins */}
-      {[-7.5, -5.2, 5.2, 7.5].map((x) => (
-        <Box key={`fin-${x}`} position={[x, 4.4, 1.8]} scale={[0.10, 7.6, 0.55]} material={metalLightMaterial} />
-      ))}
-
-      {/* Lobby ceiling panels */}
-      {[-5, 0, 5].map((x) => (
-        <Box key={`ceiling-panel-${x}`} position={[x, 8.72, 2.8]} scale={[3.6, 0.06, 4.2]} material={stoneInsetMaterial} />
-      ))}
-
-      <NeonLine position={[-9.72, 4.3, 0]} scale={[0.035, 7.7, 17]} color="purple" />
-      <NeonLine position={[9.72, 4.3, 0]} scale={[0.035, 7.7, 17]} color="cyan" />
-
-      {/* Bench */}
-      <Box position={[-5.4, 0.62, 4.0]} scale={[2.8, 0.22, 0.72]} material={metalMaterial} />
-      <Box position={[-5.4, 1.25, 4.25]} scale={[2.8, 1.15, 0.16]} material={darkMaterial} />
-      <Box position={[-6.45, 0.3, 4.0]} scale={[0.14, 0.62, 0.55]} material={metalLightMaterial} />
-      <Box position={[-4.35, 0.3, 4.0]} scale={[0.14, 0.62, 0.55]} material={metalLightMaterial} />
-
-      {/* Minimal lobby plant */}
-      <Box position={[5.0, 0.55, 4.2]} scale={[0.8, 0.75, 0.8]} material={darkMaterial} />
-      <mesh position={[5.0, 2.0, 4.2]} material={wallMaterial}>
-        <sphereGeometry args={[0.95, 12, 8]} />
-      </mesh>
-      {[-0.35, 0, 0.35].map((x) => (
-        <mesh key={`leaf-${x}`} position={[5 + x, 2.25, 4.2]} material={purpleEmissiveMaterial}>
-          <sphereGeometry args={[0.42, 10, 7]} />
-        </mesh>
-      ))}
-
-      {/* Lobby lighting */}
-      <ambientLight intensity={0.52} color="#d7c8e8" />
-      <rectAreaLight position={[0, 7.9, 5.0]} rotation={[-Math.PI / 2, 0, 0]} width={7} height={4} intensity={5.5} color="#fff7e8" />
-      <pointLight position={[0, 5.2, 4.5]} intensity={3.2} distance={12} color="#d9c7ff" />
-      <pointLight position={[0, 3.0, 10]} intensity={2.5} distance={12} color="#73dfff" />
+      <pointLight position={[-1.8, 5.6, -1.4]} intensity={2.7 * brightness} distance={6} color="#fff0d0" />
+      <pointLight position={[1.8, 5.6, -1.4]} intensity={2.7 * brightness} distance={6} color="#fff0d0" />
+      <pointLight position={[0, 3.2, -2.1]} intensity={1.6} distance={5} color="#ffe4bd" />
     </group>
   );
 }
 
-function CinematicLiftController({
-  cameraRef,
-  cabinYRef,
-  doorProgressRef,
-  onStateChange,
-  onSelectFloorRef,
-  onDestinationSelectRef,
-  onFloorSelected,
-  onEvent,
+function LiftCabin({
+  cabinY,
+  doorProgress,
+  panelActive,
+  selected,
+  onSelect,
+  floor,
+  target,
+  travelProgress,
+  arrived,
 }: {
-  cameraRef: React.MutableRefObject<THREE.PerspectiveCamera | null>;
-  cabinYRef: CabinYRef;
-  doorProgressRef: DoorProgressRef;
-  onStateChange: (state: ElevatorState) => void;
-  onSelectFloorRef: React.MutableRefObject<((floor: ElevatorFloor) => void) | null>;
-  onDestinationSelectRef: React.MutableRefObject<((floor: ElevatorFloor) => void) | null>;
-  onFloorSelected: (floor: ElevatorFloor) => void;
-  onEvent?: (event: ElevatorEvent) => void;
+  cabinY: number;
+  doorProgress: number;
+  panelActive: boolean;
+  selected: ElevatorFloor | null;
+  onSelect: (floor: ElevatorFloor) => void;
+  floor: number;
+  target: number | null;
+  travelProgress: number;
+  arrived: boolean;
 }) {
-  const scrollProgressRef = useRef(0);
-  const selectedRef = useRef<ElevatorFloor | null>(null);
-  const lastStageRef = useRef<string>("approach");
-  const currentFloorRef = useRef(1);
-  const targetFloorRef = useRef(1);
-  const destinationSentRef = useRef(false);
-
-  const cameraStart = useMemo(() => new THREE.Vector3(0, 2.55, 12.5), []);
-  const cameraDoor = useMemo(() => new THREE.Vector3(0, 2.75, 5.3), []);
-  const cameraInside = useMemo(() => new THREE.Vector3(0, 2.72, -0.35), []);
-  const look = useMemo(() => new THREE.Vector3(), []);
-  const position = useMemo(() => new THREE.Vector3(), []);
-
-  const setProgress = useCallback((next: number) => {
-    const selected = selectedRef.current;
-    const max = selected ? 1 : 0.72;
-    scrollProgressRef.current = THREE.MathUtils.clamp(next, 0, max);
-  }, []);
-
-  const selectFloor = useCallback(
-    (floor: ElevatorFloor) => {
-      if (scrollProgressRef.current < 0.61 || scrollProgressRef.current > 0.73) return;
-      if (selectedRef.current) return;
-
-      selectedRef.current = floor;
-      targetFloorRef.current = floor.floor;
-      destinationSentRef.current = false;
-      onFloorSelected(floor);
-      onEvent?.("select");
-    },
-    [onEvent, onFloorSelected],
+  return (
+    <group
+      position={[
+        Math.sin(travelProgress * Math.PI * 8) * 0.008,
+        cabinY + Math.sin(travelProgress * Math.PI * 6) * 0.012,
+        0,
+      ]}
+    >
+      <CabinArchitecture />
+      <CabinLights travelProgress={travelProgress} />
+      <DoorSet progress={doorProgress} />
+      <ControlPanel active={panelActive} selected={selected} onSelect={onSelect} />
+      <FloorDisplay floor={floor} target={target} travelProgress={travelProgress} arrived={arrived} />
+    </group>
   );
-
-  useEffect(() => {
-    onSelectFloorRef.current = selectFloor;
-    return () => {
-      onSelectFloorRef.current = null;
-    };
-  }, [onSelectFloorRef, selectFloor]);
-
-  useEffect(() => {
-    let wheelRemainder = 0;
-    let touchY = 0;
-
-    const onWheel = (event: WheelEvent) => {
-      event.preventDefault();
-      wheelRemainder += event.deltaY;
-      const step = wheelRemainder * 0.00075;
-      wheelRemainder = 0;
-      setProgress(scrollProgressRef.current + step);
-    };
-
-    const onTouchStart = (event: TouchEvent) => {
-      if (event.touches.length === 1) touchY = event.touches[0].clientY;
-    };
-
-    const onTouchMove = (event: TouchEvent) => {
-      if (event.touches.length !== 1) return;
-      event.preventDefault();
-      const y = event.touches[0].clientY;
-      const delta = touchY - y;
-      touchY = y;
-      setProgress(scrollProgressRef.current + delta * 0.004);
-    };
-
-    window.addEventListener("wheel", onWheel, { passive: false });
-    window.addEventListener("touchstart", onTouchStart, { passive: true });
-    window.addEventListener("touchmove", onTouchMove, { passive: false });
-
-    return () => {
-      window.removeEventListener("wheel", onWheel);
-      window.removeEventListener("touchstart", onTouchStart);
-      window.removeEventListener("touchmove", onTouchMove);
-    };
-  }, [setProgress]);
-
-  useFrame(() => {
-    const camera = cameraRef.current;
-    if (!camera) return;
-
-    const p = scrollProgressRef.current;
-    const selected = selectedRef.current;
-    const targetFloor = targetFloorRef.current;
-    let stage: ElevatorState;
-
-    if (p < 0.18) stage = "approach";
-    else if (p < 0.30) stage = "opening";
-    else if (p < 0.44) stage = "entering";
-    else if (p < 0.62) stage = "lookAround";
-    else if (!selected || p < 0.72) stage = "idle";
-    else if (p < 0.80) stage = "closing";
-    else if (p < 0.96) stage = "moving";
-    else if (p < 1) stage = "openingDestination";
-    else stage = "complete";
-
-    if (stage !== lastStageRef.current) {
-      const eventMap: Partial<Record<ElevatorState, ElevatorEvent>> = {
-        opening: "doorOpen",
-        entering: "enter",
-        closing: "doorClose",
-        moving: "move",
-        arriving: "arrive",
-        openingDestination: "destinationOpen",
-      };
-      const event = eventMap[stage];
-      if (event) onEvent?.(event);
-      lastStageRef.current = stage;
-      onStateChange(stage);
-    }
-
-    if (p < 0.18) {
-      const t = THREE.MathUtils.smootherstep(p / 0.18, 0, 1);
-      camera.position.lerpVectors(cameraStart, cameraDoor, t);
-      look.set(0, 3.0, 0.35);
-      camera.lookAt(look);
-      doorProgressRef.current = 0;
-      cabinYRef.current = 0;
-      return;
-    }
-
-    if (p < 0.30) {
-      const t = THREE.MathUtils.smootherstep((p - 0.18) / 0.12, 0, 1);
-      camera.position.copy(cameraDoor);
-      look.set(0, 3.0, 0.0);
-      camera.lookAt(look);
-      doorProgressRef.current = t;
-      return;
-    }
-
-    if (p < 0.44) {
-      const t = THREE.MathUtils.smootherstep((p - 0.30) / 0.14, 0, 1);
-      position.lerpVectors(cameraDoor, cameraInside, t);
-      camera.position.copy(position);
-      look.set(0, 2.8, -1.4);
-      camera.lookAt(look);
-      doorProgressRef.current = 1;
-      return;
-    }
-
-    if (p < 0.62) {
-      const t = THREE.MathUtils.clamp((p - 0.44) / 0.18, 0, 1);
-      const angle = THREE.MathUtils.smootherstep(t, 0, 1) * Math.PI * 2;
-      camera.position.copy(cameraInside);
-      look.set(
-        Math.sin(angle) * 3.0,
-        2.75,
-        -0.35 + Math.cos(angle) * 3.0,
-      );
-      camera.lookAt(look);
-      doorProgressRef.current = 1;
-      return;
-    }
-
-    if (!selected || p < 0.72) {
-      camera.position.copy(cameraInside);
-      look.set(2.25, 2.95, -0.35);
-      camera.lookAt(look);
-      doorProgressRef.current = 1;
-      cabinYRef.current = 0;
-      return;
-    }
-
-    if (p < 0.80) {
-      const t = THREE.MathUtils.smootherstep((p - 0.72) / 0.08, 0, 1);
-      camera.position.copy(cameraInside);
-      look.set(2.25, 2.95, -0.35);
-      camera.lookAt(look);
-      doorProgressRef.current = 1 - t;
-      return;
-    }
-
-    if (p < 0.96) {
-      const t = THREE.MathUtils.smootherstep((p - 0.80) / 0.16, 0, 1);
-      const floorDelta = targetFloor - currentFloorRef.current;
-      cabinYRef.current = floorDelta * 6.6 * t;
-      camera.position.set(0, 2.72 + cabinYRef.current, -0.35);
-      look.set(0, 2.72 + cabinYRef.current, -1.35);
-      camera.lookAt(look);
-      doorProgressRef.current = 0;
-      return;
-    }
-
-    cabinYRef.current = (targetFloor - currentFloorRef.current) * 6.6;
-    camera.position.set(0, 2.72 + cabinYRef.current, -0.35);
-    look.set(0, 2.72 + cabinYRef.current, -1.35);
-    camera.lookAt(look);
-
-    const openT = THREE.MathUtils.clamp((p - 0.96) / 0.04, 0, 1);
-    doorProgressRef.current = THREE.MathUtils.smootherstep(openT, 0, 1);
-
-    if (p >= 1 && !destinationSentRef.current) {
-      destinationSentRef.current = true;
-      currentFloorRef.current = targetFloor;
-      const destination = ELEVATOR_FLOORS.find((item) => item.floor === targetFloor);
-      if (destination) onDestinationSelectRef.current?.(destination);
-    }
-  });
-
-  return null;
 }
 
-function LiftScene({
-  onDestinationSelect,
-  onEvent,
-}: {
-  onDestinationSelect?: (destination: ElevatorFloor) => void;
-  onEvent?: (event: ElevatorEvent) => void;
-}) {
-  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
-  const cabinYRef = useRef(0);
-  const doorProgressRef = useRef(0);
-  const onSelectFloorRef = useRef<((floor: ElevatorFloor) => void) | null>(
-    null,
-  );
-  const onDestinationSelectRef = useRef<
-    ((floor: ElevatorFloor) => void) | null
-  >(null);
-  const [state, setState] = useState<ElevatorState>("approach");
-  const [selectedFloor, setSelectedFloor] = useState<ElevatorFloor | null>(
-    null,
-  );
-  const [currentFloor, setCurrentFloor] = useState(1);
-  const [targetFloor, setTargetFloor] = useState<number | null>(null);
+function CameraRig({ progress, travelProgressValue, targetFloorValue }: { progress: number; travelProgressValue: number; targetFloorValue: number | null }) {
+  const camera = useRef<THREE.PerspectiveCamera>(null);
+  const position = useMemo(() => new THREE.Vector3(), []);
+  const target = useMemo(() => new THREE.Vector3(), []);
+  const scratch = useMemo(() => new THREE.Vector3(), []);
 
-  const stateRef = useRef(state);
-  stateRef.current = state;
+  useFrame(() => {
+    if (!camera.current) return;
 
-  const currentFloorRef = useRef(currentFloor);
-  currentFloorRef.current = currentFloor;
+    const approach = smooth(phase(PHASES.approachStart, PHASES.approachEnd, progress));
+    const enter = smooth(phase(PHASES.enterStart, PHASES.enterEnd, progress));
+    const turn = smooth(phase(PHASES.turnStart, PHASES.turnEnd, progress));
+    const focus = smooth(phase(PHASES.focusStart, PHASES.focusEnd, progress));
+    const exitReveal = smooth(phase(PHASES.arrivalStart, PHASES.arrivalEnd, progress));
 
-  const targetFloorRef = useRef(targetFloor);
-  targetFloorRef.current = targetFloor;
+    const outside = new THREE.Vector3(0, 2.72, 12.8);
+    const nearDoor = new THREE.Vector3(0, 2.76, 5.15);
+    const inside = new THREE.Vector3(0, 2.78, -0.55);
+    const final = new THREE.Vector3(0.15, 2.8, -0.42);
 
-  const handleStateChange = useCallback((next: ElevatorState) => {
-    setState(next);
-  }, []);
+    if (progress <= PHASES.approachEnd) {
+      position.lerpVectors(outside, nearDoor, approach);
+      target.set(0, 3.05, 0.5);
+    } else if (progress <= PHASES.openEnd) {
+      position.copy(nearDoor);
+      target.set(0, 3.05, 0.2);
+    } else if (progress <= PHASES.enterEnd) {
+      position.lerpVectors(nearDoor, inside, enter);
+      target.set(0, 2.9, -1.85);
+    } else if (progress <= PHASES.turnEnd) {
+      position.copy(inside);
+      const yaw = THREE.MathUtils.lerp(0, THREE.MathUtils.degToRad(165), turn);
+      const lookDistance = 2.8;
+      target.set(Math.sin(yaw) * lookDistance, 2.82, -0.55 - Math.cos(yaw) * lookDistance);
+    } else if (progress <= PHASES.focusEnd) {
+      position.lerpVectors(inside, final, focus);
+      scratch.set(0.7, 2.82, 0.72);
+      target.lerpVectors(new THREE.Vector3(0, 2.82, 2.05), scratch, focus);
+    } else if (progress < PHASES.arrivalStart) {
+      position.copy(final);
+      target.set(0.7, 2.82, 0.72);
+    } else {
+      position.copy(final);
+      target.set(0.15, 2.85, 1.15 + exitReveal * 1.1);
+    }
 
-  const handleSelectFloor = useCallback((floor: ElevatorFloor) => {
-    setSelectedFloor(floor);
-    setTargetFloor(floor.floor);
-  }, []);
+    const travelOffset = progress >= PHASES.travelStart && targetFloorValue > 1
+      ? (targetFloorValue - 1) * 5.8 * travelProgressValue
+      : 0;
+    position.y += travelOffset;
+    target.y += travelOffset;
+    camera.current.position.copy(position);
+    camera.current.lookAt(target);
+  });
 
-  const handleDestination = useCallback(
-    (floor: ElevatorFloor) => {
-      setCurrentFloor(floor.floor);
-      setTargetFloor(null);
-      onDestinationSelect?.(floor);
-    },
-    [onDestinationSelect],
-  );
+  return <PerspectiveCamera ref={camera} makeDefault fov={52} near={0.1} far={120} position={[0, 2.72, 12.8]} />;
+}
+
+function ScrollDrivenLift({ onDestinationSelect, onEvent }: LiftSectionProps) {
+  const scroll = useScroll();
+  const [selected, setSelected] = useState<ElevatorFloor | null>(null);
+  const [notified, setNotified] = useState(false);
+  const previousPhase = useRef("approach");
+
+  const progress = THREE.MathUtils.clamp(scroll.offset, 0, 1);
+  const openBeforeEntry = smooth(phase(PHASES.openStart, PHASES.openEnd, progress));
+  const closeAfterSelection = 1 - smooth(phase(PHASES.closeStart, PHASES.closeEnd, progress));
+  const doorProgress = progress <= PHASES.openEnd ? openBeforeEntry : progress < PHASES.closeStart ? 1 : closeAfterSelection;
+  const travelProgress = smooth(phase(PHASES.travelStart, PHASES.travelEnd, progress));
+  const arrived = progress >= PHASES.arrivalStart;
+  const panelActive = progress >= PHASES.focusStart && progress <= PHASES.focusEnd + 0.035;
+  const targetFloor = selected?.floor ?? null;
+  const currentFloor = 1;
+  const travelOffset = targetFloor ? (targetFloor - currentFloor) * 5.8 * travelProgress : 0;
+
+  const stage =
+    progress < PHASES.approachEnd
+      ? "approach"
+      : progress < PHASES.openEnd
+        ? "doorOpen"
+        : progress < PHASES.enterEnd
+          ? "enter"
+          : progress < PHASES.turnEnd
+            ? "turn"
+            : progress < PHASES.focusEnd
+              ? "panelFocus"
+              : progress < PHASES.closeEnd
+                ? "doorClose"
+                : progress < PHASES.travelEnd
+                  ? "travel"
+                  : "arrival";
 
   useEffect(() => {
-    onDestinationSelectRef.current = handleDestination;
-    return () => {
-      onDestinationSelectRef.current = null;
+    if (stage === previousPhase.current) return;
+    previousPhase.current = stage;
+    const events: Record<string, ElevatorEvent | undefined> = {
+      doorOpen: "doorOpen",
+      enter: "enter",
+      doorClose: "doorClose",
+      travel: "move",
+      arrival: "arrive",
     };
-  }, [handleDestination]);
+    const event = events[stage];
+    if (event) onEvent?.(event);
+    if (stage === "approach") onEvent?.("approach");
+    if (stage === "arrival") onEvent?.("destinationOpen");
+  }, [stage, onEvent]);
+
+  useEffect(() => {
+    if (progress >= PHASES.arrivalEnd - 0.002 && selected && !notified) {
+      setNotified(true);
+      onDestinationSelect?.(selected);
+    } else if (progress < PHASES.arrivalEnd - 0.02 && notified) {
+      setNotified(false);
+    }
+  }, [progress, selected, notified, onDestinationSelect]);
+
+  const handleSelect = (floor: ElevatorFloor) => {
+    if (!panelActive) return;
+    setSelected(floor);
+    setNotified(false);
+    onEvent?.("select");
+  };
 
   return (
     <>
-      <PerspectiveCamera
-        ref={cameraRef}
-        makeDefault
-        fov={54}
-        near={0.1}
-        far={150}
-        position={[0, 2.55, 12.5]}
+      <color attach="background" args={["#a8a098"]} />
+      <fog attach="fog" args={["#a8a098", 28, 65]} />
+      <Environment preset="city" environmentIntensity={0.32} />
+      <LiftLighting />
+      <Lobby />
+      <ExteriorElevator />
+      <LiftCabin
+        cabinY={travelOffset}
+        doorProgress={doorProgress}
+        panelActive={panelActive}
+        selected={selected}
+        onSelect={handleSelect}
+        floor={currentFloor}
+        target={targetFloor}
+        travelProgress={travelProgress}
+        arrived={arrived}
       />
-
-      <color attach="background" args={[COLORS.background]} />
-      <fog attach="fog" args={[COLORS.background, 24, 60]} />
-
-      <ambientLight intensity={0.38} color="#d8d0e5" />
-      <hemisphereLight args={["#f3eaff", "#16131d", 0.55]} />
-
-      <LobbyArchitecture />
-      <ElevatorExterior />
-
-      <ElevatorCabin
-        cabinYRef={cabinYRef}
-        doorProgressRef={doorProgressRef}
-        currentFloor={currentFloor}
-        targetFloor={targetFloor}
-        moving={state === "moving"}
-        panelEnabled={state === "idle"}
-        selectedFloor={selectedFloor}
-        onSelectFloor={(floor) => onSelectFloorRef.current?.(floor)}
-      />
-
-      <CinematicLiftController
-        cameraRef={cameraRef}
-        cabinYRef={cabinYRef}
-        doorProgressRef={doorProgressRef}
-        onStateChange={handleStateChange}
-        onSelectFloorRef={onSelectFloorRef}
-        onDestinationSelectRef={onDestinationSelectRef}
-        onFloorSelected={handleSelectFloor}
-        onEvent={onEvent}
-      />
-
-      <Html
-        position={[0, 1.15, 1.1]}
-        center
-        distanceFactor={7}
-        style={{
-          color: "rgba(255,255,255,.45)",
-          fontFamily: "system-ui, sans-serif",
-          fontSize: "10px",
-          letterSpacing: ".18em",
-          textTransform: "uppercase",
-          pointerEvents: "none",
-          whiteSpace: "nowrap",
-          userSelect: "none",
-        }}
-      >
-        {state === "idle"
-          ? "Select a destination"
-          : state === "approach"
-            ? "Approaching lift"
-            : state === "moving"
-              ? "Traveling"
-              : "Portfolio elevator"}
-      </Html>
+      <CameraRig progress={progress} travelProgressValue={travelProgress} targetFloorValue={targetFloor} />
     </>
   );
 }
@@ -1170,51 +794,49 @@ export default function LiftSection({
     <div
       className={className}
       style={{
-        position: "relative",
         width: "100%",
         height: "100vh",
+        position: "relative",
         overflow: "hidden",
-        background: COLORS.background,
-        touchAction: "none",
+        background: "#a8a098",
       }}
     >
       <Canvas
         shadows
-        dpr={[1, 1.35]}
-        gl={{
-          antialias: false,
-          powerPreference: "high-performance",
-          alpha: false,
-          stencil: false,
-          depth: true,
-        }}
-        camera={{
-          position: [0, 2.55, 12.5],
-          fov: 54,
-          near: 0.1,
-          far: 150,
+        dpr={[1, 1.5]}
+        gl={{ antialias: true, powerPreference: "high-performance", alpha: false }}
+        camera={{ position: [0, 2.72, 12.8], fov: 52, near: 0.1, far: 120 }}
+        onCreated={({ gl }) => {
+          gl.toneMapping = THREE.ACESFilmicToneMapping;
+          gl.toneMappingExposure = 1.08;
         }}
       >
-        <LiftScene
-          onDestinationSelect={onDestinationSelect}
-          onEvent={onEvent}
-        />
+        <ScrollControls pages={7} distance={1} damping={0} maxSpeed={Infinity}>
+          <ScrollDrivenLift onDestinationSelect={onDestinationSelect} onEvent={onEvent} />
+        </ScrollControls>
       </Canvas>
 
       <div
         style={{
           position: "absolute",
-          left: 24,
-          bottom: 22,
-          color: "rgba(255,255,255,.42)",
-          fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
-          fontSize: 10,
+          left: "50%",
+          bottom: 26,
+          transform: "translateX(-50%)",
+          padding: "9px 16px",
+          borderRadius: 999,
+          background: "rgba(55,49,43,.56)",
+          border: "1px solid rgba(255,245,225,.22)",
+          color: "rgba(255,248,237,.82)",
+          fontFamily: "system-ui, sans-serif",
+          fontSize: 11,
           letterSpacing: ".16em",
           textTransform: "uppercase",
           pointerEvents: "none",
+          whiteSpace: "nowrap",
+          backdropFilter: "blur(8px)",
         }}
       >
-        Scroll to control the lift · Click a floor when the panel is active
+        Scroll to enter · stop anytime · choose your destination
       </div>
     </div>
   );
