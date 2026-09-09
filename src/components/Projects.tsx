@@ -23,6 +23,15 @@ const Projects = () => {
       featured: true
     },
     {
+      title: 'Vyaparix',
+      image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1788970839/c040e2ef-e478-4216-92df-c252c8773c19.png',
+      description: 'Vyaparix is a B2B marketplace for discovering industrial and commercial products, suppliers, and buying opportunities across categories. The project combines a Next.js storefront with an Express API and PostgreSQL-backed Prisma data layer. It includes marketplace browsing, product enquiry flow, admin management, category/company discovery, and seeded demo data for local testing.',
+      technologies: ['Next.js 16', 'React 19', 'TypeScript', 'Tailwind CSS', 'Express 5', 'PostgreSQL', 'Prisma', 'JWT', 'bcryptjs', 'Zod'],
+      github: 'https://github.com/Roshan0612/Vyaparix',
+      live: 'https://client-gamma-eight-44.vercel.app/',
+      featured: true
+    },
+    {
       title: 'Tribal E-Commerce',
       image :"https://res.cloudinary.com/dswa5docr/image/upload/v1762324261/WhatsApp_Image_2025-04-02_at_10.20.41_f9ee9fd7_fu6ycs.jpg",
       description: 'E-Commerce Platform. Developed a full-stack e-commerce application for tribal communities using the MERN stack. Integrated Razorpay to enable secure and seamless online transactions. Implemented JWT-based authentication with role-based access control. Designed product categorization and shopping cart functionality. Enabled middleman support to manage multiple tribal profiles and product listings.',
