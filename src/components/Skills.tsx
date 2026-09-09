@@ -162,6 +162,21 @@ const skillCategories: SkillCategory[] = [
       },
 
       {
+        name: "React Native",
+        icon: Component,
+        color: "purple",
+        level: "Intermediate",
+        category: "Frontend",
+        description:
+          "Building cross-platform mobile interfaces and app experiences with a React-based workflow.",
+        usedIn: [
+          "Mobile App Projects",
+          "UI Prototyping",
+          "Cross-platform Interfaces",
+        ],
+      },
+
+      {
         name: "TypeScript",
         icon: Braces,
         color: "blue",
