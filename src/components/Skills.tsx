@@ -335,6 +335,36 @@ const skillCategories: SkillCategory[] = [
       },
 
       {
+        name: "OAuth",
+        icon: ShieldCheck,
+        color: "blue",
+        level: "Intermediate",
+        category: "Authentication",
+        description:
+          "Integrated secure third-party login flows for smoother user onboarding and access control.",
+        usedIn: [
+          "Auth Projects",
+          "Enterprise Features",
+          "SSO Integrations",
+        ],
+      },
+
+      {
+        name: "NextAuth",
+        icon: ShieldCheck,
+        color: "cyan",
+        level: "Advanced",
+        category: "Authentication",
+        description:
+          "Used for session-based auth, social sign-in flows and secure app authentication patterns.",
+        usedIn: [
+          "Autozynq",
+          "Next.js Apps",
+          "Protected Dashboards",
+        ],
+      },
+
+      {
         name: "Java",
         icon: Coffee,
         color: "orange",
