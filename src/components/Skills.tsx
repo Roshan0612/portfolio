@@ -141,6 +141,7 @@ const skillCategories: SkillCategory[] = [
         usedIn: [
           "FitTrack",
           "Tribal E-Commerce",
+          "Vyaparix",
           "Freelance Projects",
           "Vivirelle Dashboard",
         ],
@@ -156,6 +157,7 @@ const skillCategories: SkillCategory[] = [
           "Used for full-stack applications, routing, server-side features and production deployments.",
         usedIn: [
           "Autozynq",
+          "Vyaparix",
           "Marvedge Screen Recorder",
           "AI Workflow",
         ],
@@ -170,6 +172,7 @@ const skillCategories: SkillCategory[] = [
         description:
           "Building cross-platform mobile interfaces and app experiences with a React-based workflow.",
         usedIn: [
+          "SpeakForge",
           "Mobile App Projects",
           "UI Prototyping",
           "Cross-platform Interfaces",
@@ -186,6 +189,8 @@ const skillCategories: SkillCategory[] = [
           "Used to add strong typing, safer APIs and maintainable application architecture.",
         usedIn: [
           "Autozynq",
+          "Vyaparix",
+          "SpeakForge",
           "Marvedge Screen Recorder",
           "Freelance Projects",
         ],
@@ -219,6 +224,8 @@ const skillCategories: SkillCategory[] = [
           "Autozynq",
           "FitTrack",
           "Tribal E-Commerce",
+          "Vyaparix",
+          "SpeakForge",
           "Freelance Projects",
         ],
       },
@@ -285,6 +292,8 @@ const skillCategories: SkillCategory[] = [
           "FitTrack",
           "Autozynq",
           "Tribal E-Commerce",
+          "Vyaparix",
+          "SpeakForge",
           "Vivirelle",
         ],
       },
@@ -300,6 +309,8 @@ const skillCategories: SkillCategory[] = [
         usedIn: [
           "FitTrack",
           "Tribal E-Commerce",
+          "Vyaparix",
+          "SpeakForge",
           "Vivirelle",
           "Freelance Projects",
         ],
@@ -316,6 +327,8 @@ const skillCategories: SkillCategory[] = [
         usedIn: [
           "FitTrack",
           "Autozynq",
+          "Vyaparix",
+          "SpeakForge",
           "Vivirelle",
         ],
       },
@@ -331,6 +344,8 @@ const skillCategories: SkillCategory[] = [
         usedIn: [
           "FitTrack",
           "Tribal E-Commerce",
+          "Vyaparix",
+          "SpeakForge",
         ],
       },
 
@@ -426,6 +441,8 @@ const skillCategories: SkillCategory[] = [
           "Used with Prisma for relational data modeling and production application workflows.",
         usedIn: [
           "Autozynq",
+          "Vyaparix",
+          "SpeakForge",
           "Vivirelle",
         ],
       },
@@ -452,7 +469,7 @@ const skillCategories: SkillCategory[] = [
         category: "ORM",
         description:
           "Used for type-safe database access, schemas, relations and queries.",
-        usedIn: ["Autozynq"],
+        usedIn: ["Autozynq", "Vyaparix", "SpeakForge"],
       },
     ],
   },
@@ -514,6 +531,8 @@ const skillCategories: SkillCategory[] = [
         usedIn: [
           "FitTrack",
           "Autozynq",
+          "Vyaparix",
+          "SpeakForge",
           "Vivirelle",
         ],
       },
@@ -596,6 +615,7 @@ const skillCategories: SkillCategory[] = [
         usedIn: [
           "Autozynq",
           "AI Workflow",
+          "SpeakForge",
         ],
       },
 
