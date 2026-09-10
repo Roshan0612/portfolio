@@ -41,6 +41,15 @@ const Projects = () => {
       featured: true
     },
     {
+      title: 'SpeakForge',
+      image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1788459949/speakForge_Logo_ddzwfs.png',
+      description: 'Communication training app that helps users practice interviews, debates, storytelling, and pressure responses with AI-driven coaching, voice analysis, session scoring, and progress tracking.',
+      technologies: ['React Native', 'Expo', 'Express', 'Prisma', 'PostgreSQL', 'JWT', 'AI Analysis', 'Voice AI'],
+      github: 'https://github.com/Roshan0612/SpeakForge',
+      live: '#',
+      featured: true
+    },
+    {
       title: 'Marvedge Screen Recorder',
       description: 'Lightweight screen recording web app for quick captures and sharing.',
       image: 'https://res.cloudinary.com/dswa5docr/image/upload/v1768761937/b1d3140e-06e5-498a-adc0-7b172a827e51.png',
