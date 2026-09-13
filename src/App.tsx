@@ -201,7 +201,7 @@ const projects = [
   {
     title: "Marvedge Screen Recorder",
     image:
-      "https://res.cloudinary.com/dswa5docr/image/upload/v1768761937/b1d3140e-06e5-498a-adc0-7b172a827e51.png",
+      "https://res.cloudinary.com/dswa5docr/image/upload/v1789326178/fb2494c8-bc5a-4bcc-a89d-b74f9e4e5f63.png",
     demo: demoImages.screen,
     description:
       "Lightweight screen recording web application for quick captures and sharing.",
@@ -219,7 +219,7 @@ const projects = [
   {
     title: "AI Workflow",
     image:
-      "https://res.cloudinary.com/dswa5docr/image/upload/v1767892981/89ce4c8c-6ca9-43b5-8860-c797f3969f4b.png",
+      "https://res.cloudinary.com/dswa5docr/image/upload/v1789326077/f41b4b69-d831-460d-8715-26ce65ed0c1c.png",
     demo: demoImages.abstract,
     description: "AI-powered workflow project.",
     tech: ["React", "Node.js", "AI", "APIs"],
