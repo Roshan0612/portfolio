@@ -59,6 +59,36 @@ const demoImages = {
     "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1600&q=90",
 };
 
+const socialLinks: { label: string; href: string; icon: React.ElementType }[] = [
+  {
+    label: "GitHub",
+    href: "https://github.com/Roshan0612",
+    icon: Github,
+  },
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/in/roshan-gawade-469bb422a/",
+    icon: Linkedin,
+  },
+  {
+    label: "LeetCode",
+    href: "https://leetcode.com/u/Roshan0612/",
+    icon: ({ size = 15 }: { size?: number }) => (
+      <span
+        className="flex items-center justify-center rounded-[4px] border border-[#c9ff57]/60 bg-[#c9ff57]/10 font-black text-[#c9ff57]"
+        style={{ width: size, height: size, fontSize: Math.max(size - 8, 9) }}
+      >
+        LC
+      </span>
+    ),
+  },
+  {
+    label: "Email",
+    href: "mailto:roshangawade0612@gmail.com",
+    icon: Mail,
+  },
+];
+
 const projects = [
   {
     title: "Autozynq",
@@ -917,7 +947,15 @@ function Intro({
 function Navigation() {
   const [open, setOpen] = useState(false);
 
-  const links = ["about", "skills", "projects", "experience", "education", "contact"];
+  const links = [
+    "home",
+    "about",
+    "skills",
+    "projects",
+    "experience",
+    "education",
+    "contact",
+  ];
 
   return (
     <>
@@ -947,10 +985,10 @@ function Navigation() {
             {links.map((link) => (
               <Magnetic key={link} strength={8}>
                 <a
-                  href={`#${link}`}
+                  href={link === "home" ? "#hero" : `#${link}`}
                   className="text-[9px] uppercase tracking-[.24em] text-white/45 transition-colors hover:text-white"
                 >
-                  {link}
+                  {link === "home" ? "Home" : link}
                 </a>
               </Magnetic>
             ))}
@@ -984,14 +1022,14 @@ function Navigation() {
               {links.map((link, i) => (
                 <motion.a
                   key={link}
-                  href={`#${link}`}
+                  href={link === "home" ? "#hero" : `#${link}`}
                   onClick={() => setOpen(false)}
                   initial={{ x: -80, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ delay: i * 0.06, duration: 0.65 }}
                   className="display border-b border-white/10 py-5 text-5xl font-bold uppercase tracking-[-.05em]"
                 >
-                  {link}
+                  {link === "home" ? "Home" : link}
                 </motion.a>
               ))}
             </div>
@@ -1183,34 +1221,57 @@ function Hero() {
               </motion.p>
             </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 5.4, duration: 1 }}
-              className="flex shrink-0 gap-3"
-            >
-              <Magnetic strength={12}>
-                <a
-                  href="/roshan-resume.pdf"
-                  download
-                  className="group relative flex items-center gap-4 overflow-hidden border border-white/20 px-5 py-4 text-[9px] uppercase tracking-[.25em]"
-                >
-                  <span className="relative z-10">Resume</span>
-                  <ArrowUpRight size={14} className="relative z-10" />
-                  <span className="absolute inset-0 -translate-x-full bg-[#c9ff57] transition-transform duration-500 group-hover:translate-x-0" />
-                </a>
-              </Magnetic>
+            <div className="flex shrink-0 flex-col items-end gap-4">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 5.4, duration: 1 }}
+                className="flex gap-3"
+              >
+                <Magnetic strength={12}>
+                  <a
+                    href="/roshan-resume.pdf"
+                    download
+                    className="group relative flex items-center gap-4 overflow-hidden border border-white/20 px-5 py-4 text-[9px] uppercase tracking-[.25em]"
+                  >
+                    <span className="relative z-10">Resume</span>
+                    <ArrowUpRight size={14} className="relative z-10" />
+                    <span className="absolute inset-0 -translate-x-full bg-[#c9ff57] transition-transform duration-500 group-hover:translate-x-0" />
+                  </a>
+                </Magnetic>
 
-              <Magnetic strength={12}>
-                <a
-                  href="#projects"
-                  className="flex items-center gap-4 border border-white/10 bg-white/[0.04] px-5 py-4 text-[9px] uppercase tracking-[.25em] transition-colors hover:bg-white/[0.09]"
-                >
-                  Explore
-                  <ArrowDown size={14} />
-                </a>
-              </Magnetic>
-            </motion.div>
+                <Magnetic strength={12}>
+                  <a
+                    href="#projects"
+                    className="flex items-center gap-4 border border-white/10 bg-white/[0.04] px-5 py-4 text-[9px] uppercase tracking-[.25em] transition-colors hover:bg-white/[0.09]"
+                  >
+                    Explore
+                    <ArrowDown size={14} />
+                  </a>
+                </Magnetic>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 5.55, duration: 0.9 }}
+                className="flex items-center gap-2"
+              >
+                {socialLinks.map(({ label, href, icon: Icon }) => (
+                  <Magnetic key={label} strength={10}>
+                    <a
+                      href={href}
+                      target={href.startsWith("http") ? "_blank" : undefined}
+                      rel={href.startsWith("http") ? "noreferrer" : undefined}
+                      aria-label={label}
+                      className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/[0.03] text-white/70 transition-all duration-300 hover:border-[#c9ff57]/50 hover:bg-[#c9ff57]/10 hover:text-[#c9ff57]"
+                    >
+                      {typeof Icon === "function" ? <Icon /> : <Icon size={15} />}
+                    </a>
+                  </Magnetic>
+                ))}
+              </motion.div>
+            </div>
           </div>
         </div>
       </motion.div>
@@ -1358,6 +1419,28 @@ scalable system design, and cloud deployment, along with freelance development e
 production-ready applications while contributing across frontend, backend, APIs, automation, and deployment in
 real-world environments. Solved 200+ DSA problems on LeetCode and GeeksforGeeks.
           </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-8 flex flex-wrap items-center gap-3"
+          >
+            {socialLinks.map(({ label, href, icon: Icon }) => (
+              <Magnetic key={label} strength={10}>
+                <a
+                  href={href}
+                  target={href.startsWith("http") ? "_blank" : undefined}
+                  rel={href.startsWith("http") ? "noreferrer" : undefined}
+                  aria-label={label}
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/[0.03] text-white/75 transition-all duration-300 hover:border-[#c9ff57]/50 hover:bg-[#c9ff57]/10 hover:text-[#c9ff57]"
+                >
+                  <Icon size={15} />
+                </a>
+              </Magnetic>
+            ))}
+          </motion.div>
 
           <div className="mt-20 grid grid-cols-1 border-t border-white/10 sm:grid-cols-2">
             {highlights.map(([title, text], index) => (
@@ -1650,13 +1733,13 @@ function ProjectStage() {
         ref={stageRef}
         onMouseMove={handleStageMove}
         onMouseLeave={() => {
+          setHovered(false);
           if (stageRef.current) {
             stageRef.current.style.setProperty("--px", "0px");
             stageRef.current.style.setProperty("--py", "0px");
           }
         }}
         onMouseEnter={() => setHovered(true)}
-        onMouseLeaveCapture={() => setHovered(false)}
         className="relative min-h-[520px] overflow-hidden border border-white/10 bg-[#0a0a0a] sm:min-h-[700px]"
       >
         <AnimatePresence mode="wait">
@@ -2445,15 +2528,18 @@ function Contact() {
                           ? "noreferrer"
                           : undefined
                       }
-                      className="group flex items-center justify-between border-t border-black/10 py-5"
+                      className="group flex items-center justify-between border-t border-black/10 py-5 px-3 transition-all duration-300 hover:bg-black/[0.08] hover:rounded-md"
                     >
                       <div className="flex items-center gap-4">
-                        <Icon size={16} />
+                        <Icon
+                          size={16}
+                          className="transition-all duration-300 text-black/75 group-hover:text-black"
+                        />
                         <div>
-                          <div className="text-sm font-medium">
+                          <div className="text-sm font-medium text-black/80 transition-all duration-300 group-hover:text-black">
                             {method.name}
                           </div>
-                          <div className="mt-1 text-[8px] uppercase tracking-[.18em] text-black/35">
+                          <div className="mt-1 text-[8px] uppercase tracking-[.18em] text-black/35 transition-all duration-300 group-hover:text-black/70">
                             {method.description}
                           </div>
                         </div>
@@ -2461,7 +2547,7 @@ function Contact() {
 
                       <ArrowUpRight
                         size={15}
-                        className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
+                        className="text-black/70 transition-all duration-300 group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-black"
                       />
                     </a>
                   </Magnetic>
