@@ -1,189 +1,2549 @@
-import React from "react";
-import Header from "./components/Header";
-import Hero from "./components/Hero";
-import About from "./components/About";
-import Skills from "./components/Skills";
-import Projects from "./components/Projects";
-import Experience from "./components/Experience";
-import Education from "./components/Education";
-import Contact from "./components/Contact";
-import Footer from "./components/Footer";
-import IntroAnimation from "./components/IntroAnimation";
-import Lenis from "lenis";
 
-function App() {
-  const [introComplete, setIntroComplete] = React.useState(false);
+import React, {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValue,
+  useScroll,
+  useSpring,
+  useTransform,
+} from "framer-motion";
+import {
+  ArrowDown,
+  ArrowLeft,
+  ArrowRight,
+  ArrowUpRight,
+  Check,
+  Github,
+  Linkedin,
+  Mail,
+  MapPin,
+  Menu,
+  Phone,
+  X,
+  ExternalLink,
+  MessageCircle,
+} from "lucide-react";
 
-  React.useEffect(() => {
-    if (!introComplete) return;
+/* -------------------------------------------------------------------------- */
+/*                                  DATA                                      */
+/* -------------------------------------------------------------------------- */
 
-    const lenis = new Lenis({
-      duration: 1.2,
-      smoothWheel: true,
-      wheelMultiplier: 0.85,
-      touchMultiplier: 1,
-    });
+const portrait =
+  "https://res.cloudinary.com/dswa5docr/image/upload/v1767027372/headshot_roshan_portfolio_lwgaci.jpg";
 
-    let rafId = 0;
+const demoImages = {
+  portrait:
+    "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=1600&q=90",
+  developer:
+    "https://flowzi.pt/metodo/metodo-03-desenvolvimento-960.jpg",
+  abstract:
+    "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=1600&q=90",
+  architecture:
+    "https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=1600&q=90",
+  desk:
+    "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1600&q=90",
+  night:
+    "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1600&q=90",
+  screen:
+    "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1600&q=90",
+};
 
-    const raf = (time: number) => {
-      lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
-    };
+const projects = [
+  {
+    title: "Autozynq",
+    image:
+      "https://res.cloudinary.com/dswa5docr/image/upload/v1786435986/e566bba0-e7c0-49f3-b11d-c252cc55845f.png",
+    demo: demoImages.screen,
+    description:
+      "Built a production-ready Zapier/Make-style automation platform with a visual node-based builder and real-time workflow execution. Supports webhooks, Google Forms/Sheets triggers, retries, and error handling. Includes 15+ integration nodes, execution monitoring, idempotency, and secure OAuth via NextAuth.",
+    tech: [
+      "Next.js 15",
+      "TypeScript",
+      "React Flow",
+      "Prisma ORM",
+      "PostgreSQL",
+      "NextAuth",
+      "TailwindCSS",
+      "Shadcn UI",
+      "Google APIs",
+      "OpenAI/Grok AI",
+      "Zod",
+      "Node.js",
+    ],
+    github: "https://github.com/Roshan0612/Autozynq",
+    live: "https://autozynq-9bs2.vercel.app/",
+    status: "Currently Working",
+  },
+  {
+    title: "FitTrack",
+    image:
+      "https://res.cloudinary.com/dswa5docr/image/upload/v1762323535/WhatsApp_Image_2025-11-05_at_11.48.43_6b3fe802_lxbfdq.jpg",
+    demo: demoImages.developer,
+    description:
+      "Full-stack gym management application with admin and user portals, exercise and diet management, coupons, subscriptions, progress tracking, calorie monitoring and JWT-based role authentication.",
+    tech: [
+      "React.js",
+      "Tailwind",
+      "CSS",
+      "Motion",
+      "Node.js",
+      "Express.js",
+      "MongoDB",
+      "Razorpay",
+      "JWT",
+    ],
+    github: "https://github.com/Roshan0612/FitTrack",
+    live: "https://tinyurl.com/29t4mtyj",
+  },
+  {
+    title: "Vyaparix",
+    image:
+      "https://res.cloudinary.com/dswa5docr/image/upload/v1788970839/c040e2ef-e478-4216-92df-c252c8773c19.png",
+    demo: demoImages.architecture,
+    description:
+      "B2B marketplace for industrial and commercial products, suppliers and buying opportunities. Includes a Next.js storefront, Express API, PostgreSQL/Prisma backend, enquiry flow, admin management and category/company discovery.",
+    tech: [
+      "Next.js 16",
+      "React 19",
+      "TypeScript",
+      "Tailwind CSS",
+      "Express 5",
+      "PostgreSQL",
+      "Prisma",
+      "JWT",
+      "bcryptjs",
+      "Zod",
+    ],
+    github: "https://github.com/Roshan0612/Vyaparix",
+    live: "https://client-gamma-eight-44.vercel.app/",
+  },
+  {
+    title: "Tribal E-Commerce",
+    image:
+      "https://res.cloudinary.com/dswa5docr/image/upload/v1762324261/WhatsApp_Image_2025-04-02_at_10.20.41_f9ee9fd7_fu6ycs.jpg",
+    demo: demoImages.abstract,
+    description:
+      "Full-stack e-commerce application for tribal communities using MERN, Razorpay and JWT role authentication, with product categorization, cart functionality and support for multiple tribal profiles and listings.",
+    tech: [
+      "React.js",
+      "Tailwind",
+      "CSS",
+      "Node.js",
+      "Express.js",
+      "MongoDB",
+      "Razorpay",
+      "JWT",
+    ],
+    github: "https://github.com/Roshan0612/tribesHub-E_marketplace",
+    live: "#",
+  },
+  {
+    title: "SpeakForge",
+    image:
+      "https://res.cloudinary.com/dswa5docr/image/upload/v1788459949/speakForge_Logo_ddzwfs.png",
+    demo: demoImages.night,
+    description:
+      "Communication training application for interviews, debates, storytelling and pressure responses with AI-driven coaching, voice analysis, session scoring and progress tracking.",
+    tech: [
+      "React Native",
+      "Expo",
+      "Express",
+      "Prisma",
+      "PostgreSQL",
+      "JWT",
+      "AI Analysis",
+      "Voice AI",
+    ],
+    github: "https://github.com/Roshan0612/SpeakForge",
+    live: "#",
+  },
+  {
+    title: "Marvedge Screen Recorder",
+    image:
+      "https://res.cloudinary.com/dswa5docr/image/upload/v1768761937/b1d3140e-06e5-498a-adc0-7b172a827e51.png",
+    demo: demoImages.screen,
+    description:
+      "Lightweight screen recording web application for quick captures and sharing.",
+    tech: [
+      "Nextjs.js",
+      "Typescript",
+      "AWS",
+      "Tailwind CSS",
+      "FFMPEG",
+      "MediaRecorder API",
+    ],
+    github: "https://github.com/Roshan0612/marvedge-screen-recorder",
+    live: "https://marvedge-screen-recorder.onrender.com/",
+  },
+  {
+    title: "AI Workflow",
+    image:
+      "https://res.cloudinary.com/dswa5docr/image/upload/v1767892981/89ce4c8c-6ca9-43b5-8860-c797f3969f4b.png",
+    demo: demoImages.abstract,
+    description: "AI-powered workflow project.",
+    tech: ["React", "Node.js", "AI", "APIs"],
+    github: "https://github.com/Roshan0612/ai-workflow",
+    live: "https://ai-workflow-hcko.onrender.com/",
+  },
+  {
+    title: "Collaborative Task Manager",
+    image:
+      "https://res.cloudinary.com/dswa5docr/image/upload/v1767893537/8ff7fb06-5a5f-4f1b-9d7b-4c56f83ef2a0.png",
+    demo: demoImages.desk,
+    description: "Collaborative task management application.",
+    tech: ["React", "Node.js", "MongoDB"],
+    github: "https://github.com/Roshan0612/Collaborative-Task-Manager",
+    live: "https://collaborative-task-manager-1-r7i4.onrender.com/",
+  },
+  {
+    title: "OwnPresences",
+    image:
+      "https://res.cloudinary.com/dswa5docr/image/upload/v1767893796/35d47676-dfa3-47aa-8e6f-ff0522166623.png",
+    demo: demoImages.night,
+    description: "Web presence and profile project.",
+    tech: ["React", "Node.js", "MongoDB"],
+    github: "https://github.com/Roshan0612/ownpresence",
+    live: "https://ownpresences.onrender.com",
+  },
+  {
+    title: "GigFlow",
+    image:
+      "https://res.cloudinary.com/dswa5docr/image/upload/v1768227951/709c761e-7522-42fc-84d6-9f54353e710a.png",
+    demo: demoImages.architecture,
+    description: "Freelance gig marketplace application.",
+    tech: ["React", "Node.js", "MongoDB"],
+    github: "https://github.com/Roshan0612/gigflow",
+    live: "https://gigflow-client.onrender.com",
+  },
+  {
+    title: "Makeup Studio Website",
+    image:
+      "https://res.cloudinary.com/dswa5docr/image/upload/v1762324496/WhatsApp_Image_2025-11-05_at_12.03.50_358abeba_b4rirx.jpg",
+    demo: demoImages.portrait,
+    description: "Responsive modern website for a makeup studio.",
+    tech: ["React", "TypeScript", "Vite", "Tailwind CSS"],
+    github: "#",
+    live: "https://www.ratikamakeup.studio/",
+  },
+  {
+    title: "Webtruvo",
+    image:
+      "https://res.cloudinary.com/dswa5docr/image/upload/v1770229124/e0f59266-ddff-43bd-b1cc-f2b3e2a4a22d.png",
+    demo: demoImages.developer,
+    description: "Web project built for experimentation and practical development.",
+    tech: ["React", "Node.js", "Web"],
+    github: "https://github.com/Roshan0612/webtruvo",
+    live: "https://webtruvo.onrender.com/",
+  },
+];
 
-    rafId = requestAnimationFrame(raf);
+const experiences = [
+  {
+    title: "Full Stack Developer",
+    company: "Vivirelle Lifestyle & Fragrances Pvt Ltd",
+    location: "Remote",
+    period: "Jan 2026 – Present",
+    type: "Internship",
+    description:
+      "Developed and deployed an internal product inventory management dashboard using React.js and Node.js/Express, reducing stock-tracking discrepancies and improving operational efficiency.",
+    achievements: [
+      "Designed and integrated RESTful APIs to support product catalog filtering, enabling sorting of lifestyle items by fragrance notes, price, and availability.",
+      "Optimized PostgreSQL queries, improving page load performance for high-resolution product imagery by 25%.",
+      "Collaborated with the founding team in an Agile workflow to translate business requirements into scalable technical features and production-ready solutions.",
+    ],
+    technologies: [
+      "Next.js",
+      "Node.js",
+      "Express.js",
+      "MongoDB",
+      "REST APIs",
+      "JavaScript",
+      "HTML",
+      "CSS",
+    ],
+    website: "https://edpcurators.com",
+  },
+  {
+    title: "Freelance Web Developer",
+    company: "Self-Employed",
+    location: "Hybrid",
+    period: "June 2025 – Present",
+    type: "Freelance",
+    description:
+      "Designed and developed fully responsive, modern websites for 5 clients using React.js, JavaScript, Tailwind CSS, Vite, HTML, and CSS, enhancing online visibility and engagement.",
+    achievements: [
+      "Built 10+ dynamic and reusable UI components with strong type safety, improving user experience and maintainability by 25%.",
+      "Collaborated closely with clients to gather requirements, incorporate feedback, and deliver customized, high-performance solutions on schedule.",
+    ],
+    technologies: [
+      "React.js",
+      "JavaScript",
+      "TypeScript",
+      "Tailwind CSS",
+      "Vite",
+      "HTML",
+      "CSS",
+      "Node.js",
+      "Express.js",
+      "MongoDB",
+    ],
+    website: "https://www.ratikamakeup.studio",
+  },
+  {
+    title: "Web Developer Intern",
+    company: "SLRTCE",
+    location: "Mumbai, India",
+    period: "July 2024 – Aug 2024",
+    type: "Internship",
+    description:
+      "Developed a responsive weather web application during a one-month internship, integrating real-time weather data and building an intuitive interface for users.",
+    achievements: [
+      "Designed and implemented a responsive frontend using HTML, CSS, JavaScript, and React.",
+      "Integrated a weather API to retrieve and display real-time weather conditions and forecast data.",
+      "Built dynamic UI components that updated weather information based on API responses.",
+    ],
+    technologies: ["React.js", "JavaScript", "HTML", "CSS", "REST API"],
+    website: "",
+  },
+];
 
-    return () => {
-      cancelAnimationFrame(rafId);
-      lenis.destroy();
-    };
-  }, [introComplete]);
+const education = [
+  {
+    degree: "Bachelor of Engineering in Computer Science",
+    school: "Shree L.R Tiwari College of Engineering",
+    place: "Mumbai, India",
+    period: "09/2022 - 06/2026",
+    result: "8.166 CGPA",
+    index: "01",
+  },
+  {
+    degree: "HSC In Science PCMB",
+    school: "Kankavli College Kankavli",
+    place: "Kankavli Sindhudurg, India",
+    period: "06/2020 - 03/2021",
+    result: "82.83%",
+    index: "02",
+  },
+  {
+    degree: "SSC",
+    school: "Vidyamandir Highschool Kankavli",
+    place: "Kankavli Sindhudurg, India",
+    period: "06/2018 - 03/2019",
+    result: "84.80%",
+    index: "03",
+  },
+];
 
-  React.useEffect(() => {
-    if (!introComplete) return;
+const skillGroups = {
+  Frontend: [
+    "React.js",
+    "Next.js",
+    "React Native",
+    "TypeScript",
+    "JavaScript",
+    "Tailwind CSS",
+    "HTML",
+    "CSS",
+    "Bootstrap",
+  ],
+  Backend: [
+    "Node.js",
+    "Express.js",
+    "REST APIs",
+    "JWT",
+    "OAuth",
+    "NextAuth",
+    "Java",
+    "C",
+  ],
+  Databases: ["MongoDB", "PostgreSQL", "MySQL", "Prisma ORM"],
+  "Tools & Cloud": [
+    "Docker",
+    "Git & GitHub",
+    "AWS",
+    "Postman",
+    "VS Code",
+    "GSAP",
+  ],
+  "Modern Stack": [
+    "React Flow",
+    "NextAuth",
+    "Google APIs",
+    "AI Integration",
+    "FFmpeg",
+    "Razorpay",
+  ],
+};
 
-    const sections = document.querySelectorAll("main section");
+/* -------------------------------------------------------------------------- */
+/*                              GLOBAL STYLE                                  */
+/* -------------------------------------------------------------------------- */
 
-    sections.forEach((section) => {
-      section.classList.add("premium-section");
-    });
+const GlobalStyle = () => (
+  <style>{`
+    :root {
+      --bg: #080808;
+      --fg: #f3f1eb;
+      --muted: #8b8b88;
+      --line: rgba(255,255,255,.11);
+      --soft: rgba(255,255,255,.055);
+      --accent: #c9ff57;
+    }
 
-    const animatedElements = document.querySelectorAll(
-      "main section h1, main section h2, main section h3, main section p, main section .glass, main section article, main section button"
-    );
+    html {
+      scroll-behavior: auto;
+      background: var(--bg);
+    }
 
-    animatedElements.forEach((element, index) => {
-      const el = element as HTMLElement;
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow-x: hidden;
+    }
 
-      if (el.closest("#hero")) return;
+    * {
+      box-sizing: border-box;
+    }
 
-      el.classList.add("scroll-reveal");
+    ::selection {
+      background: var(--accent);
+      color: #090909;
+    }
 
-      el.style.setProperty(
-        "--reveal-delay",
-        `${Math.min(index % 6, 5) * 70}ms`
-      );
-    });
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
 
-          entry.target.classList.add("is-visible");
-          observer.unobserve(entry.target);
-        });
-      },
-      {
-        threshold: 0.08,
-        rootMargin: "0px 0px -10% 0px",
+    .portfolio-shell {
+      background:
+        radial-gradient(circle at 15% 10%, rgba(201,255,87,.035), transparent 24%),
+        radial-gradient(circle at 85% 35%, rgba(255,255,255,.025), transparent 25%),
+        #080808;
+    }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      pointer-events: none;
+      opacity: .035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+    }
+
+    .display {
+      font-family: Arial, Helvetica, sans-serif;
+      letter-spacing: -.075em;
+    }
+
+    .outline-text {
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(255,255,255,.22);
+    }
+
+    .hairline {
+      height: 1px;
+      background: var(--line);
+    }
+
+    .magnetic {
+      will-change: transform;
+    }
+
+    .project-image {
+      transform: translateZ(0);
+      will-change: transform;
+    }
+
+    .hide-scrollbar {
+      scrollbar-width: none;
+    }
+
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .cursor-dot {
+      position: fixed;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      pointer-events: none;
+      z-index: 1000;
+      transform: translate(-50%, -50%);
+      mix-blend-mode: difference;
+    }
+
+    .cursor-ring {
+      position: fixed;
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(255,255,255,.7);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 999;
+      transform: translate(-50%, -50%);
+      mix-blend-mode: difference;
+    }
+
+    @media (max-width: 900px) {
+      .cursor-dot,
+      .cursor-ring {
+        display: none;
       }
-    );
+    }
 
-    animatedElements.forEach((element) => observer.observe(element));
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto !important;
+      }
 
-    return () => observer.disconnect();
-  }, [introComplete]);
+      *,
+      *::before,
+      *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+      }
+    }
+  `}</style>
+);
 
-  React.useEffect(() => {
-    if (!introComplete) return;
+/* -------------------------------------------------------------------------- */
+/*                              CURSOR SYSTEM                                  */
+/* -------------------------------------------------------------------------- */
 
-    const cursor = document.createElement("div");
-    cursor.className = "premium-cursor";
+function Cursor() {
+  const dotRef = useRef<HTMLDivElement>(null);
+  const ringRef = useRef<HTMLDivElement>(null);
 
-    const cursorDot = document.createElement("div");
-    cursorDot.className = "premium-cursor-dot";
+  useEffect(() => {
+    let mx = window.innerWidth / 2;
+    let my = window.innerHeight / 2;
+    let rx = mx;
+    let ry = my;
+    let frame = 0;
 
-    document.body.appendChild(cursor);
-    document.body.appendChild(cursorDot);
+    const move = (e: MouseEvent) => {
+      mx = e.clientX;
+      my = e.clientY;
 
-    let mouseX = window.innerWidth / 2;
-    let mouseY = window.innerHeight / 2;
-
-    let cursorX = mouseX;
-    let cursorY = mouseY;
-
-    const moveCursor = (event: MouseEvent) => {
-      mouseX = event.clientX;
-      mouseY = event.clientY;
-
-      cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+      if (dotRef.current) {
+        dotRef.current.style.left = `${mx}px`;
+        dotRef.current.style.top = `${my}px`;
+      }
     };
 
-    const animateCursor = () => {
-      cursorX += (mouseX - cursorX) * 0.12;
-      cursorY += (mouseY - cursorY) * 0.12;
+    const tick = () => {
+      rx += (mx - rx) * 0.13;
+      ry += (my - ry) * 0.13;
 
-      cursor.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0)`;
+      if (ringRef.current) {
+        ringRef.current.style.left = `${rx}px`;
+        ringRef.current.style.top = `${ry}px`;
+      }
 
-      requestAnimationFrame(animateCursor);
+      frame = requestAnimationFrame(tick);
     };
 
-    const interactiveElements = document.querySelectorAll(
-      "a, button, input, textarea, select"
-    );
-
-    const addHover = () => {
-      cursor.classList.add("cursor-hover");
-    };
-
-    const removeHover = () => {
-      cursor.classList.remove("cursor-hover");
-    };
-
-    window.addEventListener("mousemove", moveCursor);
-
-    interactiveElements.forEach((element) => {
-      element.addEventListener("mouseenter", addHover);
-      element.addEventListener("mouseleave", removeHover);
-    });
-
-    animateCursor();
+    window.addEventListener("mousemove", move, { passive: true });
+    frame = requestAnimationFrame(tick);
 
     return () => {
-      window.removeEventListener("mousemove", moveCursor);
-
-      interactiveElements.forEach((element) => {
-        element.removeEventListener("mouseenter", addHover);
-        element.removeEventListener("mouseleave", removeHover);
-      });
-
-      cursor.remove();
-      cursorDot.remove();
+      window.removeEventListener("mousemove", move);
+      cancelAnimationFrame(frame);
     };
-  }, [introComplete]);
+  }, []);
 
   return (
-    <div className="portfolio-root">
-      {!introComplete && (
-        <IntroAnimation
-          onComplete={() => {
-            setIntroComplete(true);
+    <>
+      <div ref={dotRef} className="cursor-dot" />
+      <div ref={ringRef} className="cursor-ring" />
+    </>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                           MICRO MOTION HELPERS                              */
+/* -------------------------------------------------------------------------- */
+
+function Magnetic({
+  children,
+  strength = 18,
+  className = "",
+}: {
+  children: ReactNode;
+  strength?: number;
+  className?: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = ref.current;
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+
+    el.style.transform = `translate(${(x / rect.width) * strength}px, ${
+      (y / rect.height) * strength
+    }px)`;
+  };
+
+  const reset = () => {
+    if (ref.current) {
+      ref.current.style.transform = "translate(0px, 0px)";
+    }
+  };
+
+  return (
+    <div
+      ref={ref}
+      className={`magnetic ${className}`}
+      onMouseMove={handleMove}
+      onMouseLeave={reset}
+    >
+      {children}
+    </div>
+  );
+}
+
+function WordReveal({
+  children,
+  delay = 0,
+  className = "",
+}: {
+  children: string;
+  delay?: number;
+  className?: string;
+}) {
+  return (
+    <span className={`inline-block overflow-hidden ${className}`}>
+      <motion.span
+        className="inline-block"
+        initial={{ y: "110%", rotate: 4 }}
+        whileInView={{ y: "0%", rotate: 0 }}
+        viewport={{ once: true, amount: 0.7 }}
+        transition={{
+          duration: 0.9,
+          delay,
+          ease: [0.16, 1, 0.3, 1],
+        }}
+      >
+        {children}
+      </motion.span>
+    </span>
+  );
+}
+
+function MovingBackgroundWords({
+  text,
+  direction = 1,
+  top = "15%",
+  size = "clamp(100px, 19vw, 320px)",
+}: {
+  text: string;
+  direction?: number;
+  top?: string;
+  size?: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll();
+
+  const x = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [`${-180 * direction}px`, `${280 * direction}px`]
+  );
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const onMove = (e: MouseEvent) => {
+      const xOffset = (e.clientX / window.innerWidth - 0.5) * 20;
+      const yOffset = (e.clientY / window.innerHeight - 0.5) * 12;
+      el.style.setProperty("--mx", `${xOffset}px`);
+      el.style.setProperty("--my", `${yOffset}px`);
+    };
+
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => window.removeEventListener("mousemove", onMove);
+  }, []);
+
+  return (
+    <motion.div
+      ref={ref}
+      style={{
+        x,
+        top,
+        fontSize: size,
+        transform: "translate(var(--mx, 0px), var(--my, 0px))",
+      }}
+      className="pointer-events-none absolute left-1/2 -translate-x-1/2 whitespace-nowrap font-black uppercase leading-none text-white/[0.035] display select-none"
+    >
+      {text}
+    </motion.div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                              CINEMATIC INTRO                                */
+/* -------------------------------------------------------------------------- */
+
+function Intro({
+  onComplete,
+}: {
+  onComplete: () => void;
+}) {
+  const [finished, setFinished] = useState(false);
+
+  const tiles = useMemo(() => Array.from({ length: 42 }, (_, i) => i), []);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setFinished(true);
+      window.setTimeout(onComplete, 850);
+    }, 4600);
+
+    return () => window.clearTimeout(timer);
+  }, [onComplete]);
+
+  return (
+    <AnimatePresence>
+      {!finished && (
+        <motion.div
+          initial={{ opacity: 1 }}
+          exit={{
+            opacity: 0,
+            scale: 1.025,
+            filter: "blur(8px)",
+            transition: {
+              duration: 0.85,
+              ease: [0.76, 0, 0.24, 1],
+            },
+          }}
+          className="fixed inset-0 z-[200] overflow-hidden bg-[#080808]"
+        >
+          {/* Image underneath the tile architecture */}
+          <motion.div
+            initial={{ scale: 1.16, opacity: 0 }}
+            animate={{ scale: 1, opacity: 0.92 }}
+            transition={{
+              duration: 3.8,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className="absolute inset-[9%] overflow-hidden sm:inset-[7%] lg:inset-[5%]"
+          >
+            <motion.img
+              src={portrait}
+              alt=""
+              initial={{ scale: 1.18, x: "-4%" }}
+              animate={{ scale: 1, x: "0%" }}
+              transition={{
+                duration: 4.5,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="h-full w-full object-cover grayscale"
+            />
+            <div className="absolute inset-0 bg-black/35" />
+          </motion.div>
+
+          {/* moving scan */}
+          <motion.div
+            initial={{ y: "-120%" }}
+            animate={{ y: "120%" }}
+            transition={{
+              duration: 3.5,
+              delay: 0.3,
+              ease: "linear",
+            }}
+            className="absolute left-0 top-0 h-[35vh] w-full bg-gradient-to-b from-transparent via-[#c9ff57]/10 to-transparent"
+          />
+
+          {/* brick / tile reveal */}
+          <div className="absolute inset-[9%] grid grid-cols-6 grid-rows-7 sm:inset-[7%] lg:inset-[5%] lg:grid-cols-7">
+            {tiles.map((tile) => {
+              const row = Math.floor(tile / 6);
+              const col = tile % 6;
+
+              return (
+                <motion.div
+                  key={tile}
+                  initial={{
+                    opacity: 1,
+                    scale: 1,
+                    x: 0,
+                    y: 0,
+                    rotate: 0,
+                  }}
+                  animate={{
+                    opacity: 0,
+                    scale: [1, 1.04, 0.75],
+                    x:
+                      (col - 2.5) * (9 + ((row * 13) % 17)),
+                    y:
+                      (row - 3) * (8 + ((col * 17) % 19)),
+                    rotate: ((tile * 17) % 13) - 6,
+                  }}
+                  transition={{
+                    duration: 1.15,
+                    delay: 0.65 + ((tile * 37) % 850) / 1000,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                  className="border-[.5px] border-white/[0.045] bg-[#080808]"
+                />
+              );
+            })}
+          </div>
+
+          {/* Typography fragments */}
+          <div className="absolute inset-0 flex items-center justify-center px-6">
+            <div className="relative w-full max-w-6xl">
+              <motion.div
+                initial={{ y: 90, opacity: 0, letterSpacing: ".3em" }}
+                animate={{ y: 0, opacity: 1, letterSpacing: "-.07em" }}
+                transition={{
+                  delay: 1.05,
+                  duration: 1.2,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className="display text-center text-[clamp(4rem,13vw,12rem)] font-black leading-[.78] text-white"
+              >
+                ROSHAN
+              </motion.div>
+
+              <motion.div
+                initial={{ x: -80, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{
+                  delay: 1.45,
+                  duration: 1,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className="mt-5 text-center text-xs uppercase tracking-[.45em] text-white/60 sm:text-sm"
+              >
+                SOFTWARE ENGINEER
+              </motion.div>
+            </div>
+          </div>
+
+          {/* Micro information */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.8, duration: 1 }}
+            className="absolute bottom-7 left-6 right-6 flex items-end justify-between text-[9px] uppercase tracking-[.28em] text-white/45 sm:left-10 sm:right-10"
+          >
+            <div>
+              <div>Portfolio / 2026</div>
+              <div className="mt-1 text-white/20">Mumbai, India</div>
+            </div>
+
+            <div className="text-right">
+              <div className="text-[#c9ff57]">Initializing</div>
+              <motion.div
+                animate={{ width: ["0%", "100%"] }}
+                transition={{ duration: 3.5, delay: 0.8, ease: "linear" }}
+                className="mt-2 ml-auto h-px w-32 bg-[#c9ff57]"
+              />
+            </div>
+          </motion.div>
+
+          {/* tiny floating blocks */}
+          {[0, 1, 2, 3, 4, 5].map((item) => (
+            <motion.div
+              key={item}
+              initial={{
+                opacity: 0,
+                x: item % 2 ? -50 : 50,
+                y: item * 20,
+              }}
+              animate={{
+                opacity: [0, 1, 0.35],
+                x: 0,
+                y: [0, -10, 10, 0],
+              }}
+              transition={{
+                delay: 1.7 + item * 0.11,
+                duration: 2.2,
+                repeat: Infinity,
+                repeatType: "mirror",
+              }}
+              className="absolute h-1.5 w-1.5 bg-[#c9ff57]"
+              style={{
+                left: `${15 + item * 13}%`,
+                top: `${18 + ((item * 17) % 55)}%`,
+              }}
+            />
+          ))}
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                   NAV                                      */
+/* -------------------------------------------------------------------------- */
+
+function Navigation() {
+  const [open, setOpen] = useState(false);
+
+  const links = ["about", "skills", "projects", "experience", "education", "contact"];
+
+  return (
+    <>
+      <motion.header
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{
+          delay: 4.75,
+          duration: 1,
+          ease: [0.16, 1, 0.3, 1],
+        }}
+        className="fixed left-0 right-0 top-0 z-[90] px-5 py-5 sm:px-8 lg:px-10"
+      >
+        <div className="mx-auto flex max-w-[1600px] items-center justify-between">
+          <Magnetic strength={10}>
+            <a href="#hero" className="group flex items-center gap-3">
+              <span className="flex h-7 w-7 items-center justify-center rounded-full border border-white/20 text-[9px] font-bold">
+                RG
+              </span>
+              <span className="hidden text-[10px] uppercase tracking-[.28em] text-white/70 sm:block">
+                Roshan Gawade
+              </span>
+            </a>
+          </Magnetic>
+
+          <nav className="hidden items-center gap-7 md:flex">
+            {links.map((link) => (
+              <Magnetic key={link} strength={8}>
+                <a
+                  href={`#${link}`}
+                  className="text-[9px] uppercase tracking-[.24em] text-white/45 transition-colors hover:text-white"
+                >
+                  {link}
+                </a>
+              </Magnetic>
+            ))}
+          </nav>
+
+          <button
+            onClick={() => setOpen(true)}
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] text-white md:hidden"
+          >
+            <Menu size={16} />
+          </button>
+        </div>
+      </motion.header>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[150] bg-[#080808]"
+          >
+            <button
+              onClick={() => setOpen(false)}
+              className="absolute right-6 top-6 flex h-10 w-10 items-center justify-center rounded-full border border-white/15"
+            >
+              <X size={18} />
+            </button>
+
+            <div className="flex h-full flex-col justify-center px-8">
+              {links.map((link, i) => (
+                <motion.a
+                  key={link}
+                  href={`#${link}`}
+                  onClick={() => setOpen(false)}
+                  initial={{ x: -80, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: i * 0.06, duration: 0.65 }}
+                  className="display border-b border-white/10 py-5 text-5xl font-bold uppercase tracking-[-.05em]"
+                >
+                  {link}
+                </motion.a>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                   HERO                                     */
+/* -------------------------------------------------------------------------- */
+
+function Hero() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+
+  const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "23%"]);
+  const imageScale = useTransform(scrollYProgress, [0, 1], [1, 1.13]);
+  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "-24%"]);
+  const titleX = useTransform(scrollYProgress, [0, 1], ["0%", "-16%"]);
+  const fade = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+
+  const roles = [
+    "Software Engineer",
+    "Computer Engineer",
+    "Full-Stack Developer",
+    "Web Developer",
+  ];
+
+  const [role, setRole] = useState(0);
+
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      setRole((v) => (v + 1) % roles.length);
+    }, 2400);
+
+    return () => window.clearInterval(id);
+  }, []);
+
+  return (
+    <section
+      ref={sectionRef}
+      id="hero"
+      className="relative min-h-[120vh] overflow-hidden"
+    >
+      <MovingBackgroundWords
+        text="SOFTWARE ENGINEER"
+        direction={1}
+        top="18%"
+        size="clamp(90px, 18vw, 300px)"
+      />
+
+      <div className="absolute inset-0">
+        <motion.div
+          style={{ opacity: fade }}
+          className="absolute inset-0"
+        >
+          <div className="absolute left-[8%] top-[23%] h-44 w-44 rounded-full bg-[#c9ff57]/[0.035] blur-3xl" />
+          <div className="absolute bottom-[15%] right-[5%] h-72 w-72 rounded-full bg-white/[0.025] blur-3xl" />
+
+          <div className="absolute bottom-[9%] left-0 right-0 h-px bg-white/[0.08]" />
+
+          <motion.div
+            style={{ y: imageY, scale: imageScale }}
+            className="absolute right-[5%] top-[17%] h-[55vh] w-[42vw] max-w-[650px] overflow-hidden sm:right-[8%] lg:h-[62vh]"
+          >
+            <motion.img
+              src={portrait}
+              alt="Roshan Gawade"
+              className="h-full w-full object-cover grayscale-[.25]"
+              initial={{ scale: 1.2 }}
+              animate={{ scale: 1 }}
+              transition={{
+                delay: 4.9,
+                duration: 1.8,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+            />
+
+            <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-black/10" />
+
+            <motion.div
+              animate={{ y: ["-100%", "220%"] }}
+              transition={{
+                duration: 5,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+              className="absolute left-0 top-0 h-20 w-full bg-gradient-to-b from-transparent via-white/10 to-transparent"
+            />
+
+            <div className="absolute bottom-4 left-4 text-[8px] uppercase tracking-[.3em] text-white/50">
+              Software Engineer / Portfolio
+            </div>
+          </motion.div>
+        </motion.div>
+      </div>
+
+      <motion.div
+        style={{ y: textY }}
+        className="relative z-10 mx-auto flex min-h-screen max-w-[1600px] items-center px-5 pt-24 sm:px-8 lg:px-12"
+      >
+        <div className="relative w-full">
+          <motion.div
+            initial={{ opacity: 0, x: -70 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{
+              delay: 4.85,
+              duration: 1.15,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className="mb-7 flex items-center gap-3 text-[9px] uppercase tracking-[.35em] text-[#c9ff57]"
+          >
+            <span className="h-px w-10 bg-[#c9ff57]" />
+            Software Engineer
+          </motion.div>
+
+          <motion.h1
+            style={{ x: titleX }}
+            className="display relative max-w-[1000px] text-[clamp(4.8rem,12vw,12rem)] font-black uppercase leading-[.77] tracking-[-.08em]"
+          >
+            <span className="block overflow-hidden">
+              <motion.span
+                initial={{ y: "110%" }}
+                animate={{ y: 0 }}
+                transition={{
+                  delay: 4.9,
+                  duration: 1.15,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className="block"
+              >
+                Roshan
+              </motion.span>
+            </span>
+
+            <span className="block overflow-hidden">
+              <motion.span
+                initial={{ y: "110%" }}
+                animate={{ y: 0 }}
+                transition={{
+                  delay: 5.02,
+                  duration: 1.15,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className="block text-white/20"
+              >
+                Gawade
+              </motion.span>
+            </span>
+          </motion.h1>
+
+          <div className="mt-9 flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
+            <div className="max-w-xl">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={roles[role]}
+                  initial={{ y: 18, opacity: 0, filter: "blur(5px)" }}
+                  animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+                  exit={{ y: -18, opacity: 0, filter: "blur(5px)" }}
+                  transition={{ duration: 0.45 }}
+                  className="display text-2xl font-bold tracking-[-.04em] text-white sm:text-3xl"
+                >
+                  {roles[role]}
+                </motion.div>
+              </AnimatePresence>
+
+              <motion.p
+                initial={{ opacity: 0, y: 25 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: 5.25,
+                  duration: 1,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className="mt-5 max-w-xl text-sm leading-7 text-white/45 sm:text-base"
+              >
+                Computer Science Engineering graduate with hands-on experience
+                in full-stack web development using React.js, Node.js,
+                Express.js, MongoDB, PostgreSQL, and MySQL. Built scalable web
+                applications through internships, freelance work, and personal
+                projects, and solved 200+ DSA problems on LeetCode and
+                GeeksforGeeks.
+              </motion.p>
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 5.4, duration: 1 }}
+              className="flex shrink-0 gap-3"
+            >
+              <Magnetic strength={12}>
+                <a
+                  href="/roshan-resume.pdf"
+                  download
+                  className="group relative flex items-center gap-4 overflow-hidden border border-white/20 px-5 py-4 text-[9px] uppercase tracking-[.25em]"
+                >
+                  <span className="relative z-10">Resume</span>
+                  <ArrowUpRight size={14} className="relative z-10" />
+                  <span className="absolute inset-0 -translate-x-full bg-[#c9ff57] transition-transform duration-500 group-hover:translate-x-0" />
+                </a>
+              </Magnetic>
+
+              <Magnetic strength={12}>
+                <a
+                  href="#projects"
+                  className="flex items-center gap-4 border border-white/10 bg-white/[0.04] px-5 py-4 text-[9px] uppercase tracking-[.25em] transition-colors hover:bg-white/[0.09]"
+                >
+                  Explore
+                  <ArrowDown size={14} />
+                </a>
+              </Magnetic>
+            </motion.div>
+          </div>
+        </div>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 5.5 }}
+        className="absolute bottom-8 left-5 flex items-center gap-3 text-[8px] uppercase tracking-[.3em] text-white/30 sm:left-8 lg:left-12"
+      >
+        <motion.span
+          animate={{ scaleY: [1, 1.8, 1] }}
+          transition={{ duration: 1.2, repeat: Infinity }}
+          className="h-7 w-px origin-bottom bg-[#c9ff57]"
+        />
+        Scroll to explore
+      </motion.div>
+    </section>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                   ABOUT                                    */
+/* -------------------------------------------------------------------------- */
+
+function About() {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+
+  const imageY = useTransform(scrollYProgress, [0, 1], ["-10%", "20%"]);
+  const imageRotate = useTransform(scrollYProgress, [0, 1], [-4, 5]);
+  const lineX = useTransform(scrollYProgress, [0, 1], ["-20%", "30%"]);
+
+  const highlights = [
+    ["Clean Code", "Writing maintainable, scalable code with best practices"],
+    ["Innovation", "Constantly exploring new technologies and approaches"],
+    ["Collaboration", "Strong team player with excellent communication skills"],
+    ["Performance", "Optimizing applications for speed and efficiency"],
+  ];
+
+  return (
+    <section
+      ref={ref}
+      id="about"
+      className="relative min-h-screen overflow-hidden border-t border-white/[0.08] py-32 sm:py-40"
+    >
+      <MovingBackgroundWords
+        text="ABOUT"
+        direction={-1}
+        top="9%"
+        size="clamp(130px, 23vw, 380px)"
+      />
+
+      <motion.div
+        style={{ x: lineX }}
+        className="absolute top-[23%] left-0 h-px w-[80vw] bg-white/[0.08]"
+      />
+
+      <div className="relative mx-auto grid max-w-[1600px] gap-20 px-5 sm:px-8 lg:grid-cols-[.8fr_1.2fr] lg:px-12">
+        <div className="relative">
+          <div className="sticky top-32">
+            <div className="mb-8 flex items-center gap-3 text-[9px] uppercase tracking-[.35em] text-[#c9ff57]">
+              <span className="h-px w-9 bg-[#c9ff57]" />
+              About
+            </div>
+
+            <h2 className="display max-w-xl text-[clamp(3rem,7vw,7rem)] font-black uppercase leading-[.82] tracking-[-.07em]">
+              <WordReveal>Computer</WordReveal>{" "}
+              <WordReveal delay={0.08}>Engineer.</WordReveal>
+              <br />
+              <span className="text-white/20">
+                <WordReveal delay={0.16}>Full-Stack</WordReveal>
+              </span>
+              <br />
+              <WordReveal delay={0.24}>Developer.</WordReveal>
+            </h2>
+
+            <motion.div
+              initial={{ width: 0 }}
+              whileInView={{ width: 110 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1.2, delay: 0.4 }}
+              className="mt-10 h-px bg-[#c9ff57]"
+            />
+          </div>
+        </div>
+
+        <div className="relative">
+          <motion.div
+            style={{ y: imageY, rotate: imageRotate }}
+            className="relative ml-auto h-[50vh] w-full max-w-[570px] overflow-hidden border border-white/10"
+          >
+            <motion.img
+              src={demoImages.developer}
+              alt=""
+              className="h-[120%] w-full object-cover grayscale-[.35]"
+              style={{ y: imageY }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+
+            <div className="absolute bottom-5 left-5 right-5 flex justify-between text-[8px] uppercase tracking-[.28em] text-white/45">
+              <span>React / Node / Systems</span>
+              <span>01—06</span>
+            </div>
+
+            <motion.div
+              animate={{
+                x: ["-110%", "110%"],
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                repeatDelay: 1,
+                ease: "linear",
+              }}
+              className="absolute top-0 h-full w-20 bg-gradient-to-r from-transparent via-white/[0.09] to-transparent"
+            />
+          </motion.div>
+
+          <motion.p
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-16 max-w-2xl text-lg leading-8 text-white/55 sm:text-xl"
+          >
+            Final-year Computer Engineering student with a strong foundation
+            in full-stack web development, specializing in the MERN stack and
+            building responsive, scalable applications that solve real-world
+            problems.
+          </motion.p>
+
+          <div className="mt-20 grid grid-cols-1 border-t border-white/10 sm:grid-cols-2">
+            {highlights.map(([title, text], index) => (
+              <motion.div
+                key={title}
+                initial={{
+                  opacity: 0,
+                  y: 50,
+                  x: index % 2 === 0 ? -25 : 25,
+                }}
+                whileInView={{
+                  opacity: 1,
+                  y: 0,
+                  x: 0,
+                }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{
+                  duration: 0.8,
+                  delay: index * 0.08,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className="group relative overflow-hidden border-b border-white/10 p-7 transition-colors hover:bg-white/[0.035]"
+              >
+                <div className="absolute left-0 top-0 h-full w-[2px] origin-top scale-y-0 bg-[#c9ff57] transition-transform duration-500 group-hover:scale-y-100" />
+
+                <div className="flex items-start justify-between">
+                  <h3 className="display text-2xl font-bold tracking-[-.04em]">
+                    {title}
+                  </h3>
+
+                  <span className="text-[8px] text-white/20">
+                    0{index + 1}
+                  </span>
+                </div>
+
+                <p className="mt-5 max-w-sm text-sm leading-6 text-white/35 transition-colors group-hover:text-white/60">
+                  {text}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                  SKILLS                                    */
+/* -------------------------------------------------------------------------- */
+
+function SkillField() {
+  const [active, setActive] =
+    useState<keyof typeof skillGroups>("Frontend");
+
+  const categories = Object.keys(skillGroups) as Array<keyof typeof skillGroups>;
+
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const smoothX = useSpring(mouseX, { stiffness: 120, damping: 20 });
+  const smoothY = useSpring(mouseY, { stiffness: 120, damping: 20 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    mouseX.set(e.clientX - rect.left - rect.width / 2);
+    mouseY.set(e.clientY - rect.top - rect.height / 2);
+  };
+
+  return (
+    <div
+      onMouseMove={handleMouseMove}
+      onMouseLeave={() => {
+        mouseX.set(0);
+        mouseY.set(0);
+      }}
+      className="relative min-h-[650px] overflow-hidden border border-white/10 bg-[#0b0b0b]"
+    >
+      <motion.div
+        style={{
+          x: smoothX,
+          y: smoothY,
+        }}
+        className="pointer-events-none absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#c9ff57]/[0.045] blur-3xl"
+      />
+
+      <div className="absolute inset-0 opacity-30">
+        <div
+          className="h-full w-full"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px)",
+            backgroundSize: "48px 48px",
           }}
         />
-      )}
+      </div>
 
-      <div
-        className={`portfolio-content ${
-          introComplete ? "portfolio-ready" : ""
-        }`}
-      >
-        <Header />
+      <div className="relative z-10 flex h-full min-h-[650px] flex-col justify-between p-6 sm:p-9">
+        <div className="flex flex-wrap gap-2">
+          {categories.map((category, index) => (
+            <button
+              key={category}
+              onClick={() => setActive(category)}
+              className={`relative overflow-hidden border px-4 py-3 text-[9px] uppercase tracking-[.22em] transition-all ${
+                active === category
+                  ? "border-[#c9ff57]/60 text-[#c9ff57]"
+                  : "border-white/10 text-white/35 hover:border-white/30 hover:text-white"
+              }`}
+            >
+              <motion.span
+                initial={false}
+                animate={{
+                  scaleX: active === category ? 1 : 0,
+                }}
+                className="absolute inset-x-0 bottom-0 h-px origin-left bg-[#c9ff57]"
+              />
+              {category}
+              <span className="ml-3 text-white/20">0{index + 1}</span>
+            </button>
+          ))}
+        </div>
 
-        <main>
-          <Hero />
-          <About />
-          <Skills />
-          <Projects />
-          <Experience />
-          <Education />
-          <Contact />
-        </main>
+        <div className="relative flex flex-1 items-center justify-center">
+          <motion.div
+            key={active}
+            initial={{
+              scale: 0.85,
+              opacity: 0,
+              rotate: -5,
+            }}
+            animate={{
+              scale: 1,
+              opacity: 1,
+              rotate: 0,
+            }}
+            transition={{
+              duration: 0.8,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className="absolute text-center"
+          >
+            <div className="text-[8px] uppercase tracking-[.4em] text-[#c9ff57]">
+              Selected field
+            </div>
+            <div className="display mt-4 text-[clamp(3rem,8vw,7rem)] font-black uppercase tracking-[-.08em] text-white/10">
+              {active}
+            </div>
+          </motion.div>
 
-        <Footer />
+          <div className="relative grid w-full max-w-4xl grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+            <AnimatePresence mode="popLayout">
+              {skillGroups[active].map((skill, index) => (
+                <motion.div
+                  key={`${active}-${skill}`}
+                  layout
+                  initial={{
+                    opacity: 0,
+                    scale: 0.6,
+                    y: 40,
+                    rotate: index % 2 ? 4 : -4,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    scale: 1,
+                    y: 0,
+                    rotate: 0,
+                  }}
+                  exit={{
+                    opacity: 0,
+                    scale: 0.6,
+                    y: -30,
+                  }}
+                  transition={{
+                    duration: 0.65,
+                    delay: index * 0.035,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                  className="group relative overflow-hidden border border-white/10 bg-[#0b0b0b]/80 px-4 py-5 backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:border-[#c9ff57]/40"
+                >
+                  <span className="absolute left-0 top-0 h-px w-0 bg-[#c9ff57] transition-all duration-500 group-hover:w-full" />
+                  <span className="absolute bottom-0 right-0 h-0 w-px bg-[#c9ff57] transition-all duration-500 group-hover:h-full" />
+
+                  <div className="text-[8px] text-white/20">
+                    {String(index + 1).padStart(2, "0")}
+                  </div>
+
+                  <div className="mt-3 text-sm font-medium text-white/75 group-hover:text-white">
+                    {skill}
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between border-t border-white/10 pt-5 text-[8px] uppercase tracking-[.25em] text-white/25">
+          <span>Move through the field</span>
+          <span>{skillGroups[active].length} technologies</span>
+        </div>
       </div>
     </div>
   );
 }
 
-export default App;
+function Skills() {
+  return (
+    <section
+      id="skills"
+      className="relative overflow-hidden border-t border-white/[0.08] py-32 sm:py-40"
+    >
+      <MovingBackgroundWords
+        text="TOOLKIT"
+        direction={1}
+        top="7%"
+        size="clamp(110px, 21vw, 350px)"
+      />
+
+      <div className="relative mx-auto max-w-[1600px] px-5 sm:px-8 lg:px-12">
+        <div className="mb-20 flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
+          <div>
+            <div className="mb-6 flex items-center gap-3 text-[9px] uppercase tracking-[.35em] text-[#c9ff57]">
+              <span className="h-px w-9 bg-[#c9ff57]" />
+              Skills
+            </div>
+
+            <h2 className="display max-w-4xl text-[clamp(4rem,9vw,9rem)] font-black uppercase leading-[.78] tracking-[-.08em]">
+              <WordReveal>Technical</WordReveal>{" "}
+              <span className="text-white/20">
+                <WordReveal delay={0.1}>range.</WordReveal>
+              </span>
+            </h2>
+          </div>
+
+          <p className="max-w-sm text-sm leading-6 text-white/35">
+            Frontend, backend, databases, cloud tooling and modern application
+            infrastructure.
+          </p>
+        </div>
+
+        <SkillField />
+      </div>
+    </section>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                  PROJECTS                                   */
+/* -------------------------------------------------------------------------- */
+
+function ProjectStage() {
+  const [active, setActive] = useState(0);
+  const [hovered, setHovered] = useState(false);
+  const stageRef = useRef<HTMLDivElement>(null);
+
+  const project = projects[active];
+
+  const next = () =>
+    setActive((current) => (current + 1) % projects.length);
+
+  const previous = () =>
+    setActive((current) =>
+      current === 0 ? projects.length - 1 : current - 1
+    );
+
+  const handleStageMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+
+    e.currentTarget.style.setProperty("--px", `${x * 14}px`);
+    e.currentTarget.style.setProperty("--py", `${y * 10}px`);
+  };
+
+  return (
+    <div className="relative">
+      <div
+        ref={stageRef}
+        onMouseMove={handleStageMove}
+        onMouseLeave={() => {
+          if (stageRef.current) {
+            stageRef.current.style.setProperty("--px", "0px");
+            stageRef.current.style.setProperty("--py", "0px");
+          }
+        }}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeaveCapture={() => setHovered(false)}
+        className="relative min-h-[700px] overflow-hidden border border-white/10 bg-[#0a0a0a]"
+      >
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={active}
+            initial={{
+              opacity: 0,
+              clipPath: "inset(100% 0 0 0)",
+              scale: 1.08,
+            }}
+            animate={{
+              opacity: 1,
+              clipPath: "inset(0% 0 0 0)",
+              scale: 1,
+            }}
+            exit={{
+              opacity: 0,
+              clipPath: "inset(0 100% 0 0)",
+              scale: 0.98,
+            }}
+            transition={{
+              duration: 1,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className="absolute inset-[5%] overflow-hidden sm:inset-[8%]"
+          >
+            <motion.img
+              src={project.image}
+              alt={project.title}
+              initial={{ scale: 1.2, x: "4%" }}
+              animate={{
+                scale: 1,
+                x: "0%",
+              }}
+              transition={{
+                duration: 1.3,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              style={{
+                transform:
+                  "translate(var(--px, 0px), var(--py, 0px)) scale(1.02)",
+              }}
+              className="project-image h-full w-full object-cover"
+            />
+
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/5 to-black/20" />
+          </motion.div>
+        </AnimatePresence>
+
+        <div className="absolute inset-x-0 bottom-0 z-20 p-6 sm:p-9 lg:p-12">
+          <div className="flex flex-col justify-between gap-10 lg:flex-row lg:items-end">
+            <div className="max-w-3xl">
+              <div className="mb-4 flex items-center gap-3 text-[8px] uppercase tracking-[.3em] text-[#c9ff57]">
+                <span>
+                  {String(active + 1).padStart(2, "0")} /{" "}
+                  {String(projects.length).padStart(2, "0")}
+                </span>
+                <span className="h-px w-10 bg-[#c9ff57]" />
+                <span>{project.status || "Selected project"}</span>
+              </div>
+
+              <AnimatePresence mode="wait">
+                <motion.h3
+                  key={project.title}
+                  initial={{ y: 45, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -30, opacity: 0 }}
+                  transition={{ duration: 0.7 }}
+                  className="display text-[clamp(3rem,7vw,7rem)] font-black uppercase leading-[.8] tracking-[-.07em]"
+                >
+                  {project.title}
+                </motion.h3>
+              </AnimatePresence>
+
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={`${project.title}-description`}
+                  initial={{ y: 25, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -15, opacity: 0 }}
+                  transition={{ duration: 0.6, delay: 0.05 }}
+                  className="mt-7 max-w-2xl text-sm leading-6 text-white/55 sm:text-base"
+                >
+                  {project.description}
+                </motion.p>
+              </AnimatePresence>
+
+              <div className="mt-6 flex flex-wrap gap-2">
+                {project.tech.slice(0, 7).map((tech, index) => (
+                  <motion.span
+                    key={tech}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.04 }}
+                    className="border border-white/10 bg-black/30 px-3 py-2 text-[8px] uppercase tracking-[.14em] text-white/45 backdrop-blur"
+                  >
+                    {tech}
+                  </motion.span>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex shrink-0 gap-2">
+              {project.github !== "#" && (
+                <Magnetic strength={8}>
+                  <a
+                    href={project.github}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex h-12 w-12 items-center justify-center border border-white/15 bg-black/30 backdrop-blur transition-colors hover:border-[#c9ff57]/60"
+                  >
+                    <Github size={15} />
+                  </a>
+                </Magnetic>
+              )}
+
+              {project.live !== "#" && (
+                <Magnetic strength={8}>
+                  <a
+                    href={project.live}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex h-12 items-center gap-3 border border-[#c9ff57]/40 bg-[#c9ff57] px-5 text-[9px] font-bold uppercase tracking-[.2em] text-black"
+                  >
+                    Open
+                    <ArrowUpRight size={14} />
+                  </a>
+                </Magnetic>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <motion.div
+          animate={{
+            opacity: hovered ? 1 : 0,
+            scale: hovered ? 1 : 0.7,
+          }}
+          className="pointer-events-none absolute right-8 top-8 z-30 flex h-20 w-20 items-center justify-center rounded-full border border-white/40 bg-black/20 text-center text-[8px] uppercase tracking-[.15em] backdrop-blur-md"
+        >
+          Move
+          <br />
+          explore
+        </motion.div>
+
+        <div className="absolute right-5 top-5 z-30 flex gap-2 sm:right-8 sm:top-8">
+          <button
+            onClick={previous}
+            className="flex h-10 w-10 items-center justify-center border border-white/15 bg-black/30 transition-colors hover:border-white/40"
+          >
+            <ArrowLeft size={15} />
+          </button>
+          <button
+            onClick={next}
+            className="flex h-10 w-10 items-center justify-center border border-white/15 bg-black/30 transition-colors hover:border-white/40"
+          >
+            <ArrowRight size={15} />
+          </button>
+        </div>
+      </div>
+
+      {/* Project film strip */}
+      <div className="hide-scrollbar mt-4 flex gap-2 overflow-x-auto pb-2">
+        {projects.map((item, index) => (
+          <button
+            key={item.title}
+            onClick={() => setActive(index)}
+            className={`group relative h-20 w-28 shrink-0 overflow-hidden border transition-all sm:h-24 sm:w-36 ${
+              active === index
+                ? "border-[#c9ff57]"
+                : "border-white/10 opacity-50 hover:opacity-100"
+            }`}
+          >
+            <img
+              src={item.image}
+              alt=""
+              className="h-full w-full object-cover grayscale transition-transform duration-700 group-hover:scale-110"
+            />
+            <div className="absolute inset-0 bg-black/35" />
+            <span className="absolute bottom-2 left-2 text-[7px] uppercase tracking-[.16em] text-white">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function Projects() {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+
+  const titleX = useTransform(scrollYProgress, [0, 1], ["-15%", "10%"]);
+
+  return (
+    <section
+      ref={ref}
+      id="projects"
+      className="relative overflow-hidden border-t border-white/[0.08] py-32 sm:py-40"
+    >
+      <motion.div
+        style={{ x: titleX }}
+        className="pointer-events-none absolute left-0 top-[8%] whitespace-nowrap"
+      >
+        <div className="display text-[clamp(100px,23vw,390px)] font-black uppercase leading-none tracking-[-.09em] text-white/[0.035]">
+          WORK
+        </div>
+      </motion.div>
+
+      <div className="relative mx-auto max-w-[1600px] px-5 sm:px-8 lg:px-12">
+        <div className="mb-20 flex items-end justify-between gap-8">
+          <div>
+            <div className="mb-6 flex items-center gap-3 text-[9px] uppercase tracking-[.35em] text-[#c9ff57]">
+              <span className="h-px w-9 bg-[#c9ff57]" />
+              Selected Work
+            </div>
+
+            <h2 className="display text-[clamp(4rem,9vw,9rem)] font-black uppercase leading-[.78] tracking-[-.08em]">
+              Projects<span className="text-white/20">.</span>
+            </h2>
+          </div>
+
+          <div className="hidden text-right text-[8px] uppercase tracking-[.25em] text-white/25 sm:block">
+            <div>12 projects</div>
+            <div className="mt-2">Interactive archive</div>
+          </div>
+        </div>
+
+        <ProjectStage />
+      </div>
+    </section>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                EXPERIENCE                                   */
+/* -------------------------------------------------------------------------- */
+
+function ExperienceCard({
+  experience,
+  index,
+}: {
+  experience: (typeof experiences)[number];
+  index: number;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start 90%", "start 30%"],
+  });
+
+  const x = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [index % 2 === 0 ? -120 : 120, 0]
+  );
+
+  const rotate = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [index % 2 === 0 ? -7 : 7, 0]
+  );
+
+  const scale = useTransform(scrollYProgress, [0, 1], [0.92, 1]);
+
+  return (
+    <motion.article
+      ref={ref}
+      style={{ x, rotate, scale }}
+      className="relative overflow-hidden border border-white/10 bg-[#0b0b0b] p-6 sm:p-9 lg:p-11"
+    >
+      <motion.div
+        initial={{ scaleX: 0 }}
+        whileInView={{ scaleX: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        className="absolute left-0 top-0 h-px w-full origin-left bg-[#c9ff57]"
+      />
+
+      <div className="grid gap-10 lg:grid-cols-[.7fr_1.3fr]">
+        <div>
+          <div className="text-[9px] uppercase tracking-[.3em] text-[#c9ff57]">
+            {experience.period}
+          </div>
+
+          <h3 className="display mt-5 text-3xl font-bold uppercase leading-[.9] tracking-[-.05em] text-white sm:text-4xl">
+            {experience.title}
+          </h3>
+
+          <div className="mt-5 text-sm text-white/50">
+            {experience.company}
+          </div>
+
+          <div className="mt-3 flex items-center gap-2 text-[9px] uppercase tracking-[.18em] text-white/25">
+            <MapPin size={11} />
+            {experience.location}
+          </div>
+
+          {experience.website && (
+            <Magnetic strength={8}>
+              <a
+                href={experience.website}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-8 inline-flex items-center gap-2 border-b border-white/15 pb-2 text-[8px] uppercase tracking-[.2em] text-white/45 hover:border-[#c9ff57] hover:text-[#c9ff57]"
+              >
+                Visit
+                <ExternalLink size={11} />
+              </a>
+            </Magnetic>
+          )}
+        </div>
+
+        <div>
+          <p className="max-w-2xl text-base leading-7 text-white/55">
+            {experience.description}
+          </p>
+
+          <div className="mt-9 space-y-5">
+            {experience.achievements.map((achievement, i) => (
+              <motion.div
+                key={achievement}
+                initial={{ opacity: 0, x: 35 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{
+                  duration: 0.65,
+                  delay: i * 0.08,
+                }}
+                className="flex gap-4 border-t border-white/10 pt-5"
+              >
+                <span className="mt-1 text-[8px] text-[#c9ff57]">
+                  0{i + 1}
+                </span>
+                <p className="text-sm leading-6 text-white/40">
+                  {achievement}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="mt-10 flex flex-wrap gap-2">
+            {experience.technologies.map((technology) => (
+              <span
+                key={technology}
+                className="border border-white/10 px-3 py-2 text-[8px] uppercase tracking-[.12em] text-white/30"
+              >
+                {technology}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </motion.article>
+  );
+}
+
+function Experience() {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+
+  const giantX = useTransform(scrollYProgress, [0, 1], ["5%", "-12%"]);
+
+  return (
+    <section
+      ref={ref}
+      id="experience"
+      className="relative overflow-hidden border-t border-white/[0.08] py-32 sm:py-40"
+    >
+      <motion.div
+        style={{ x: giantX }}
+        className="pointer-events-none absolute top-[7%] whitespace-nowrap"
+      >
+        <div className="display text-[clamp(100px,22vw,360px)] font-black uppercase leading-none tracking-[-.09em] text-white/[0.035]">
+          JOURNEY
+        </div>
+      </motion.div>
+
+      <div className="relative mx-auto max-w-[1600px] px-5 sm:px-8 lg:px-12">
+        <div className="mb-20">
+          <div className="mb-6 flex items-center gap-3 text-[9px] uppercase tracking-[.35em] text-[#c9ff57]">
+            <span className="h-px w-9 bg-[#c9ff57]" />
+            Experience
+          </div>
+
+          <h2 className="display max-w-5xl text-[clamp(4rem,9vw,9rem)] font-black uppercase leading-[.78] tracking-[-.08em]">
+            Where I{" "}
+            <span className="text-white/20">
+              <WordReveal>worked.</WordReveal>
+            </span>
+          </h2>
+        </div>
+
+        <div className="relative space-y-7">
+          <motion.div
+            initial={{ height: 0 }}
+            whileInView={{ height: "100%" }}
+            viewport={{ once: true }}
+            transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute left-2 top-0 hidden w-px bg-[#c9ff57]/50 lg:block"
+          />
+
+          {experiences.map((experience, index) => (
+            <ExperienceCard
+              key={`${experience.company}-${experience.title}`}
+              experience={experience}
+              index={index}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                 EDUCATION                                  */
+/* -------------------------------------------------------------------------- */
+
+function EducationCard({
+  item,
+  index,
+}: {
+  item: (typeof education)[number];
+  index: number;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start 95%", "start 30%"],
+  });
+
+  const y = useTransform(scrollYProgress, [0, 1], [150, 0]);
+  const rotate = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [index === 0 ? -9 : index === 1 ? 7 : -5, 0]
+  );
+  const scale = useTransform(scrollYProgress, [0, 1], [0.82, 1]);
+  const opacity = useTransform(scrollYProgress, [0, 0.7], [0, 1]);
+
+  return (
+    <motion.article
+      ref={ref}
+      style={{ y, rotate, scale, opacity }}
+      className="group relative min-h-[340px] overflow-hidden border border-white/10 bg-[#0b0b0b] p-6 sm:p-9"
+    >
+      <motion.div
+        className="absolute right-0 top-0 h-40 w-40 rounded-full bg-[#c9ff57]/[0.045] blur-3xl"
+        animate={{
+          scale: [1, 1.25, 1],
+          opacity: [0.4, 0.7, 0.4],
+        }}
+        transition={{
+          duration: 4 + index,
+          repeat: Infinity,
+        }}
+      />
+
+      <div className="relative flex h-full flex-col justify-between">
+        <div className="flex items-start justify-between">
+          <span className="text-[9px] uppercase tracking-[.3em] text-[#c9ff57]">
+            Education
+          </span>
+
+          <motion.span
+            whileHover={{ rotate: 90, scale: 1.2 }}
+            className="text-[9px] text-white/20"
+          >
+            {item.index}
+          </motion.span>
+        </div>
+
+        <div className="mt-20">
+          <h3 className="display max-w-xl text-3xl font-bold uppercase leading-[.9] tracking-[-.05em] text-white sm:text-4xl">
+            {item.degree}
+          </h3>
+
+          <p className="mt-5 text-sm text-white/50">{item.school}</p>
+
+          <div className="mt-3 flex flex-wrap gap-4 text-[8px] uppercase tracking-[.2em] text-white/25">
+            <span>{item.place}</span>
+            <span>{item.period}</span>
+          </div>
+        </div>
+
+        <div className="mt-12 flex items-end justify-between">
+          <div className="text-[8px] uppercase tracking-[.25em] text-white/20">
+            Result
+          </div>
+
+          <motion.div
+            initial={{ y: 30, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.35, duration: 0.8 }}
+            className="display text-4xl font-black tracking-[-.05em] text-[#c9ff57]"
+          >
+            {item.result}
+          </motion.div>
+        </div>
+      </div>
+
+      <div className="absolute bottom-0 left-0 h-px w-full origin-left scale-x-0 bg-[#c9ff57] transition-transform duration-700 group-hover:scale-x-100" />
+    </motion.article>
+  );
+}
+
+function Education() {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+
+  const x = useTransform(scrollYProgress, [0, 1], ["-12%", "10%"]);
+
+  return (
+    <section
+      ref={ref}
+      id="education"
+      className="relative overflow-hidden border-t border-white/[0.08] py-32 sm:py-40"
+    >
+      <motion.div
+        style={{ x }}
+        className="pointer-events-none absolute top-[8%] whitespace-nowrap"
+      >
+        <div className="display text-[clamp(100px,21vw,350px)] font-black uppercase leading-none tracking-[-.09em] text-white/[0.035]">
+          LEARNING
+        </div>
+      </motion.div>
+
+      <div className="relative mx-auto max-w-[1600px] px-5 sm:px-8 lg:px-12">
+        <div className="mb-20">
+          <div className="mb-6 flex items-center gap-3 text-[9px] uppercase tracking-[.35em] text-[#c9ff57]">
+            <span className="h-px w-9 bg-[#c9ff57]" />
+            Education
+          </div>
+
+          <h2 className="display text-[clamp(4rem,9vw,9rem)] font-black uppercase leading-[.78] tracking-[-.08em]">
+            The{" "}
+            <span className="text-white/20">
+              <WordReveal>foundation.</WordReveal>
+            </span>
+          </h2>
+        </div>
+
+        <div className="grid gap-4 lg:grid-cols-3">
+          {education.map((item, index) => (
+            <EducationCard key={item.degree} item={item} index={index} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                  CONTACT                                   */
+/* -------------------------------------------------------------------------- */
+
+function Contact() {
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+
+  const titleX = useTransform(scrollYProgress, [0, 1], ["12%", "-8%"]);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setFormData((current) => ({
+      ...current,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSending(true);
+
+    try {
+      const response = await fetch("https://formspree.io/f/xgooeayn", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Form submission failed");
+      }
+
+      setSent(true);
+      setFormData({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+      });
+
+      window.setTimeout(() => setSent(false), 4500);
+    } catch {
+      window.alert("Failed to send. Please try again.");
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const contactMethods = [
+    {
+      name: "LinkedIn",
+      description: "Professional conversations",
+      icon: Linkedin,
+      href: "https://www.linkedin.com/in/roshan-gawade-469bb422a/",
+    },
+    {
+      name: "WhatsApp",
+      description: "Quick conversations",
+      icon: MessageCircle,
+      href: "https://wa.me/918551879434",
+    },
+    {
+      name: "Email",
+      description: "Projects & opportunities",
+      icon: Mail,
+      href: "https://mail.google.com/mail/u/0/#inbox?compose=new",
+    },
+    {
+      name: "Phone",
+      description: "Direct conversation",
+      icon: Phone,
+      href: "tel:+918551879434",
+    },
+  ];
+
+  return (
+    <section
+      ref={ref}
+      id="contact"
+      className="relative overflow-hidden border-t border-white/[0.08] bg-[#f0efe9] py-32 text-[#080808] sm:py-40"
+    >
+      <motion.div
+        style={{ x: titleX }}
+        className="pointer-events-none absolute top-[8%] whitespace-nowrap"
+      >
+        <div className="display text-[clamp(100px,22vw,370px)] font-black uppercase leading-none tracking-[-.09em] text-black/[0.045]">
+          CONTACT
+        </div>
+      </motion.div>
+
+      <div className="relative mx-auto max-w-[1600px] px-5 sm:px-8 lg:px-12">
+        <div className="grid gap-20 lg:grid-cols-[.9fr_1.1fr]">
+          <div>
+            <div className="mb-6 flex items-center gap-3 text-[9px] uppercase tracking-[.35em] text-black/45">
+              <span className="h-px w-9 bg-black/40" />
+              Contact
+            </div>
+
+            <h2 className="display max-w-4xl text-[clamp(4rem,9vw,9rem)] font-black uppercase leading-[.78] tracking-[-.08em]">
+              Let's make
+              <br />
+              something
+              <br />
+              <span className="text-black/25">real.</span>
+            </h2>
+
+            <p className="mt-10 max-w-md text-sm leading-7 text-black/50">
+              Open to conversations around projects, engineering roles,
+              freelance work and interesting technical challenges.
+            </p>
+
+            <div className="mt-12 space-y-2">
+              {contactMethods.map((method, index) => {
+                const Icon = method.icon;
+
+                return (
+                  <Magnetic key={method.name} strength={12}>
+                    <a
+                      href={method.href}
+                      target={
+                        method.href.startsWith("http") ? "_blank" : undefined
+                      }
+                      rel={
+                        method.href.startsWith("http")
+                          ? "noreferrer"
+                          : undefined
+                      }
+                      className="group flex items-center justify-between border-t border-black/10 py-5"
+                    >
+                      <div className="flex items-center gap-4">
+                        <Icon size={16} />
+                        <div>
+                          <div className="text-sm font-medium">
+                            {method.name}
+                          </div>
+                          <div className="mt-1 text-[8px] uppercase tracking-[.18em] text-black/35">
+                            {method.description}
+                          </div>
+                        </div>
+                      </div>
+
+                      <ArrowUpRight
+                        size={15}
+                        className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
+                      />
+                    </a>
+                  </Magnetic>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="relative">
+            <motion.form
+              initial={{ opacity: 0, y: 70 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+              onSubmit={handleSubmit}
+              className="relative overflow-hidden border border-black/10 bg-white/45 p-6 backdrop-blur-sm sm:p-10"
+            >
+              <div className="absolute right-0 top-0 h-32 w-32 rounded-full bg-[#c9ff57]/30 blur-3xl" />
+
+              <div className="relative grid gap-8">
+                <div className="grid gap-8 sm:grid-cols-2">
+                  <label className="group">
+                    <span className="text-[8px] uppercase tracking-[.25em] text-black/35">
+                      Name
+                    </span>
+                    <input
+                      required
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      className="mt-3 w-full border-0 border-b border-black/15 bg-transparent px-0 py-3 text-sm outline-none transition-colors focus:border-black"
+                    />
+                  </label>
+
+                  <label className="group">
+                    <span className="text-[8px] uppercase tracking-[.25em] text-black/35">
+                      Email
+                    </span>
+                    <input
+                      required
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="mt-3 w-full border-0 border-b border-black/15 bg-transparent px-0 py-3 text-sm outline-none transition-colors focus:border-black"
+                    />
+                  </label>
+                </div>
+
+                <label>
+                  <span className="text-[8px] uppercase tracking-[.25em] text-black/35">
+                    Subject
+                  </span>
+                  <input
+                    required
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleChange}
+                    className="mt-3 w-full border-0 border-b border-black/15 bg-transparent px-0 py-3 text-sm outline-none focus:border-black"
+                  />
+                </label>
+
+                <label>
+                  <span className="text-[8px] uppercase tracking-[.25em] text-black/35">
+                    Message
+                  </span>
+                  <textarea
+                    required
+                    name="message"
+                    rows={6}
+                    value={formData.message}
+                    onChange={handleChange}
+                    className="mt-3 w-full resize-none border-0 border-b border-black/15 bg-transparent px-0 py-3 text-sm outline-none focus:border-black"
+                  />
+                </label>
+
+                <Magnetic strength={10}>
+                  <button
+                    disabled={sending}
+                    type="submit"
+                    className="group relative flex w-full items-center justify-between overflow-hidden bg-black px-6 py-5 text-left text-white"
+                  >
+                    <span className="relative z-10 text-[9px] uppercase tracking-[.25em]">
+                      {sending
+                        ? "Sending..."
+                        : sent
+                        ? "Message sent"
+                        : "Send message"}
+                    </span>
+
+                    <span className="relative z-10">
+                      {sent ? <Check size={16} /> : <ArrowUpRight size={16} />}
+                    </span>
+
+                    <span className="absolute inset-0 origin-left scale-x-0 bg-[#c9ff57] transition-transform duration-500 group-hover:scale-x-100" />
+                  </button>
+                </Magnetic>
+
+                <div className="flex justify-between text-[8px] uppercase tracking-[.18em] text-black/30">
+                  <span>Roshan Gawade</span>
+                  <span>Mumbai, India</span>
+                </div>
+              </div>
+            </motion.form>
+          </div>
+        </div>
+
+        <div className="mt-32 overflow-hidden border-y border-black/10 py-7">
+          <motion.div
+            animate={{ x: ["0%", "-50%"] }}
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+            className="flex w-max whitespace-nowrap"
+          >
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div
+                key={i}
+                className="display mr-16 text-[clamp(2.5rem,5vw,5rem)] font-black uppercase tracking-[-.06em]"
+              >
+                ROSHAN GAWADE&nbsp;&nbsp;•&nbsp;&nbsp; SOFTWARE ENGINEER&nbsp;&nbsp;•
+              </div>
+            ))}
+          </motion.div>
+        </div>
+
+        <footer className="mt-8 flex flex-col justify-between gap-4 text-[8px] uppercase tracking-[.2em] text-black/35 sm:flex-row">
+          <span>Roshan Gawade</span>
+          <span>Software Engineer</span>
+          <span>© 2026</span>
+        </footer>
+      </div>
+    </section>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                    APP                                     */
+/* -------------------------------------------------------------------------- */
+
+export default function App() {
+  const [introDone, setIntroDone] = useState(false);
+
+  useEffect(() => {
+    document.documentElement.style.background = "#080808";
+
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const timer = window.setTimeout(() => {
+      document.body.style.overflow = previous;
+    }, 4700);
+
+    return () => {
+      window.clearTimeout(timer);
+      document.body.style.overflow = previous;
+    };
+  }, []);
+
+  const finishIntro = () => {
+    setIntroDone(true);
+    document.body.style.overflow = "";
+  };
+
+  return (
+    <div className="portfolio-shell min-h-screen">
+      <GlobalStyle />
+      <Cursor />
+      <div className="noise" />
+
+      <Intro onComplete={finishIntro} />
+
+      <Navigation />
+
+      <main>
+        <Hero />
+        <About />
+        <Skills />
+        <Projects />
+        <Experience />
+        <Education />
+        <Contact />
+      </main>
+
+      {/* tiny floating progress marker */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: introDone ? 1 : 0 }}
+        className="pointer-events-none fixed bottom-5 right-5 z-[70] hidden items-center gap-2 text-[7px] uppercase tracking-[.25em] text-white/25 lg:flex"
+      >
+        <span className="h-1 w-1 rounded-full bg-[#c9ff57]" />
+        interactive portfolio
+      </motion.div>
+    </div>
+  );
+}
