@@ -4,8 +4,8 @@ import { Calendar, MapPin, ExternalLink } from 'lucide-react';
 const Experience = () => {
   const experiences = [
     {
-      title: 'Full Stack Developer Intern',
-      company: 'Vivirelle Lifestyle & Fragrances',
+      title: 'Full Stack Developer ',
+      company: 'Vivirelle Lifestyle & Fragrances Pvt Ltd',
       location: 'Remote',
       period: 'Jan 2026 – Present',
       type: 'Internship',
@@ -37,7 +37,7 @@ const Experience = () => {
       title: 'Freelance Web Developer',
       company: 'Self-Employed',
       location: 'Hybrid',
-      period: 'July 2025 – Present',
+      period: 'June 2025 – Present',
       type: 'Freelance',
 
       description:
