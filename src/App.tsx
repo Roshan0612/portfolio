@@ -1261,6 +1261,14 @@ function About() {
       id="about"
       className="relative min-h-screen overflow-hidden border-t border-white/[0.08] py-32 sm:py-40"
     >
+      <div className="pointer-events-none absolute inset-0 z-0 opacity-[0.015] grayscale sm:opacity-[0.025]">
+        <img
+          src="https://res.cloudinary.com/dswa5docr/image/upload/v1789322591/1f550daa-605d-481e-9c0e-eea43baa69f2.png"
+          alt=""
+          className="h-full w-full object-cover object-center"
+        />
+      </div>
+
       <motion.div
         style={{
           x: textX,
