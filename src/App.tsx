@@ -1934,18 +1934,6 @@ function ProjectStage() {
           </div>
         </div>
 
-        <motion.div
-          animate={{
-            opacity: hovered ? 1 : 0,
-            scale: hovered ? 1 : 0.7,
-          }}
-          className="pointer-events-none absolute right-8 top-8 z-30 flex h-20 w-20 items-center justify-center rounded-full border border-white/40 bg-black/20 text-center text-[8px] uppercase tracking-[.15em] backdrop-blur-md"
-        >
-          Move
-          <br />
-          explore
-        </motion.div>
-
         <div className="absolute right-5 top-5 z-30 flex gap-2 sm:right-8 sm:top-8">
           <button
             onClick={previous}
@@ -2739,15 +2727,6 @@ export default function App() {
         <Contact />
       </main>
 
-      {/* tiny floating progress marker */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: introDone ? 1 : 0 }}
-        className="pointer-events-none fixed bottom-5 right-5 z-[70] hidden items-center gap-2 text-[7px] uppercase tracking-[.25em] text-white/25 lg:flex"
-      >
-        <span className="h-1 w-1 rounded-full bg-[#c9ff57]" />
-        interactive portfolio
-      </motion.div>
     </div>
   );
 }
