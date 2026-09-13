@@ -37,7 +37,10 @@ import {
 /* -------------------------------------------------------------------------- */
 
 const portrait =
-  "https://res.cloudinary.com/dswa5docr/image/upload/v1767027372/headshot_roshan_portfolio_lwgaci.jpg";
+  "https://res.cloudinary.com/dswa5docr/image/upload/v1789320949/e1e00fcd-6007-489b-8b5e-0328b57550cf.png";
+
+const aboutImage =
+  "https://res.cloudinary.com/dswa5docr/image/upload/v1789319615/ai_generated_laptop_playing_headshot_gcvrou.png";
 
 const demoImages = {
   portrait:
@@ -323,6 +326,8 @@ const education = [
     period: "09/2022 - 06/2026",
     result: "8.166 CGPA",
     index: "01",
+    image:
+      "https://res.cloudinary.com/dswa5docr/image/upload/v1789320465/2bdea6a2-62bd-474d-8392-cc0964b2b415.png",
   },
   {
     degree: "HSC In Science PCMB",
@@ -331,6 +336,8 @@ const education = [
     period: "06/2020 - 03/2021",
     result: "82.83%",
     index: "02",
+    image:
+      "https://res.cloudinary.com/dswa5docr/image/upload/v1789320501/cda86e25-723d-4ad7-bb49-0fbe8ef206d3.png",
   },
   {
     degree: "SSC",
@@ -339,6 +346,8 @@ const education = [
     period: "06/2018 - 03/2019",
     result: "84.80%",
     index: "03",
+    image:
+      "https://res.cloudinary.com/dswa5docr/image/upload/v1789320557/c1ee1b3c-b164-48c6-9a1b-6313d1bb9bc5.png",
   },
 ];
 
@@ -552,8 +561,8 @@ function Cursor() {
     };
 
     const tick = () => {
-      rx += (mx - rx) * 0.13;
-      ry += (my - ry) * 0.13;
+      rx += (mx - rx) * 0.25;
+      ry += (my - ry) * 0.25;
 
       if (ringRef.current) {
         ringRef.current.style.left = `${rx}px`;
@@ -1052,12 +1061,12 @@ function Hero() {
 
           <motion.div
             style={{ y: imageY, scale: imageScale }}
-            className="absolute right-[5%] top-[17%] h-[55vh] w-[42vw] max-w-[650px] overflow-hidden sm:right-[8%] lg:h-[62vh]"
+            className="absolute right-[5%] top-[17%] h-[34vh] w-[60vw] max-w-[420px] overflow-hidden sm:right-[8%] sm:h-[55vh] sm:w-[42vw] sm:max-w-[650px] lg:h-[62vh]"
           >
             <motion.img
               src={portrait}
               alt="Roshan Gawade"
-              className="h-full w-full object-cover grayscale-[.25]"
+              className="h-full w-full object-cover object-center grayscale-[.25]"
               initial={{ scale: 1.2 }}
               animate={{ scale: 1 }}
               transition={{
@@ -1237,6 +1246,7 @@ function About() {
   const imageY = useTransform(scrollYProgress, [0, 1], ["-10%", "20%"]);
   const imageRotate = useTransform(scrollYProgress, [0, 1], [-4, 5]);
   const lineX = useTransform(scrollYProgress, [0, 1], ["-20%", "30%"]);
+  const textX = useTransform(scrollYProgress, [0, 1], ["-60%", "18%"]);
 
   const highlights = [
     ["Clean Code", "Writing maintainable, scalable code with best practices"],
@@ -1251,12 +1261,16 @@ function About() {
       id="about"
       className="relative min-h-screen overflow-hidden border-t border-white/[0.08] py-32 sm:py-40"
     >
-      <MovingBackgroundWords
-        text="ABOUT"
-        direction={-1}
-        top="9%"
-        size="clamp(130px, 23vw, 380px)"
-      />
+      <motion.div
+        style={{
+          x: textX,
+          top: "9%",
+          fontSize: "clamp(130px, 23vw, 380px)",
+        }}
+        className="pointer-events-none absolute left-1/2 -translate-x-1/2 whitespace-nowrap font-black uppercase leading-none text-white/[0.035] display select-none"
+      >
+        ABOUT
+      </motion.div>
 
       <motion.div
         style={{ x: lineX }}
@@ -1295,12 +1309,12 @@ function About() {
         <div className="relative">
           <motion.div
             style={{ y: imageY, rotate: imageRotate }}
-            className="relative ml-auto h-[50vh] w-full max-w-[570px] overflow-hidden border border-white/10"
+            className="relative ml-auto h-[38vh] w-full max-w-[420px] overflow-hidden border border-white/10 sm:h-[50vh] sm:max-w-[570px]"
           >
             <motion.img
-              src={demoImages.developer}
+              src={aboutImage}
               alt=""
-              className="h-[120%] w-full object-cover grayscale-[.35]"
+              className="h-full w-full object-cover object-center grayscale-[.35]"
               style={{ y: imageY }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
@@ -1331,10 +1345,10 @@ function About() {
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
             className="mt-16 max-w-2xl text-lg leading-8 text-white/55 sm:text-xl"
           >
-            Final-year Computer Engineering student with a strong foundation
-            in full-stack web development, specializing in the MERN stack and
-            building responsive, scalable applications that solve real-world
-            problems.
+            Computer Science and Engineering graduate with  hands-on experience in full-stack development,
+scalable system design, and cloud deployment, along with freelance development experience. Experienced in building
+production-ready applications while contributing across frontend, backend, APIs, automation, and deployment in
+real-world environments. Solved 200+ DSA problems on LeetCode and GeeksforGeeks.
           </motion.p>
 
           <div className="mt-20 grid grid-cols-1 border-t border-white/10 sm:grid-cols-2">
@@ -1541,17 +1555,30 @@ function SkillField() {
 }
 
 function Skills() {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+
+  const textX = useTransform(scrollYProgress, [0, 1], ["-50%", "18%"]);
+
   return (
     <section
+      ref={ref}
       id="skills"
       className="relative overflow-hidden border-t border-white/[0.08] py-32 sm:py-40"
     >
-      <MovingBackgroundWords
-        text="TOOLKIT"
-        direction={1}
-        top="7%"
-        size="clamp(110px, 21vw, 350px)"
-      />
+      <motion.div
+        style={{
+          x: textX,
+          top: "7%",
+          fontSize: "clamp(110px, 21vw, 350px)",
+        }}
+        className="pointer-events-none absolute left-1/2 -translate-x-1/2 whitespace-nowrap font-black uppercase leading-none text-white/[0.035] display select-none"
+      >
+        TOOLKIT
+      </motion.div>
 
       <div className="relative mx-auto max-w-[1600px] px-5 sm:px-8 lg:px-12">
         <div className="mb-20 flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
@@ -1622,7 +1649,7 @@ function ProjectStage() {
         }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeaveCapture={() => setHovered(false)}
-        className="relative min-h-[700px] overflow-hidden border border-white/10 bg-[#0a0a0a]"
+        className="relative min-h-[520px] overflow-hidden border border-white/10 bg-[#0a0a0a] sm:min-h-[700px]"
       >
         <AnimatePresence mode="wait">
           <motion.div
@@ -1664,7 +1691,7 @@ function ProjectStage() {
                 transform:
                   "translate(var(--px, 0px), var(--py, 0px)) scale(1.02)",
               }}
-              className="project-image h-full w-full object-cover"
+              className="project-image h-full w-full object-cover object-center"
             />
 
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/5 to-black/20" />
@@ -1672,7 +1699,7 @@ function ProjectStage() {
         </AnimatePresence>
 
         <div className="absolute inset-x-0 bottom-0 z-20 p-6 sm:p-9 lg:p-12">
-          <div className="flex flex-col justify-between gap-10 lg:flex-row lg:items-end">
+          <div className="flex flex-col justify-between gap-6 sm:gap-10 lg:flex-row lg:items-end">
             <div className="max-w-3xl">
               <div className="mb-4 flex items-center gap-3 text-[8px] uppercase tracking-[.3em] text-[#c9ff57]">
                 <span>
@@ -1683,48 +1710,109 @@ function ProjectStage() {
                 <span>{project.status || "Selected project"}</span>
               </div>
 
-              <AnimatePresence mode="wait">
-                <motion.h3
-                  key={project.title}
-                  initial={{ y: 45, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: -30, opacity: 0 }}
-                  transition={{ duration: 0.7 }}
-                  className="display text-[clamp(3rem,7vw,7rem)] font-black uppercase leading-[.8] tracking-[-.07em]"
-                >
-                  {project.title}
-                </motion.h3>
-              </AnimatePresence>
+              <div className="sm:hidden">
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <AnimatePresence mode="wait">
+                    <motion.h3
+                      key={project.title}
+                      initial={{ y: 20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ y: -20, opacity: 0 }}
+                      transition={{ duration: 0.5 }}
+                      className="display text-3xl font-black uppercase leading-[.8] tracking-[-.06em]"
+                    >
+                      {project.title}
+                    </motion.h3>
+                  </AnimatePresence>
 
-              <AnimatePresence mode="wait">
-                <motion.p
-                  key={`${project.title}-description`}
-                  initial={{ y: 25, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: -15, opacity: 0 }}
-                  transition={{ duration: 0.6, delay: 0.05 }}
-                  className="mt-7 max-w-2xl text-sm leading-6 text-white/55 sm:text-base"
-                >
-                  {project.description}
-                </motion.p>
-              </AnimatePresence>
+                  <div className="flex shrink-0 gap-2">
+                    {project.github !== "#" && (
+                      <Magnetic strength={8}>
+                        <a
+                          href={project.github}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="flex h-9 w-9 items-center justify-center border border-white/15 bg-black/30 backdrop-blur transition-colors hover:border-[#c9ff57]/60"
+                          aria-label={`${project.title} GitHub`}
+                        >
+                          <Github size={14} />
+                        </a>
+                      </Magnetic>
+                    )}
 
-              <div className="mt-6 flex flex-wrap gap-2">
-                {project.tech.slice(0, 7).map((tech, index) => (
-                  <motion.span
-                    key={tech}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.04 }}
-                    className="border border-white/10 bg-black/30 px-3 py-2 text-[8px] uppercase tracking-[.14em] text-white/45 backdrop-blur"
+                    {project.live !== "#" && (
+                      <Magnetic strength={8}>
+                        <a
+                          href={project.live}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="flex h-9 items-center gap-2 border border-[#c9ff57]/40 bg-[#c9ff57] px-3 text-[7px] font-bold uppercase tracking-[.18em] text-black"
+                        >
+                          Open
+                        </a>
+                      </Magnetic>
+                    )}
+                  </div>
+                </div>
+
+                <AnimatePresence mode="wait">
+                  <motion.p
+                    key={`${project.title}-description-mobile`}
+                    initial={{ y: 15, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -15, opacity: 0 }}
+                    transition={{ duration: 0.45 }}
+                    className="max-w-xl text-xs leading-5 text-white/55"
                   >
-                    {tech}
-                  </motion.span>
-                ))}
+                    {project.description}
+                  </motion.p>
+                </AnimatePresence>
+              </div>
+
+              <div className="hidden sm:block">
+                <AnimatePresence mode="wait">
+                  <motion.h3
+                    key={project.title}
+                    initial={{ y: 45, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -30, opacity: 0 }}
+                    transition={{ duration: 0.7 }}
+                    className="display text-[clamp(3rem,7vw,7rem)] font-black uppercase leading-[.8] tracking-[-.07em]"
+                  >
+                    {project.title}
+                  </motion.h3>
+                </AnimatePresence>
+
+                <AnimatePresence mode="wait">
+                  <motion.p
+                    key={`${project.title}-description`}
+                    initial={{ y: 25, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -15, opacity: 0 }}
+                    transition={{ duration: 0.6, delay: 0.05 }}
+                    className="mt-7 max-w-2xl text-sm leading-6 text-white/55 sm:text-base"
+                  >
+                    {project.description}
+                  </motion.p>
+                </AnimatePresence>
+
+                <div className="mt-6 flex flex-wrap gap-2">
+                  {project.tech.slice(0, 7).map((tech, index) => (
+                    <motion.span
+                      key={tech}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.04 }}
+                      className="border border-white/10 bg-black/30 px-3 py-2 text-[8px] uppercase tracking-[.14em] text-white/45 backdrop-blur"
+                    >
+                      {tech}
+                    </motion.span>
+                  ))}
+                </div>
               </div>
             </div>
 
-            <div className="flex shrink-0 gap-2">
+            <div className="hidden shrink-0 gap-2 sm:flex">
               {project.github !== "#" && (
                 <Magnetic strength={8}>
                   <a
@@ -1789,7 +1877,7 @@ function ProjectStage() {
           <button
             key={item.title}
             onClick={() => setActive(index)}
-            className={`group relative h-20 w-28 shrink-0 overflow-hidden border transition-all sm:h-24 sm:w-36 ${
+            className={`group relative h-16 w-24 shrink-0 overflow-hidden border transition-all sm:h-24 sm:w-36 ${
               active === index
                 ? "border-[#c9ff57]"
                 : "border-white/10 opacity-50 hover:opacity-100"
@@ -1798,7 +1886,7 @@ function ProjectStage() {
             <img
               src={item.image}
               alt=""
-              className="h-full w-full object-cover grayscale transition-transform duration-700 group-hover:scale-110"
+              className="h-full w-full object-cover object-center grayscale transition-transform duration-700 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-black/35" />
             <span className="absolute bottom-2 left-2 text-[7px] uppercase tracking-[.16em] text-white">
@@ -1818,7 +1906,7 @@ function Projects() {
     offset: ["start end", "end start"],
   });
 
-  const titleX = useTransform(scrollYProgress, [0, 1], ["-15%", "10%"]);
+  const titleX = useTransform(scrollYProgress, [0, 1], ["-55%", "18%"]);
 
   return (
     <section
@@ -1827,12 +1915,14 @@ function Projects() {
       className="relative overflow-hidden border-t border-white/[0.08] py-32 sm:py-40"
     >
       <motion.div
-        style={{ x: titleX }}
-        className="pointer-events-none absolute left-0 top-[8%] whitespace-nowrap"
+        style={{
+          x: titleX,
+          top: "8%",
+          fontSize: "clamp(100px,23vw,390px)",
+        }}
+        className="pointer-events-none absolute left-1/2 -translate-x-1/2 whitespace-nowrap font-black uppercase leading-none tracking-[-.09em] text-white/[0.035] display select-none"
       >
-        <div className="display text-[clamp(100px,23vw,390px)] font-black uppercase leading-none tracking-[-.09em] text-white/[0.035]">
-          WORK
-        </div>
+        WORK
       </motion.div>
 
       <div className="relative mx-auto max-w-[1600px] px-5 sm:px-8 lg:px-12">
@@ -2077,6 +2167,13 @@ function EducationCard({
       style={{ y, rotate, scale, opacity }}
       className="group relative min-h-[340px] overflow-hidden border border-white/10 bg-[#0b0b0b] p-6 sm:p-9"
     >
+      <img
+        src={item.image}
+        alt={item.school}
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-0 grayscale transition-all duration-500 group-hover:opacity-[0.14]"
+      />
+      <div className="absolute inset-0 bg-gradient-to-br from-black/20 via-transparent to-black/40 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+
       <motion.div
         className="absolute right-0 top-0 h-40 w-40 rounded-full bg-[#c9ff57]/[0.045] blur-3xl"
         animate={{
@@ -2284,8 +2381,16 @@ function Contact() {
     <section
       ref={ref}
       id="contact"
-      className="relative overflow-hidden border-t border-white/[0.08] bg-[#f0efe9] py-32 text-[#080808] sm:py-40"
+      className="relative overflow-hidden border-t border-white/[0.08] bg-[#dedcd7] py-32 text-[#080808] sm:py-40"
     >
+      <div className="pointer-events-none absolute inset-0 z-0 opacity-[0.08] grayscale sm:opacity-[0.12]">
+        <img
+          src={portrait}
+          alt=""
+          className="h-full w-full object-cover object-center object-right"
+        />
+      </div>
+
       <motion.div
         style={{ x: titleX }}
         className="pointer-events-none absolute top-[8%] whitespace-nowrap"
@@ -2295,7 +2400,7 @@ function Contact() {
         </div>
       </motion.div>
 
-      <div className="relative mx-auto max-w-[1600px] px-5 sm:px-8 lg:px-12">
+      <div className="relative z-10 mx-auto max-w-[1600px] px-5 sm:px-8 lg:px-12">
         <div className="grid gap-20 lg:grid-cols-[.9fr_1.1fr]">
           <div>
             <div className="mb-6 flex items-center gap-3 text-[9px] uppercase tracking-[.35em] text-black/45">
@@ -2364,14 +2469,18 @@ function Contact() {
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
               onSubmit={handleSubmit}
-              className="relative overflow-hidden border border-black/10 bg-white/45 p-6 backdrop-blur-sm sm:p-10"
+              className="relative mx-auto max-w-[520px] overflow-hidden rounded-[2.3rem] border-[8px] border-black bg-[#0d0d0d] p-3 shadow-[0_30px_80px_rgba(0,0,0,0.22)] backdrop-blur-sm sm:p-4"
             >
-              <div className="absolute right-0 top-0 h-32 w-32 rounded-full bg-[#c9ff57]/30 blur-3xl" />
+              <div className="relative rounded-[1.6rem] border border-black/10 bg-white/80 p-5 sm:p-7">
+                <div className="absolute inset-x-0 top-0 z-20 flex items-center justify-center pt-2">
+                  <div className="h-2 w-24 rounded-full bg-black/90 shadow-[0_0_0_1px_rgba(255,255,255,0.18)]" />
+                </div>
+                <div className="absolute right-0 top-0 h-32 w-32 rounded-full bg-[#c9ff57]/30 blur-3xl" />
 
-              <div className="relative grid gap-8">
+                <div className="relative z-10 grid gap-8">
                 <div className="grid gap-8 sm:grid-cols-2">
                   <label className="group">
-                    <span className="text-[8px] uppercase tracking-[.25em] text-black/35">
+                    <span className="text-[9px] font-medium uppercase tracking-[.25em] text-black/60">
                       Name
                     </span>
                     <input
@@ -2379,12 +2488,12 @@ function Contact() {
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
-                      className="mt-3 w-full border-0 border-b border-black/15 bg-transparent px-0 py-3 text-sm outline-none transition-colors focus:border-black"
+                      className="mt-3 w-full border-0 border-b border-black/20 bg-transparent px-0 py-3 text-sm text-black placeholder:text-black/35 outline-none transition-colors focus:border-black"
                     />
                   </label>
 
                   <label className="group">
-                    <span className="text-[8px] uppercase tracking-[.25em] text-black/35">
+                    <span className="text-[9px] font-medium uppercase tracking-[.25em] text-black/60">
                       Email
                     </span>
                     <input
@@ -2393,13 +2502,13 @@ function Contact() {
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      className="mt-3 w-full border-0 border-b border-black/15 bg-transparent px-0 py-3 text-sm outline-none transition-colors focus:border-black"
+                      className="mt-3 w-full border-0 border-b border-black/20 bg-transparent px-0 py-3 text-sm text-black placeholder:text-black/35 outline-none transition-colors focus:border-black"
                     />
                   </label>
                 </div>
 
                 <label>
-                  <span className="text-[8px] uppercase tracking-[.25em] text-black/35">
+                  <span className="text-[9px] font-medium uppercase tracking-[.25em] text-black/60">
                     Subject
                   </span>
                   <input
@@ -2407,12 +2516,12 @@ function Contact() {
                     name="subject"
                     value={formData.subject}
                     onChange={handleChange}
-                    className="mt-3 w-full border-0 border-b border-black/15 bg-transparent px-0 py-3 text-sm outline-none focus:border-black"
+                    className="mt-3 w-full border-0 border-b border-black/20 bg-transparent px-0 py-3 text-sm text-black placeholder:text-black/35 outline-none focus:border-black"
                   />
                 </label>
 
                 <label>
-                  <span className="text-[8px] uppercase tracking-[.25em] text-black/35">
+                  <span className="text-[9px] font-medium uppercase tracking-[.25em] text-black/60">
                     Message
                   </span>
                   <textarea
@@ -2421,7 +2530,7 @@ function Contact() {
                     rows={6}
                     value={formData.message}
                     onChange={handleChange}
-                    className="mt-3 w-full resize-none border-0 border-b border-black/15 bg-transparent px-0 py-3 text-sm outline-none focus:border-black"
+                    className="mt-3 w-full resize-none border-0 border-b border-black/20 bg-transparent px-0 py-3 text-sm text-black placeholder:text-black/35 outline-none focus:border-black"
                   />
                 </label>
 
@@ -2450,6 +2559,7 @@ function Contact() {
                 <div className="flex justify-between text-[8px] uppercase tracking-[.18em] text-black/30">
                   <span>Roshan Gawade</span>
                   <span>Mumbai, India</span>
+                </div>
                 </div>
               </div>
             </motion.form>
