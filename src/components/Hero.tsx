@@ -1,5 +1,11 @@
-import React from 'react';
-import { ChevronDown, Github, Linkedin, Mail } from 'lucide-react';
+import React, { useEffect, useRef, useState } from "react";
+import {
+  ArrowDown,
+  ArrowUpRight,
+  Github,
+  Linkedin,
+  Mail,
+} from "lucide-react";
 
 const LeetCodeIcon = ({ size = 20 }: { size?: number }) => (
   <svg
@@ -14,10 +20,12 @@ const LeetCodeIcon = ({ size = 20 }: { size?: number }) => (
       d="M21.5 14.5H13.8C13.05 14.5 12.45 13.9 12.45 13.15C12.45 12.4 13.05 11.8 13.8 11.8H21.5C22.25 11.8 22.85 12.4 22.85 13.15C22.85 13.9 22.25 14.5 21.5 14.5Z"
       fill="currentColor"
     />
+
     <path
       d="M7.15 20.8C5.65 19.95 4.35 18.75 3.4 17.3C2.45 15.85 1.9 14.2 1.8 12.5C1.7 10.8 2.05 9.05 2.85 7.5C3.65 5.95 4.85 4.6 6.3 3.65C7.75 2.7 9.4 2.15 11.1 2.05C12.8 1.95 14.55 2.3 16.1 3.1L14.8 5.45C13.7 4.9 12.45 4.65 11.25 4.75C10.05 4.85 8.9 5.3 7.95 6.05C7 6.8 6.25 7.8 5.8 8.95C5.35 10.1 5.2 11.35 5.4 12.55C5.6 13.75 6.1 14.85 6.9 15.75C7.7 16.65 8.75 17.3 9.9 17.65C11.05 18 12.3 18 13.45 17.65C14.6 17.3 15.65 16.65 16.45 15.75L18.4 17.65C17.25 18.85 15.8 19.75 14.2 20.25C12.6 20.75 10.9 20.85 9.25 20.55C8.5 20.4 7.8 20.15 7.15 20.8Z"
       fill="currentColor"
     />
+
     <path
       d="M12.05 9.1L16.55 4.6C17.05 4.1 17.85 4.1 18.35 4.6C18.85 5.1 18.85 5.9 18.35 6.4L13.85 10.9L12.05 9.1Z"
       fill="currentColor"
@@ -25,249 +33,235 @@ const LeetCodeIcon = ({ size = 20 }: { size?: number }) => (
   </svg>
 );
 
-const AnimatedText = () => {
-  const roles = [
-    'Software Engineer',
-    'Computer Engineer',
-    'Full-Stack Developer',
-    'Web Developer'
-  ];
-
-  const [currentRole, setCurrentRole] = React.useState(0);
-  const [displayedText, setDisplayedText] = React.useState('');
-  const [typing, setTyping] = React.useState(true);
-
-  React.useEffect(() => {
-    let timeout: NodeJS.Timeout;
-
-    if (typing) {
-      if (displayedText.length < roles[currentRole].length) {
-        timeout = setTimeout(() => {
-          setDisplayedText(
-            roles[currentRole].slice(0, displayedText.length + 1)
-          );
-        }, 80);
-      } else {
-        timeout = setTimeout(() => {
-          setTyping(false);
-        }, 1200);
-      }
-    } else {
-      timeout = setTimeout(() => {
-        setTyping(true);
-        setDisplayedText('');
-        setCurrentRole((prev) => (prev + 1) % roles.length);
-      }, 500);
-    }
-
-    return () => clearTimeout(timeout);
-  }, [displayedText, typing, currentRole, roles]);
-
-  return (
-    <span className="inline-block w-full text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-gray-300 to-gray-400 text-center">
-      {displayedText}
-      <span className="animate-pulse">|</span>
-    </span>
-  );
-};
+const roles = [
+  "Software Engineer",
+  "Computer Engineer",
+  "Full-Stack Developer",
+  "Web Developer",
+];
 
 const Hero = () => {
-  const scrollToAbout = () => {
-    const element = document.getElementById('about');
+  const heroRef = useRef<HTMLElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
 
-    if (element) {
-      element.scrollIntoView({
-        behavior: 'smooth'
-      });
-    }
+  const [roleIndex, setRoleIndex] = useState(0);
+  const [roleText, setRoleText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    const currentRole = roles[roleIndex];
+
+    const speed = isDeleting ? 38 : 75;
+
+    const timer = setTimeout(() => {
+      if (!isDeleting) {
+        setRoleText(currentRole.substring(0, roleText.length + 1));
+
+        if (roleText.length === currentRole.length) {
+          setTimeout(() => setIsDeleting(true), 1300);
+        }
+      } else {
+        setRoleText(currentRole.substring(0, roleText.length - 1));
+
+        if (roleText.length === 0) {
+          setIsDeleting(false);
+          setRoleIndex((prev) => (prev + 1) % roles.length);
+        }
+      }
+    }, speed);
+
+    return () => clearTimeout(timer);
+  }, [roleText, roleIndex, isDeleting]);
+
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      if (window.innerWidth < 900) return;
+
+      const x = event.clientX / window.innerWidth - 0.5;
+      const y = event.clientY / window.innerHeight - 0.5;
+
+      if (imageRef.current) {
+        imageRef.current.style.transform = `
+          perspective(1200px)
+          rotateY(${x * 7}deg)
+          rotateX(${y * -7}deg)
+          translate3d(${x * 10}px, ${y * 10}px, 0)
+        `;
+      }
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, []);
+
+  const scrollTo = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({
+      behavior: "smooth",
+    });
   };
 
-  const scrollToProjects = () => {
-    const element = document.getElementById('projects');
-
-    if (element) {
-      element.scrollIntoView({
-        behavior: 'smooth'
-      });
-    }
-  };
-
-  const handleDownload = () => {
+  const downloadResume = () => {
     const link = document.createElement("a");
+
     link.href = "/roshan-resume.pdf";
-    link.download = "roshan-resume.pdf";
+    link.download = "Roshan-Gawade-Resume.pdf";
+
+    document.body.appendChild(link);
     link.click();
+    document.body.removeChild(link);
   };
 
   return (
-    <section
-      id="hero"
-      className="w-full min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-gray-900 to-black pt-20 relative overflow-hidden"
-    >
+    <section ref={heroRef} id="hero" className="premium-hero">
+      <div className="hero-noise" />
 
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-teal-500/20 to-teal-500/5 rounded-full blur-3xl animate-float"></div>
+      <div className="hero-grid" />
 
-        <div className="absolute bottom-20 right-10 w-72 h-72 bg-gradient-to-br from-gray-700/20 to-gray-800/5 rounded-full blur-3xl animate-float-delayed"></div>
+      <div className="hero-orb hero-orb-one" />
+      <div className="hero-orb hero-orb-two" />
 
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-gray-700/10 to-gray-800/5 rounded-full blur-3xl opacity-50"></div>
-      </div>
-
-      <div className="max-w-[1920px] mx-auto px-3 sm:px-8 lg:px-16 xl:px-24 relative z-10">
-
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-
-          <div className="text-center lg:text-left">
-
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6 animate-fade-in-up leading-tight">
-              Hi, I'm{' '}
-              <span className="gradient-text bg-clip-text">
-                Roshan Gawade
-              </span>
-            </h1>
-
-            <div className="text-2xl sm:text-3xl lg:text-4xl text-gray-200 mb-8 h-20 relative font-semibold animate-fade-in-up stagger-1">
-              <span className="inline-flex items-baseline gap-2 align-middle">
-                <span className="align-middle">
-                  I am a
-                </span>
-
-                <span className="align-middle">
-                  <AnimatedText />
-                </span>
-              </span>
-            </div>
-
-            <p className="text-lg text-gray-300 mb-12 max-w-2xl mx-auto lg:mx-0 leading-relaxed animate-fade-in-up stagger-2">
-              Computer Science Engineering graduate with hands-on experience in full-stack web development using React.js,
-              Node.js, Express.js, MongoDB, PostgreSQL, and MySQL. Built scalable web applications through internships,
-              freelance work, and personal projects, and solved 200+ DSA problems on LeetCode and GeeksforGeeks.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center mb-12 animate-fade-in-up stagger-3">
-
-              <button
-                className="bg-gradient-to-r from-teal-400 to-gray-700 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 hover:from-teal-500 hover:to-gray-800 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 btn-hover group relative overflow-hidden"
-                onClick={handleDownload}
-              >
-                <span className="relative z-10">
-                  Download Resume
-                </span>
-
-                <div className="absolute inset-0 bg-gradient-to-r from-gray-800 to-teal-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-              </button>
-
-              <button
-                type="button"
-                onClick={scrollToProjects}
-                className="px-8 py-3 border-2 border-teal-400/50 text-teal-300 rounded-lg font-semibold hover:border-teal-400 hover:text-teal-200 transition-all duration-300 hover:bg-teal-400/10"
-              >
-                Explore My Work
-              </button>
-
-            </div>
-
-            <div className="flex justify-center lg:justify-start space-x-6 animate-fade-in-up stagger-4">
-
-              <a
-                href="https://github.com/Roshan0612"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-3 rounded-full text-gray-400 hover:text-teal-400 bg-gray-900/50 hover:bg-teal-400/10 transition-all duration-300 transform hover:scale-125 border border-gray-800/50 hover:border-teal-400/30 group"
-                aria-label="GitHub"
-              >
-                <Github
-                  size={20}
-                  className="transition-transform group-hover:rotate-12"
-                />
-              </a>
-
-              <a
-                href="https://www.linkedin.com/in/roshan-gawade-469bb422a/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-3 rounded-full text-gray-400 hover:text-gray-300 bg-gray-900/50 hover:bg-gray-700/20 transition-all duration-300 transform hover:scale-125 border border-gray-800/50 hover:border-teal-400/30 group"
-                aria-label="LinkedIn"
-              >
-                <Linkedin
-                  size={20}
-                  className="transition-transform group-hover:rotate-12"
-                />
-              </a>
-
-              <a
-                href="https://leetcode.com/u/RoshanGawade10/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-3 rounded-full text-gray-400 hover:text-[#FFA116] bg-gray-900/50 hover:bg-[#FFA116]/10 transition-all duration-300 transform hover:scale-125 border border-gray-800/50 hover:border-[#FFA116]/30 group"
-                aria-label="LeetCode"
-              >
-                <LeetCodeIcon size={20} />
-              </a>
-
-              <a
-                href="https://mail.google.com/mail/u/0/#inbox?compose=new"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-3 rounded-full text-gray-400 hover:text-orange-400 bg-gray-900/50 hover:bg-orange-400/10 transition-all duration-300 transform hover:scale-125 border border-gray-800/50 hover:border-orange-400/30 group"
-                aria-label="Email"
-              >
-                <Mail
-                  size={20}
-                  className="transition-transform group-hover:rotate-12"
-                />
-              </a>
-
-            </div>
+      <div className="hero-container">
+        <div className="hero-content">
+          <div className="hero-kicker">
+            <span className="hero-kicker-dot" />
+            <span>Computer Engineer · Full-Stack Developer</span>
           </div>
 
-          <div className="flex justify-center lg:justify-end">
+          <h1 className="hero-title">
+            <span className="hero-title-small">Hi, I'm</span>
 
-            <div className="relative">
-
-              <div className="w-80 h-80 lg:w-96 lg:h-96 rounded-full overflow-hidden border-4 border-teal-400 p-1 bg-gradient-to-r from-teal-400 to-gray-700 animate-pulse-slow shadow-2xl">
-
-                <div className="w-full h-full rounded-full overflow-hidden bg-gray-900">
-
-                  <img
-                    src="https://res.cloudinary.com/dswa5docr/image/upload/v1767027372/headshot_roshan_portfolio_lwgaci.jpg"
-                    alt="Roshan Gawade"
-                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
-                  />
-
-                </div>
-              </div>
-
-              <div className="absolute -top-4 -right-4 w-8 h-8 bg-teal-400 rounded-full animate-float shadow-lg shadow-teal-400/50"></div>
-
-              <div className="absolute -bottom-6 -left-6 w-6 h-6 bg-gray-600 rounded-full animate-float-delayed shadow-lg shadow-gray-600/50"></div>
-
-              <div className="absolute top-1/2 -left-8 w-4 h-4 bg-orange-400 rounded-full animate-float shadow-lg shadow-orange-400/50"></div>
-
-            </div>
-          </div>
-
-        </div>
-
-        <div className="text-center mt-16">
-
-          <button
-            onClick={scrollToAbout}
-            className="inline-flex flex-col items-center text-gray-400 hover:text-teal-400 transition-all duration-300 group"
-            aria-label="Scroll down"
-          >
-            <span className="text-sm font-medium mb-2 opacity-0 group-hover:opacity-100 transition-opacity">
-              Scroll Down
+            <span className="hero-name">
+              Roshan
+              <span className="hero-name-accent">.</span>
             </span>
 
-            <ChevronDown
-              size={32}
-              className="group-hover:translate-y-1 transition-transform duration-300 animate-bounce"
-            />
-          </button>
+            <span className="hero-surname">Gawade</span>
+          </h1>
 
+          <div className="hero-role">
+            <span className="hero-role-label">I build as a</span>
+
+            <span className="hero-role-value">
+              {roleText}
+              <span className="hero-caret" />
+            </span>
+          </div>
+
+          <p className="hero-description">
+            Computer Science Engineering graduate with hands-on experience
+            building scalable full-stack applications using React.js,
+            Node.js, Express.js, MongoDB, PostgreSQL, and MySQL.
+          </p>
+
+          <div className="hero-actions">
+            <button
+              className="hero-primary-button"
+              onClick={downloadResume}
+            >
+              <span>Download Resume</span>
+
+              <span className="hero-button-icon">
+                <ArrowUpRight size={17} />
+              </span>
+            </button>
+
+            <button
+              className="hero-secondary-button"
+              onClick={() => scrollTo("projects")}
+            >
+              <span>View my work</span>
+
+              <ArrowUpRight size={17} />
+            </button>
+          </div>
+
+          <div className="hero-socials">
+            <span className="hero-social-label">Find me on</span>
+
+            <div className="hero-social-line" />
+
+            <a
+              href="https://github.com/Roshan0612"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub"
+            >
+              <Github size={18} />
+            </a>
+
+            <a
+              href="https://www.linkedin.com/in/roshan-gawade-469bb422a/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+            >
+              <Linkedin size={18} />
+            </a>
+
+            <a
+              href="https://leetcode.com/u/RoshanGawade10/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LeetCode"
+            >
+              <LeetCodeIcon size={18} />
+            </a>
+
+            <a
+              href="mailto:roshangawade160@gmail.com"
+              aria-label="Email"
+            >
+              <Mail size={18} />
+            </a>
+          </div>
         </div>
 
+        <div className="hero-visual">
+          <div className="hero-image-wrapper" ref={imageRef}>
+            <div className="hero-image-glow" />
+
+            <div className="hero-image-frame">
+              <div className="hero-image-inner">
+                <img
+                  src="https://res.cloudinary.com/dswa5docr/image/upload/v1767027372/headshot_roshan_portfolio_lwgaci.jpg"
+                  alt="Roshan Gawade"
+                />
+              </div>
+            </div>
+
+            <div className="hero-floating-number">
+              <span>01</span>
+              <small>/ ENGINEER</small>
+            </div>
+
+            <div className="hero-floating-status">
+              <span className="status-dot" />
+              <span>Available for opportunities</span>
+            </div>
+
+            <div className="hero-image-decoration hero-decoration-one" />
+            <div className="hero-image-decoration hero-decoration-two" />
+          </div>
+        </div>
+      </div>
+
+      <button
+        className="hero-scroll-indicator"
+        onClick={() => scrollTo("about")}
+        aria-label="Scroll to about section"
+      >
+        <span>Scroll to explore</span>
+
+        <span className="hero-scroll-icon">
+          <ArrowDown size={16} />
+        </span>
+      </button>
+
+      <div className="hero-side-label">
+        <span>MUMBAI · INDIA</span>
       </div>
     </section>
   );

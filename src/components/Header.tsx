@@ -1,113 +1,149 @@
-import React, { useState, useEffect } from 'react';
-import { Menu, X, Home, User, Code, Briefcase, Mail } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import { ArrowUpRight, Menu, X } from "lucide-react";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('hero');
+  const [activeSection, setActiveSection] = useState("hero");
+  const [scrolled, setScrolled] = useState(false);
 
   const navItems = [
-    { id: 'hero', label: 'Home', icon: Home },
-    { id: 'about', label: 'About', icon: User },
-    { id: 'skills', label: 'Skills', icon: Code },
-    { id: 'projects', label: 'Projects', icon: Briefcase },
-    { id: 'experience', label: 'Experience', icon: Briefcase },
-    { id: 'contact', label: 'Contact', icon: Mail },
+    { id: "about", label: "About" },
+    { id: "skills", label: "Skills" },
+    { id: "projects", label: "Projects" },
+    { id: "experience", label: "Experience" },
+    { id: "contact", label: "Contact" },
   ];
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = navItems.map(item => item.id);
-      const scrollPosition = window.scrollY + 100;
+      setScrolled(window.scrollY > 40);
 
-      for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element) {
-          const { offsetTop, offsetHeight } = element;
-          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-            setActiveSection(section);
-            break;
-          }
+      const marker = window.scrollY + window.innerHeight * 0.35;
+
+      let current = "hero";
+
+      navItems.forEach((item) => {
+        const section = document.getElementById(item.id);
+
+        if (section && marker >= section.offsetTop) {
+          current = item.id;
         }
-      }
+      });
+
+      setActiveSection(current);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+
+    if (!element) return;
+
+    element.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
     setIsMenuOpen(false);
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-xl border-b border-gray-800/50 shadow-lg">
-      <div className="max-w-[1920px] mx-auto px-3 sm:px-8 lg:px-16 xl:px-24">
-        <div className="flex justify-between items-center py-4">
-          <div className="text-xl font-bold text-white transition-all duration-300 hover:scale-105">
-            Roshan<span className="text-teal-400">Dev</span>
-          </div>
+    <>
+      <header
+        className={`premium-header ${
+          scrolled ? "premium-header-scrolled" : ""
+        }`}
+      >
+        <div className="premium-header-inner">
+          <button
+            className="premium-logo"
+            onClick={() => scrollToSection("hero")}
+            aria-label="Go to homepage"
+          >
+            <span className="premium-logo-symbol">
+              <span />
+              <span />
+            </span>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-1">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => scrollToSection(item.id)}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-300 group relative ${
-                    activeSection === item.id
-                      ? 'text-teal-400 bg-teal-400/10 border border-teal-400/30'
-                      : 'text-gray-300 hover:text-white border border-transparent hover:bg-gray-800/50'
-                  }`}
-                >
-                  <Icon size={16} className="transition-transform group-hover:scale-110" />
-                  <span>{item.label}</span>
-                  {activeSection === item.id && (
-                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-teal-400 to-gray-600 rounded-full"></div>
-                  )}
-                </button>
-              );
-            })}
+            <span className="premium-logo-text">RG</span>
+          </button>
+
+          <nav className="premium-navigation">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => scrollToSection(item.id)}
+                className={`premium-nav-link ${
+                  activeSection === item.id ? "active" : ""
+                }`}
+              >
+                <span>{item.label}</span>
+
+                {activeSection === item.id && (
+                  <span className="premium-nav-line" />
+                )}
+              </button>
+            ))}
           </nav>
 
-          {/* Mobile Menu Button */}
           <button
-            className="md:hidden text-white transition-all duration-300 hover:scale-110 active:scale-95"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="premium-header-contact"
+            onClick={() => scrollToSection("contact")}
           >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            <span>Let's talk</span>
+
+            <span className="premium-header-arrow">
+              <ArrowUpRight size={15} />
+            </span>
+          </button>
+
+          <button
+            className="premium-mobile-toggle"
+            onClick={() => setIsMenuOpen((value) => !value)}
+            aria-label="Toggle navigation"
+            aria-expanded={isMenuOpen}
+          >
+            {isMenuOpen ? <X size={21} /> : <Menu size={21} />}
           </button>
         </div>
+      </header>
 
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <nav className="md:hidden py-4 border-t border-gray-800">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => scrollToSection(item.id)}
-                  className={`flex items-center space-x-3 w-full px-3 py-3 rounded-lg transition-all duration-300 ${
-                    activeSection === item.id
-                      ? 'text-teal-400 bg-teal-400/10'
-                      : 'text-gray-300 hover:text-white hover:bg-gray-900'
-                  }`}
-                >
-                  <Icon size={18} />
-                  <span>{item.label}</span>
-                </button>
-              );
-            })}
-          </nav>
-        )}
+      <div
+        className={`premium-mobile-menu ${
+          isMenuOpen ? "premium-mobile-menu-open" : ""
+        }`}
+      >
+        <div className="premium-mobile-menu-inner">
+          <span className="premium-mobile-eyebrow">Navigation</span>
+
+          {navItems.map((item, index) => (
+            <button
+              key={item.id}
+              className="premium-mobile-link"
+              onClick={() => scrollToSection(item.id)}
+            >
+              <span className="premium-mobile-number">
+                0{index + 1}
+              </span>
+
+              <span>{item.label}</span>
+
+              <ArrowUpRight size={18} />
+            </button>
+          ))}
+        </div>
       </div>
-    </header>
+    </>
   );
 };
 

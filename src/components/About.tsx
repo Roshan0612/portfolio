@@ -1,75 +1,134 @@
-import React from 'react';
-import { Code, Lightbulb, Users, Zap } from 'lucide-react';
+import React from "react";
+import { Code2, Lightbulb, Users, Zap, ArrowUpRight } from "lucide-react";
 
 const About = () => {
   const highlights = [
     {
-      icon: Code,
-      title: 'Clean Code',
-      description: 'Writing maintainable, scalable code with best practices'
+      number: "01",
+      icon: Code2,
+      title: "Clean Code",
+      description:
+        "Writing maintainable, scalable code with strong engineering practices.",
     },
     {
+      number: "02",
       icon: Lightbulb,
-      title: 'Innovation',
-      description: 'Constantly exploring new technologies and approaches'
+      title: "Innovation",
+      description:
+        "Exploring new technologies and practical approaches to solve problems.",
     },
     {
+      number: "03",
       icon: Users,
-      title: 'Collaboration',
-      description: 'Strong team player with excellent communication skills'
+      title: "Collaboration",
+      description:
+        "Working closely with teams and clients to turn requirements into products.",
     },
     {
+      number: "04",
       icon: Zap,
-      title: 'Performance',
-      description: 'Optimizing applications for speed and efficiency'
-    }
+      title: "Performance",
+      description:
+        "Improving speed, responsiveness and efficiency across applications.",
+    },
   ];
 
   return (
-    <section id="about" className="w-full py-20 bg-gradient-to-b from-gray-900 to-gray-950">
-      <div className="max-w-[1920px] mx-auto px-3 sm:px-8 lg:px-16 xl:px-24">
-        <div className="text-center mb-20 animate-fade-in-up">
-          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
-            About <span className="gradient-text">Me</span>
+    <section id="about" className="refined-section refined-about">
+      <div className="refined-container">
+        <div className="section-intro">
+          <div className="section-index">01 / ABOUT</div>
+
+          <h2>
+            Building with
+            <br />
+            <span>purpose.</span>
           </h2>
-          <div className="w-20 h-1 bg-gradient-to-r from-teal-400 to-gray-700 mx-auto"></div>
+
+          <p>
+            A computer engineer focused on creating useful, scalable and
+            thoughtful digital experiences.
+          </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <div className="animate-fade-in-left stagger-1 space-y-6">
-            <h3 className="text-3xl font-bold text-white leading-tight">
-              Final-Year Computer Engineer & Full-Stack Developer
-            </h3>
-            <div className="space-y-5 text-gray-300 leading-relaxed text-lg">
-              <p className="hover:text-gray-200 transition-colors duration-300">
-                I'm a final-year Computer Engineering student with a strong foundation in full-stack web development. Specializing in the MERN stack, I build responsive, scalable applications that solve real-world problems.
+        <div className="about-main-grid">
+          <div className="about-copy">
+            <div className="about-big-mark">RG</div>
+
+            <div className="about-copy-content">
+              <div className="eyebrow">A little about me</div>
+
+              <h3>
+                Final-Year Computer Engineer
+                <br />
+                & Full-Stack Developer
+              </h3>
+
+              <p>
+                I'm a final-year Computer Engineering student with a strong
+                foundation in full-stack web development. Specializing in the
+                MERN stack, I build responsive, scalable applications that
+                solve real-world problems.
               </p>
-              <p className="hover:text-gray-200 transition-colors duration-300">
-                With hands-on experience as a freelancer, I've successfully delivered 5+ high-quality client projects, consistently improving user experience by 25%. I thrive on collaborating with clients to understand their needs and delivering customized solutions that exceed expectations.
+
+              <p>
+                With hands-on experience as a freelancer, I've successfully
+                delivered 5+ high-quality client projects, consistently
+                improving user experience by 25%. I enjoy working closely with
+                clients to understand their needs and turn those requirements
+                into polished products.
               </p>
-              <p className="hover:text-gray-200 transition-colors duration-300">
-                Passionate about clean code, innovative solutions, and continuous learning. My toolkit includes modern technologies like React.js, Node.js, MongoDB, and responsive design practices.
+
+              <p>
+                My toolkit includes React.js, Node.js, MongoDB, PostgreSQL,
+                TypeScript and modern responsive design practices.
               </p>
+
+              <div className="about-stat-row">
+                <div>
+                  <strong>5+</strong>
+                  <span>Client projects</span>
+                </div>
+
+                <div>
+                  <strong>200+</strong>
+                  <span>DSA problems</span>
+                </div>
+
+                <div>
+                  <strong>25%</strong>
+                  <span>UX improvement</span>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-6 animate-fade-in-right stagger-2">
-            {highlights.map((item, index) => {
-              const Icon = item.icon;
-              return (
-                <div
-                  key={index}
-                  className="glass p-8 rounded-xl card-hover animate-scale-in group border border-gray-800/50 hover:border-teal-400/50"
-                  style={{ animationDelay: `${0.3 + index * 0.1}s` }}
-                >
-                  <div className="text-teal-400 mb-4 animate-float transition-transform group-hover:scale-110" style={{ animationDelay: `${index * 0.5}s` }}>
-                    <Icon size={36} />
-                  </div>
-                  <h4 className="text-white font-bold mb-2 text-lg">{item.title}</h4>
-                  <p className="text-gray-400 text-sm leading-relaxed">{item.description}</p>
-                </div>
-              );
-            })}
+          <div className="about-principles">
+            <div className="eyebrow">How I work</div>
+
+            <div className="principles-list">
+              {highlights.map((item) => {
+                const Icon = item.icon;
+
+                return (
+                  <article className="principle-card" key={item.number}>
+                    <div className="principle-top">
+                      <span>{item.number}</span>
+
+                      <Icon size={20} strokeWidth={1.5} />
+                    </div>
+
+                    <h4>{item.title}</h4>
+
+                    <p>{item.description}</p>
+
+                    <div className="principle-arrow">
+                      <ArrowUpRight size={16} />
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
