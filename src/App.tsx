@@ -278,6 +278,29 @@ const projects = [
   },
 ];
 
+function normalizeTechnology(value: string) {
+  const normalized = value.toLowerCase().replace(/[^a-z0-9]/g, "");
+
+  if (normalized === "css") return normalized;
+
+  return normalized
+    .replace(/css$/, "")
+    .replace(/(?:js)+$/, "")
+    .replace(/apis$/, "api");
+}
+
+function getProjectsUsingSkill(skillName: string) {
+  const normalizedSkill = normalizeTechnology(skillName);
+
+  return projects
+    .filter((project) =>
+      project.tech.some(
+        (technology) => normalizeTechnology(technology) === normalizedSkill
+      )
+    )
+    .map((project) => project.title);
+}
+
 const experiences = [
   {
     title: "Full Stack Developer",
@@ -420,6 +443,41 @@ const skillGroups = {
     "FFmpeg",
     "Razorpay",
   ],
+};
+
+const skillDescriptions: Record<string, string> = {
+  "React.js": "Builds reusable, production-ready interfaces and full-stack product experiences.",
+  "Next.js": "Used for structured applications with routing, server rendering, APIs, and deployment.",
+  "React Native": "Used to carry component-driven frontend thinking into mobile applications.",
+  TypeScript: "Adds reliable types and safer contracts across frontend, backend, and API code.",
+  JavaScript: "The core language used to build interactive interfaces, services, and application logic.",
+  "Tailwind CSS": "Used to build responsive interfaces quickly with consistent, maintainable styling.",
+  HTML: "The structural foundation for accessible, responsive web interfaces.",
+  CSS: "Used for responsive layouts, visual systems, transitions, and polished interface details.",
+  Bootstrap: "Used for fast, responsive UI foundations when a project needs a proven component system.",
+  "Node.js": "Used across full-stack projects to build services, APIs, integrations, and application workflows.",
+  "Express.js": "Used to design REST APIs, server routes, middleware, authentication, and backend services.",
+  "REST APIs": "Designed and integrated for communication between web clients, services, and external systems.",
+  JWT: "Used for protected routes, role-based access, and authenticated application workflows.",
+  OAuth: "Used for secure third-party sign-in and delegated access to external services.",
+  NextAuth: "Used to implement practical authentication flows in Next.js applications.",
+  Java: "Used for programming fundamentals, object-oriented problem solving, and data-structure practice.",
+  C: "Used to strengthen low-level programming fundamentals and algorithmic thinking.",
+  MongoDB: "Used for flexible application data, user workflows, product records, and project backends.",
+  PostgreSQL: "Used for relational application data, structured workflows, and production-style backends.",
+  MySQL: "Used for relational data modeling and database-driven application development.",
+  "Prisma ORM": "Used to keep database access typed, structured, and maintainable in TypeScript backends.",
+  Docker: "Used to package development and application environments consistently.",
+  "Git & GitHub": "Used for version control, collaboration, source management, and deployment workflows.",
+  AWS: "Used to understand and work with cloud-hosted application infrastructure and services.",
+  Postman: "Used to inspect, test, and document API behavior during backend development.",
+  "VS Code": "Used as the primary environment for building, debugging, and refining applications.",
+  GSAP: "Used for controlled motion and interaction work when a project needs timeline-based animation.",
+  "React Flow": "Used to build visual node-based workflow editors and automation interfaces.",
+  "Google APIs": "Used to connect applications with Google services and data workflows.",
+  "AI Integration": "Used to bring intelligent analysis and automation into practical product features.",
+  FFmpeg: "Used for media processing workflows including recording, conversion, and export handling.",
+  Razorpay: "Used to connect payment flows with commerce and subscription-based applications.",
 };
 
 /* -------------------------------------------------------------------------- */
@@ -1719,6 +1777,14 @@ real-world environments. Solved 200+ DSA problems on LeetCode and GeeksforGeeks.
 function SkillField() {
   const [active, setActive] =
     useState<keyof typeof skillGroups>("Frontend");
+  const [skillPreview, setSkillPreview] = useState<{
+    name: string;
+    usedIn: string[];
+    description: string;
+    left: number;
+    top: number;
+    above: boolean;
+  } | null>(null);
 
   const categories = Object.keys(skillGroups) as Array<keyof typeof skillGroups>;
 
@@ -1732,6 +1798,34 @@ function SkillField() {
     const rect = e.currentTarget.getBoundingClientRect();
     mouseX.set(e.clientX - rect.left - rect.width / 2);
     mouseY.set(e.clientY - rect.top - rect.height / 2);
+  };
+
+  const showSkillPreview = (
+    e: React.MouseEvent<HTMLDivElement>,
+    skill: string
+  ) => {
+    if (window.innerWidth <= 768) return;
+
+    const usedIn = getProjectsUsingSkill(skill);
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    const cardWidth = 190;
+    const above = rect.top > 150;
+    const left = Math.min(
+      Math.max(rect.left + rect.width / 2 - cardWidth / 2, 8),
+      window.innerWidth - cardWidth - 8
+    );
+
+    setSkillPreview({
+      name: skill,
+      usedIn,
+      description:
+        skillDescriptions[skill] ??
+        "Built through academic study and practical software development work.",
+      left,
+      top: above ? rect.top - 10 : rect.bottom + 10,
+      above,
+    });
   };
 
   return (
@@ -1842,6 +1936,8 @@ function SkillField() {
                     delay: index * 0.035,
                     ease: [0.16, 1, 0.3, 1],
                   }}
+                  onMouseEnter={(event) => showSkillPreview(event, skill)}
+                  onMouseLeave={() => setSkillPreview(null)}
                   className="group relative overflow-hidden border border-white/10 bg-[#0b0b0b]/80 px-4 py-5 backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:border-[#c9ff57]/40"
                 >
                   <span className="absolute left-0 top-0 h-px w-0 bg-[#c9ff57] transition-all duration-500 group-hover:w-full" />
@@ -1859,6 +1955,54 @@ function SkillField() {
             </AnimatePresence>
           </div>
         </div>
+
+        <AnimatePresence>
+          {skillPreview && (
+            <motion.div
+              key={skillPreview.name}
+              initial={{ opacity: 0, scale: 0.94, y: 6 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.94, y: 6 }}
+              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              style={{ left: skillPreview.left, top: skillPreview.top }}
+              className={`pointer-events-none fixed z-[300] w-[190px] border border-[#c9ff57]/30 bg-[#0b0b0b]/95 p-4 text-white shadow-[0_12px_35px_rgba(0,0,0,.35)] backdrop-blur-md max-md:hidden ${
+                skillPreview.above ? "-translate-y-full" : ""
+              }`}
+            >
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-[8px] uppercase tracking-[.24em] text-[#c9ff57]">
+                    Knowledge
+                  </span>
+                  <span className="text-[9px] font-semibold uppercase tracking-[.12em] text-[#c9ff57]">
+                    Advanced
+                  </span>
+                </div>
+                <div className="mt-2 text-sm font-medium text-white">
+                  {skillPreview.name}
+                </div>
+                <p className="mt-2 text-[10px] leading-4 text-white/60">
+                  {skillPreview.description}
+                </p>
+                {skillPreview.usedIn.length > 0 && (
+                  <div className="mt-3 border-t border-white/10 pt-3">
+                    <div className="mb-2 text-[8px] uppercase tracking-[.18em] text-white/35">
+                      Used in
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {skillPreview.usedIn.slice(0, 4).map((project) => (
+                        <span
+                          key={project}
+                          className="border border-white/10 px-2 py-1 text-[9px] leading-3 text-white/65"
+                        >
+                          {project}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <div className="flex items-center justify-between border-t border-white/10 pt-5 text-[8px] uppercase tracking-[.25em] text-white/25">
           <span>Move through the field</span>
