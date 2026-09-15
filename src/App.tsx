@@ -542,11 +542,166 @@ const GlobalStyle = () => (
       mix-blend-mode: difference;
     }
 
+    .mobile-intro-sequence {
+      display: none;
+    }
+
     @media (max-width: 900px) {
       .cursor-dot,
       .cursor-ring {
         display: none;
       }
+    }
+
+    @media (max-width: 900px) {
+      .mobile-intro-desktop-content {
+        display: none !important;
+      }
+
+      .mobile-intro-sequence {
+        position: absolute;
+        inset: 0;
+        z-index: 10;
+        display: block !important;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 79% 28%, rgba(201,255,87,.09), transparent 25%),
+          #080808;
+      }
+
+      .mobile-intro-sequence::after {
+        position: absolute;
+        inset: 0;
+        z-index: 5;
+        pointer-events: none;
+        content: "";
+        background: linear-gradient(180deg, rgba(8,8,8,.2), transparent 35%, rgba(8,8,8,.7));
+      }
+
+      .mobile-intro-grain {
+        position: absolute;
+        inset: 0;
+        z-index: 6;
+        pointer-events: none;
+        opacity: .06;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='mobile-noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23mobile-noise)' opacity='.65'/%3E%3C/svg%3E");
+      }
+
+      .mobile-intro-portrait-frame {
+        position: absolute;
+        inset: 0 0 0 18%;
+        overflow: hidden;
+        transform-origin: 70% 50%;
+        will-change: transform, clip-path, opacity;
+      }
+
+      .mobile-intro-portrait {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 70% center;
+        filter: grayscale(.25) contrast(1.08);
+        will-change: transform;
+      }
+
+      .mobile-intro-portrait-shade {
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(90deg, #080808 0%, rgba(8,8,8,.72) 24%, rgba(8,8,8,.12) 76%, rgba(8,8,8,.48) 100%),
+          linear-gradient(180deg, rgba(8,8,8,.42), transparent 45%, rgba(8,8,8,.84));
+      }
+
+      .mobile-intro-line {
+        position: absolute;
+        z-index: 7;
+        height: 1px;
+        transform-origin: left center;
+        background: rgba(255,255,255,.32);
+      }
+
+      .mobile-intro-line-top {
+        top: 19%;
+        left: 20px;
+        width: 47%;
+      }
+
+      .mobile-intro-line-bottom {
+        right: 20px;
+        bottom: 18%;
+        width: 38%;
+        background: rgba(201,255,87,.65);
+      }
+
+      .mobile-intro-word {
+        position: absolute;
+        top: 39%;
+        left: 20px;
+        z-index: 8;
+        color: #f3f1eb;
+        font-size: clamp(4.25rem, 20vw, 5.9rem);
+        font-weight: 900;
+        line-height: .78;
+        white-space: nowrap;
+        will-change: transform, opacity, letter-spacing;
+      }
+
+      .mobile-intro-role {
+        position: absolute;
+        top: calc(39% + 82px);
+        left: 24px;
+        z-index: 8;
+        color: rgba(201,255,87,.8);
+        font-size: 8px;
+        line-height: 1.4;
+        text-transform: uppercase;
+        white-space: nowrap;
+        will-change: transform, opacity, letter-spacing;
+      }
+
+      .mobile-intro-lime-ring {
+        position: absolute;
+        top: 25%;
+        right: 14%;
+        z-index: 7;
+        width: 10px;
+        height: 10px;
+        border: 1px solid rgba(201,255,87,.8);
+        border-radius: 999px;
+        box-shadow: 0 0 20px rgba(201,255,87,.5);
+      }
+
+      .mobile-intro-signal {
+        position: absolute;
+        z-index: 8;
+        width: 4px;
+        height: 4px;
+        background: var(--accent);
+        box-shadow: 0 0 16px rgba(201,255,87,.8);
+        animation: mobileIntroSignal 2.2s ease-in-out infinite;
+      }
+
+      .mobile-intro-signal-one { top: 19%; right: 20%; }
+      .mobile-intro-signal-two { bottom: 26%; left: 16%; animation-delay: .7s; }
+
+      .mobile-intro-footer {
+        position: absolute;
+        right: 20px;
+        bottom: 9%;
+        left: 20px;
+        z-index: 8;
+        display: flex;
+        justify-content: space-between;
+        color: rgba(255,255,255,.42);
+        font-size: 8px;
+        letter-spacing: .2em;
+        text-transform: uppercase;
+      }
+    }
+
+    @keyframes mobileIntroSignal {
+      0%, 100% { opacity: .3; transform: scale(.8); }
+      50% { opacity: 1; transform: scale(1.45); }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -758,10 +913,12 @@ function Intro({
   const tiles = useMemo(() => Array.from({ length: 42 }, (_, i) => i), []);
 
   useEffect(() => {
+    const isMobile = window.matchMedia("(max-width: 900px)").matches;
+    const introDuration = isMobile ? 3500 : 4600;
     const timer = window.setTimeout(() => {
       setFinished(true);
       window.setTimeout(onComplete, 850);
-    }, 4600);
+    }, introDuration);
 
     return () => window.clearTimeout(timer);
   }, [onComplete]);
@@ -782,6 +939,7 @@ function Intro({
           }}
           className="fixed inset-0 z-[200] overflow-hidden bg-[#080808]"
         >
+          <div className="mobile-intro-desktop-content">
           {/* Image underneath the tile architecture */}
           <motion.div
             initial={{ scale: 1.16, opacity: 0 }}
@@ -934,6 +1092,72 @@ function Intro({
               }}
             />
           ))}
+          </div>
+
+          <div className="mobile-intro-sequence" aria-hidden="true">
+            <div className="mobile-intro-grain" />
+            <div className="mobile-intro-signal mobile-intro-signal-one" />
+            <div className="mobile-intro-signal mobile-intro-signal-two" />
+            <motion.div
+              initial={{ scaleX: 0, opacity: 0 }}
+              animate={{ scaleX: 1, opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
+              className="mobile-intro-line mobile-intro-line-top"
+            />
+            <motion.div
+              initial={{ scaleX: 0, opacity: 0 }}
+              animate={{ scaleX: 1, opacity: 1 }}
+              transition={{ duration: 1.2, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
+              className="mobile-intro-line mobile-intro-line-bottom"
+            />
+
+            <motion.div
+              initial={{ clipPath: "inset(0 100% 0 0)", scale: 1.12, opacity: 0 }}
+              animate={{ clipPath: "inset(0 0% 0 0)", scale: 1, opacity: 0.86 }}
+              transition={{ duration: 1.8, delay: 0.48, ease: [0.16, 1, 0.3, 1] }}
+              className="mobile-intro-portrait-frame"
+            >
+              <motion.img
+                src="https://res.cloudinary.com/dswa5docr/image/upload/v1789484618/69e93ed8-d9c0-4443-ad97-a5f80c1aa803.png"
+                alt=""
+                initial={{ scale: 1.2, x: "5%" }}
+                animate={{ scale: 1, x: "0%" }}
+                transition={{ duration: 3.2, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                className="mobile-intro-portrait"
+              />
+              <div className="mobile-intro-portrait-shade" />
+            </motion.div>
+
+            <motion.div
+              initial={{ y: 38, opacity: 0, letterSpacing: ".22em" }}
+              animate={{ y: 0, opacity: 1, letterSpacing: "-.08em" }}
+              transition={{ duration: 1, delay: 1.1, ease: [0.16, 1, 0.3, 1] }}
+              className="mobile-intro-word display"
+            >
+              ROSHAN
+            </motion.div>
+
+            <motion.div
+              initial={{ x: -24, opacity: 0, letterSpacing: ".75em" }}
+              animate={{ x: 0, opacity: 1, letterSpacing: ".42em" }}
+              transition={{ duration: 0.9, delay: 1.55, ease: [0.16, 1, 0.3, 1] }}
+              className="mobile-intro-role"
+            >
+              SOFTWARE ENGINEER
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 1 }}
+              animate={{ opacity: [0, 0.8, 0.45], scale: [1, 1.12, 1] }}
+              transition={{ duration: 1.8, delay: 1.8, ease: "easeInOut" }}
+              className="mobile-intro-lime-ring"
+            />
+
+            <div className="mobile-intro-footer">
+              <span>Portfolio / 2026</span>
+              <span className="text-[#c9ff57]">Initializing</span>
+            </div>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
