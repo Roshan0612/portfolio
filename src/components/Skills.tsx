@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Code2,
   Database,
   Cloud,
   Server,
@@ -9,18 +8,14 @@ import {
   Terminal,
   GitBranch,
   Container,
-  Send,
   Braces,
   Layers,
   ShieldCheck,
-  Workflow,
   BrainCircuit,
   Zap,
   Component,
   Boxes,
   Network,
-  CreditCard,
-  Sparkles,
 } from "lucide-react";
 
 type Skill = {

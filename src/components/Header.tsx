@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { ArrowUpRight, Menu, X } from "lucide-react";
 
+const navItems = [
+  { id: "about", label: "About" },
+  { id: "skills", label: "Skills" },
+  { id: "projects", label: "Projects" },
+  { id: "experience", label: "Experience" },
+  { id: "contact", label: "Contact" },
+];
+
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
   const [scrolled, setScrolled] = useState(false);
-
-  const navItems = [
-    { id: "about", label: "About" },
-    { id: "skills", label: "Skills" },
-    { id: "projects", label: "Projects" },
-    { id: "experience", label: "Experience" },
-    { id: "contact", label: "Contact" },
-  ];
 
   useEffect(() => {
     const handleScroll = () => {

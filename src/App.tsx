@@ -4,7 +4,6 @@ import React, {
   useMemo,
   useRef,
   useState,
-  type CSSProperties,
   type ReactNode,
 } from "react";
 import {
@@ -1326,6 +1325,13 @@ function Navigation() {
 /*                                   HERO                                     */
 /* -------------------------------------------------------------------------- */
 
+const heroRoles = [
+  "Software Engineer",
+  "Computer Engineer",
+  "Full-Stack Developer",
+  "Web Developer",
+];
+
 function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
@@ -1339,18 +1345,11 @@ function Hero() {
   const titleX = useTransform(scrollYProgress, [0, 1], ["0%", "-16%"]);
   const fade = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
-  const roles = [
-    "Software Engineer",
-    "Computer Engineer",
-    "Full-Stack Developer",
-    "Web Developer",
-  ];
-
   const [role, setRole] = useState(0);
 
   useEffect(() => {
     const id = window.setInterval(() => {
-      setRole((v) => (v + 1) % roles.length);
+      setRole((v) => (v + 1) % heroRoles.length);
     }, 2400);
 
     return () => window.clearInterval(id);
@@ -1473,14 +1472,14 @@ function Hero() {
             <div className="max-w-xl">
               <AnimatePresence mode="wait">
                 <motion.div
-                  key={roles[role]}
+                  key={heroRoles[role]}
                   initial={{ y: 18, opacity: 0, filter: "blur(5px)" }}
                   animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
                   exit={{ y: -18, opacity: 0, filter: "blur(5px)" }}
                   transition={{ duration: 0.45 }}
                   className="display text-2xl font-bold tracking-[-.04em] text-white sm:text-3xl"
                 >
-                  {roles[role]}
+                  {heroRoles[role]}
                 </motion.div>
               </AnimatePresence>
 
@@ -2073,7 +2072,6 @@ function Skills() {
 
 function ProjectStage() {
   const [active, setActive] = useState(0);
-  const [hovered, setHovered] = useState(false);
   const stageRef = useRef<HTMLDivElement>(null);
 
   const project = projects[active];
@@ -2101,13 +2099,11 @@ function ProjectStage() {
         ref={stageRef}
         onMouseMove={handleStageMove}
         onMouseLeave={() => {
-          setHovered(false);
           if (stageRef.current) {
             stageRef.current.style.setProperty("--px", "0px");
             stageRef.current.style.setProperty("--py", "0px");
           }
         }}
-        onMouseEnter={() => setHovered(true)}
         className="relative min-h-[520px] overflow-hidden border border-white/10 bg-[#0a0a0a] sm:min-h-[700px]"
       >
         <AnimatePresence mode="wait">
@@ -2869,7 +2865,7 @@ function Contact() {
             </p>
 
             <div className="mt-12 space-y-2">
-              {contactMethods.map((method, index) => {
+              {contactMethods.map((method) => {
                 const Icon = method.icon;
 
                 return (
@@ -3052,8 +3048,6 @@ function Contact() {
 /* -------------------------------------------------------------------------- */
 
 export default function App() {
-  const [introDone, setIntroDone] = useState(false);
-
   useEffect(() => {
     document.documentElement.style.background = "#080808";
 
@@ -3071,7 +3065,6 @@ export default function App() {
   }, []);
 
   const finishIntro = () => {
-    setIntroDone(true);
     document.body.style.overflow = "";
   };
 
