@@ -2072,6 +2072,7 @@ function Skills() {
 
 function ProjectStage() {
   const [active, setActive] = useState(0);
+  const [isProjectHovered, setIsProjectHovered] = useState(false);
   const stageRef = useRef<HTMLDivElement>(null);
 
   const project = projects[active];
@@ -2097,14 +2098,16 @@ function ProjectStage() {
     <div className="relative">
       <div
         ref={stageRef}
+        onMouseEnter={() => setIsProjectHovered(true)}
         onMouseMove={handleStageMove}
         onMouseLeave={() => {
+          setIsProjectHovered(false);
           if (stageRef.current) {
             stageRef.current.style.setProperty("--px", "0px");
             stageRef.current.style.setProperty("--py", "0px");
           }
         }}
-        className="relative min-h-[520px] overflow-hidden border border-white/10 bg-[#0a0a0a] sm:min-h-[700px]"
+        className="group relative min-h-[520px] overflow-hidden border border-white/10 bg-[#0a0a0a] sm:min-h-[700px]"
       >
         <AnimatePresence mode="wait">
           <motion.div
@@ -2149,6 +2152,15 @@ function ProjectStage() {
               className="project-image h-full w-full object-cover object-center"
             />
 
+            {project.title === "Autozynq" && isProjectHovered && (
+              <iframe
+                src="https://www.loom.com/embed/6d34fc23d20b49b19cae63d534f610b2?autoplay=1&muted=1&t=5&hide_owner=true&hide_share=true&hide_title=true"
+                title="Autozynq project preview"
+                allow="autoplay; fullscreen"
+                className="absolute inset-0 h-full w-full border-0 object-cover"
+              />
+            )}
+
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/5 to-black/20" />
           </motion.div>
         </AnimatePresence>
@@ -2156,7 +2168,7 @@ function ProjectStage() {
         <div className="absolute inset-x-0 bottom-0 z-20 p-6 sm:p-9 lg:p-12">
           <div className="flex flex-col justify-between gap-6 sm:gap-10 lg:flex-row lg:items-end">
             <div className="max-w-3xl">
-              <div className="mb-4 flex items-center gap-3 text-[8px] uppercase tracking-[.3em] text-[#c9ff57]">
+              <div className="mb-4 flex items-center gap-3 text-[8px] uppercase tracking-[.3em] text-[#c9ff57] transition-opacity duration-300 group-hover:opacity-0">
                 <span>
                   {String(active + 1).padStart(2, "0")} /{" "}
                   {String(projects.length).padStart(2, "0")}
@@ -2174,7 +2186,7 @@ function ProjectStage() {
                       animate={{ y: 0, opacity: 1 }}
                       exit={{ y: -20, opacity: 0 }}
                       transition={{ duration: 0.5 }}
-                      className="display text-3xl font-black uppercase leading-[.8] tracking-[-.06em]"
+                      className="display text-3xl font-black uppercase leading-[.8] tracking-[-.06em] transition-opacity duration-300 group-hover:opacity-0"
                     >
                       {project.title}
                     </motion.h3>
@@ -2217,7 +2229,7 @@ function ProjectStage() {
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: -15, opacity: 0 }}
                     transition={{ duration: 0.45 }}
-                    className="max-w-xl text-xs leading-5 text-white/55"
+                    className="max-w-xl text-xs leading-5 text-white/55 transition-opacity duration-300 group-hover:opacity-0"
                   >
                     {project.description}
                   </motion.p>
@@ -2232,7 +2244,7 @@ function ProjectStage() {
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: -30, opacity: 0 }}
                     transition={{ duration: 0.7 }}
-                    className="display text-[clamp(3rem,7vw,7rem)] font-black uppercase leading-[.8] tracking-[-.07em]"
+                    className="display text-[clamp(3rem,7vw,7rem)] font-black uppercase leading-[.8] tracking-[-.07em] transition-opacity duration-300 group-hover:opacity-0"
                   >
                     {project.title}
                   </motion.h3>
@@ -2245,13 +2257,13 @@ function ProjectStage() {
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: -15, opacity: 0 }}
                     transition={{ duration: 0.6, delay: 0.05 }}
-                    className="mt-7 max-w-2xl text-sm leading-6 text-white/55 sm:text-base"
+                    className="mt-7 max-w-2xl text-sm leading-6 text-white/55 transition-opacity duration-300 group-hover:opacity-0 sm:text-base"
                   >
                     {project.description}
                   </motion.p>
                 </AnimatePresence>
 
-                <div className="mt-6 flex flex-wrap gap-2">
+                <div className="mt-6 flex flex-wrap gap-2 transition-opacity duration-300 group-hover:opacity-0">
                   {project.tech.slice(0, 7).map((tech, index) => (
                     <motion.span
                       key={tech}
