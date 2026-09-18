@@ -1,22 +1,24 @@
 import React, { useState } from "react";
+import { Network } from "lucide-react";
 import {
-  Database,
-  Cloud,
-  Server,
-  Globe,
-  Palette,
-  Terminal,
-  GitBranch,
-  Container,
-  Braces,
-  Layers,
-  ShieldCheck,
-  BrainCircuit,
-  Zap,
-  Component,
-  Boxes,
-  Network,
-} from "lucide-react";
+  SiAmazonaws,
+  SiCss3,
+  SiDocker,
+  SiExpress,
+  SiGit,
+  SiHtml5,
+  SiJavascript,
+  SiJsonwebtokens,
+  SiMongodb,
+  SiNextdotjs,
+  SiNodedotjs,
+  SiOpenai,
+  SiPostgresql,
+  SiPrisma,
+  SiReact,
+  SiTailwindcss,
+  SiTypescript,
+} from "react-icons/si";
 
 type Skill = {
   name: string;
@@ -39,7 +41,7 @@ const categories: Category[] = [
     skills: [
       {
         name: "React.js",
-        icon: Component,
+        icon: SiReact,
         level: "Advanced",
         description:
           "Reusable component systems, dashboards and production interfaces.",
@@ -47,7 +49,7 @@ const categories: Category[] = [
       },
       {
         name: "Next.js",
-        icon: Layers,
+        icon: SiNextdotjs,
         level: "Advanced",
         description:
           "Full-stack applications, routing, server-side features and production deployments.",
@@ -55,7 +57,7 @@ const categories: Category[] = [
       },
       {
         name: "React Native",
-        icon: Component,
+        icon: SiReact,
         level: "Intermediate",
         description:
           "Cross-platform mobile interfaces and application experiences.",
@@ -63,7 +65,7 @@ const categories: Category[] = [
       },
       {
         name: "TypeScript",
-        icon: Braces,
+        icon: SiTypescript,
         level: "Advanced",
         description:
           "Strong typing, safer APIs and maintainable application architecture.",
@@ -71,7 +73,7 @@ const categories: Category[] = [
       },
       {
         name: "JavaScript",
-        icon: Zap,
+        icon: SiJavascript,
         level: "Advanced",
         description:
           "Frontend, backend APIs and interactive application development.",
@@ -79,7 +81,7 @@ const categories: Category[] = [
       },
       {
         name: "Tailwind CSS",
-        icon: Palette,
+        icon: SiTailwindcss,
         level: "Advanced",
         description:
           "Responsive layouts, design systems and rapid UI development.",
@@ -87,7 +89,7 @@ const categories: Category[] = [
       },
       {
         name: "HTML",
-        icon: Globe,
+        icon: SiHtml5,
         level: "Advanced",
         description:
           "Semantic and accessible structures for responsive applications.",
@@ -95,7 +97,7 @@ const categories: Category[] = [
       },
       {
         name: "CSS",
-        icon: Palette,
+        icon: SiCss3,
         level: "Advanced",
         description:
           "Custom layouts, animations, responsive behavior and visual polish.",
@@ -110,7 +112,7 @@ const categories: Category[] = [
     skills: [
       {
         name: "Node.js",
-        icon: Server,
+        icon: SiNodedotjs,
         level: "Advanced",
         description:
           "Backend services, APIs and server-side application architecture.",
@@ -118,7 +120,7 @@ const categories: Category[] = [
       },
       {
         name: "Express.js",
-        icon: Terminal,
+        icon: SiExpress,
         level: "Advanced",
         description:
           "REST APIs, middleware and backend application development.",
@@ -134,7 +136,7 @@ const categories: Category[] = [
       },
       {
         name: "JWT",
-        icon: ShieldCheck,
+        icon: SiJsonwebtokens,
         level: "Advanced",
         description:
           "Authentication and role-based access control.",
@@ -149,7 +151,7 @@ const categories: Category[] = [
     skills: [
       {
         name: "MongoDB",
-        icon: Database,
+        icon: SiMongodb,
         level: "Advanced",
         description:
           "Document-oriented data modeling and application persistence.",
@@ -157,7 +159,7 @@ const categories: Category[] = [
       },
       {
         name: "PostgreSQL",
-        icon: Database,
+        icon: SiPostgresql,
         level: "Advanced",
         description:
           "Relational data systems, queries and production application data.",
@@ -165,7 +167,7 @@ const categories: Category[] = [
       },
       {
         name: "Prisma ORM",
-        icon: Boxes,
+        icon: SiPrisma,
         level: "Advanced",
         description:
           "Type-safe database access and maintainable relational data layers.",
@@ -180,7 +182,7 @@ const categories: Category[] = [
     skills: [
       {
         name: "Git",
-        icon: GitBranch,
+        icon: SiGit,
         level: "Advanced",
         description:
           "Version control, branching and collaborative development workflows.",
@@ -188,7 +190,7 @@ const categories: Category[] = [
       },
       {
         name: "AWS",
-        icon: Cloud,
+        icon: SiAmazonaws,
         level: "Intermediate",
         description:
           "Cloud services and deployment workflows.",
@@ -196,7 +198,7 @@ const categories: Category[] = [
       },
       {
         name: "Docker",
-        icon: Container,
+        icon: SiDocker,
         level: "Intermediate",
         description:
           "Containerized development and deployment workflows.",
@@ -204,7 +206,7 @@ const categories: Category[] = [
       },
       {
         name: "AI APIs",
-        icon: BrainCircuit,
+        icon: SiOpenai,
         level: "Intermediate",
         description:
           "Integrating AI-powered workflows and intelligent application features.",

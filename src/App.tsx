@@ -30,6 +30,34 @@ import {
   ExternalLink,
   MessageCircle,
 } from "lucide-react";
+import {
+  SiBootstrap,
+  SiC,
+  SiCss,
+  SiDocker,
+  SiExpress,
+  SiFfmpeg,
+  SiGit,
+  SiGithub,
+  SiGoogle,
+  SiHtml5,
+  SiJavascript,
+  SiJsonwebtokens,
+  SiMongodb,
+  SiMysql,
+  SiNextdotjs,
+  SiNodedotjs,
+  SiPostgresql,
+  SiPostman,
+  SiPrisma,
+  SiReact,
+  SiRazorpay,
+  SiGreensock,
+  SiTailwindcss,
+  SiTypescript,
+} from "react-icons/si";
+import { FaAws, FaJava, FaMicrosoft } from "react-icons/fa6";
+import { BrainCircuit, Network, ShieldCheck } from "lucide-react";
 
 /* -------------------------------------------------------------------------- */
 /*                                  DATA                                      */
@@ -479,6 +507,76 @@ const skillDescriptions: Record<string, string> = {
   Razorpay: "Used to connect payment flows with commerce and subscription-based applications.",
 };
 
+const skillIcons: Record<string, React.ElementType> = {
+  "React.js": SiReact,
+  "Next.js": SiNextdotjs,
+  "React Native": SiReact,
+  TypeScript: SiTypescript,
+  JavaScript: SiJavascript,
+  "Tailwind CSS": SiTailwindcss,
+  HTML: SiHtml5,
+  CSS: SiCss,
+  Bootstrap: SiBootstrap,
+  "Node.js": SiNodedotjs,
+  "Express.js": SiExpress,
+  "REST APIs": Network,
+  JWT: SiJsonwebtokens,
+  OAuth: ShieldCheck,
+  NextAuth: ShieldCheck,
+  Java: FaJava,
+  C: SiC,
+  MongoDB: SiMongodb,
+  PostgreSQL: SiPostgresql,
+  MySQL: SiMysql,
+  "Prisma ORM": SiPrisma,
+  Docker: SiDocker,
+  "Git & GitHub": SiGithub,
+  AWS: FaAws,
+  Postman: SiPostman,
+  "VS Code": FaMicrosoft,
+  GSAP: SiGreensock,
+  "React Flow": SiReact,
+  "Google APIs": SiGoogle,
+  "AI Integration": BrainCircuit,
+  FFmpeg: SiFfmpeg,
+  Razorpay: SiRazorpay,
+};
+
+const skillColors: Record<string, string> = {
+  "React.js": "#61dafb",
+  "Next.js": "#ffffff",
+  "React Native": "#61dafb",
+  TypeScript: "#3178c6",
+  JavaScript: "#f7df1e",
+  "Tailwind CSS": "#06b6d4",
+  HTML: "#e34f26",
+  CSS: "#1572b6",
+  Bootstrap: "#7952b3",
+  "Node.js": "#339933",
+  "Express.js": "#ffffff",
+  "REST APIs": "#8fb9ad",
+  JWT: "#d6b600",
+  OAuth: "#4285f4",
+  NextAuth: "#ffffff",
+  Java: "#f89820",
+  C: "#a8b9cc",
+  MongoDB: "#47a248",
+  PostgreSQL: "#4169e1",
+  MySQL: "#4479a1",
+  "Prisma ORM": "#ffffff",
+  Docker: "#2496ed",
+  "Git & GitHub": "#f05032",
+  AWS: "#ff9900",
+  Postman: "#ff6c37",
+  "VS Code": "#23a8f2",
+  GSAP: "#88ce02",
+  "React Flow": "#ff0072",
+  "Google APIs": "#4285f4",
+  "AI Integration": "#10a37f",
+  FFmpeg: "#00a000",
+  Razorpay: "#3395ff",
+};
+
 /* -------------------------------------------------------------------------- */
 /*                              GLOBAL STYLE                                  */
 /* -------------------------------------------------------------------------- */
@@ -509,6 +607,17 @@ const GlobalStyle = () => (
 
     * {
       box-sizing: border-box;
+    }
+
+    .skill-card {
+      border-color: color-mix(in srgb, var(--skill-color) 28%, transparent);
+      background: color-mix(in srgb, var(--skill-color) 2%, #0b0b0b);
+    }
+
+    .skill-card:hover {
+      border-color: color-mix(in srgb, var(--skill-color) 55%, transparent);
+      background: color-mix(in srgb, var(--skill-color) 5%, #0b0b0b);
+      box-shadow: 0 12px 30px color-mix(in srgb, var(--skill-color) 10%, transparent);
     }
 
     ::selection {
@@ -1937,17 +2046,22 @@ function SkillField() {
                   }}
                   onMouseEnter={(event) => showSkillPreview(event, skill)}
                   onMouseLeave={() => setSkillPreview(null)}
-                  className="group relative overflow-hidden border border-white/10 bg-[#0b0b0b]/80 px-4 py-5 backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:border-[#c9ff57]/40"
+                  className="skill-card group relative overflow-hidden border border-white/10 bg-[#0b0b0b]/80 px-4 py-5 backdrop-blur-md transition-all duration-300 hover:-translate-y-2"
+                  style={{ "--skill-color": skillColors[skill] } as React.CSSProperties}
                 >
-                  <span className="absolute left-0 top-0 h-px w-0 bg-[#c9ff57] transition-all duration-500 group-hover:w-full" />
-                  <span className="absolute bottom-0 right-0 h-0 w-px bg-[#c9ff57] transition-all duration-500 group-hover:h-full" />
+                  <span className="absolute left-0 top-0 h-px w-0 bg-[var(--skill-color)] transition-all duration-500 group-hover:w-full" />
+                  <span className="absolute bottom-0 right-0 h-0 w-px bg-[var(--skill-color)] transition-all duration-500 group-hover:h-full" />
 
                   <div className="text-[8px] text-white/20">
                     {String(index + 1).padStart(2, "0")}
                   </div>
 
-                  <div className="mt-3 text-sm font-medium text-white/75 group-hover:text-white">
-                    {skill}
+                  <div className="mt-3 flex w-full items-center gap-3 text-base font-medium text-white/75 group-hover:text-white sm:text-lg">
+                    {React.createElement(skillIcons[skill], {
+                      size: 24,
+                      className: "shrink-0 text-[var(--skill-color)] transition-colors",
+                    })}
+                    <span>{skill}</span>
                   </div>
                 </motion.div>
               ))}
