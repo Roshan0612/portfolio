@@ -33,6 +33,9 @@ import {
 import {
   SiBootstrap,
   SiC,
+  SiChatbot,
+  SiClaude,
+  SiCursor,
   SiCss,
   SiDocker,
   SiExpress,
@@ -52,9 +55,11 @@ import {
   SiPrisma,
   SiReact,
   SiRazorpay,
+  SiRender,
   SiGreensock,
   SiTailwindcss,
   SiTypescript,
+  SiVercel,
 } from "react-icons/si";
 import { FaAws, FaJava, FaMicrosoft } from "react-icons/fa6";
 import { BrainCircuit, Network, ShieldCheck } from "lucide-react";
@@ -462,6 +467,9 @@ const skillGroups = {
     "Postman",
     "VS Code",
     "GSAP",
+    "Render",
+    "Vercel",
+    "Cursor",
   ],
   "Modern Stack": [
     "React Flow",
@@ -470,6 +478,8 @@ const skillGroups = {
     "AI Integration",
     "FFmpeg",
     "Razorpay",
+    "Claude",
+    "ChatGPT",
   ],
 };
 
@@ -506,6 +516,11 @@ const skillDescriptions: Record<string, string> = {
   "AI Integration": "Used to bring intelligent analysis and automation into practical product features.",
   FFmpeg: "Used for media processing workflows including recording, conversion, and export handling.",
   Razorpay: "Used to connect payment flows with commerce and subscription-based applications.",
+  Render: "Used for straightforward deployment and hosting of full-stack applications and services.",
+  Vercel: "Used to deploy and deliver frontend and Next.js applications with automated previews.",
+  Cursor: "Used as an AI-assisted development environment for writing, exploring, and refining code.",
+  Claude: "Used for thoughtful AI-assisted coding, analysis, and product development workflows.",
+  ChatGPT: "Used for AI-assisted development, problem solving, research, and application ideation.",
 };
 
 const skillIcons: Record<string, React.ElementType> = {
@@ -541,6 +556,11 @@ const skillIcons: Record<string, React.ElementType> = {
   "AI Integration": BrainCircuit,
   FFmpeg: SiFfmpeg,
   Razorpay: SiRazorpay,
+  Render: SiRender,
+  Vercel: SiVercel,
+  Cursor: SiCursor,
+  Claude: SiClaude,
+  ChatGPT: SiChatbot,
 };
 
 const skillColors: Record<string, string> = {
@@ -576,6 +596,11 @@ const skillColors: Record<string, string> = {
   "AI Integration": "#10a37f",
   FFmpeg: "#00a000",
   Razorpay: "#3395ff",
+  Render: "#46e3b7",
+  Vercel: "#ffffff",
+  Cursor: "#f4f4f4",
+  Claude: "#d97757",
+  ChatGPT: "#10a37f",
 };
 
 /* -------------------------------------------------------------------------- */
